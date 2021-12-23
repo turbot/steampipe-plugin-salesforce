@@ -1,3 +1,0 @@
-# steampipe-plugin-salesforce
-
-WIP
