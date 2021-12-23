@@ -1,1 +1,1 @@
-# Steampipe Salesforce plugin
+# steampipe-plugin-salesforce
