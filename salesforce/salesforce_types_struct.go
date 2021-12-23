@@ -1,7 +1,6 @@
 package salesforce
 
-import "time"
-
+// TODO: Handle time fields
 type Account struct {
 	Id                string
 	Name              string
@@ -25,17 +24,20 @@ type User struct {
 	AboutMe                string
 	AccountId              string
 	CreatedById            string
-	CreatedDate            *time.Time
+	CreatedDate            string
 	Email                  string
 	FirstName              string
 	Id                     string
 	IsActive               bool
 	LastLoginDate          string
 	LastModifiedById       string
-	LastModifiedDate       *time.Time
+	LastModifiedDate       string
 	LastName               string
-	LastPasswordChangeDate *time.Time
+	LastPasswordChangeDate string
 	Name                   string
 	ProfileId              string
 	Username               string
+	// LastPasswordChangeDate *time.Time
+	// LastModifiedDate       *time.Time
+	// CreatedDate            *time.Time
 }
