@@ -129,3 +129,43 @@ type Opportunity struct {
 	// OrderNumberC                string `json:"OrderNumber__c,omitempty"`
 	// TrackingNumberC             string `json:"TrackingNumber__c,omitempty"`
 }
+
+type Order struct {
+	AccountId              string
+	ActivatedById          string
+	ActivatedDate          string
+	BillToContactId        string
+	CompanyAuthorizedById  string
+	CompanyAuthorizedDate  string
+	ContractId             string
+	CreatedById            string
+	CreatedDate            string
+	CustomerAuthorizedById string
+	CustomerAuthorizedDate string
+	Description            string
+	EffectiveDate          string
+	EndDate                string
+	Id                     string
+	IsDeleted              bool
+	IsReductionOrder       bool
+	LastModifiedById       string
+	LastModifiedDate       string
+	LastReferencedDate     string
+	LastViewedDate         string
+	Name                   string
+	OrderNumber            string
+	OrderReferenceNumber   string
+	OriginalOrderId        string
+	OwnerId                string
+	PoDate                 string
+	PoNumber               string
+	Pricebook2Id           string
+	ShipToContactId        string
+	Status                 string
+	StatusCode             string
+	SystemModstamp         string
+	TotalAmount            float64
+	Type                   string
+	ShippingAddress        interface{}
+	BillingAddress         interface{}
+}
