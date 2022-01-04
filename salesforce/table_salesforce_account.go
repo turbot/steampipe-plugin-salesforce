@@ -76,14 +76,14 @@ func listSalesforceAccount(ctx context.Context, d *plugin.QueryData, h *plugin.H
 }
 
 func getSalesforceAccount(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	AccountID := d.KeyColumnQualString("id")
+	accountID := d.KeyColumnQualString("id")
 
 	client, err := connect(ctx, d)
 	if err != nil {
 		return nil, err
 	}
 
-	obj := client.SObject("User").Get(AccountID)
+	obj := client.SObject("User").Get(accountID)
 	if obj == nil {
 		// Object doesn't exist, handle the error
 		return nil, nil

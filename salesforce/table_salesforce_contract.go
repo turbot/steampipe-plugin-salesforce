@@ -90,14 +90,14 @@ func listSalesforceContract(ctx context.Context, d *plugin.QueryData, h *plugin.
 }
 
 func getSalesforceContract(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	ContractID := d.KeyColumnQualString("id")
+	contractID := d.KeyColumnQualString("id")
 
 	client, err := connect(ctx, d)
 	if err != nil {
 		return nil, err
 	}
 
-	obj := client.SObject("Contract").Get(ContractID)
+	obj := client.SObject("Contract").Get(contractID)
 	if obj == nil {
 		// Object doesn't exist, handle the error
 		return nil, nil

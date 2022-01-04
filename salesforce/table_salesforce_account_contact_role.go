@@ -48,13 +48,13 @@ func listSalesforceAccountContactRole(ctx context.Context, d *plugin.QueryData, 
 			return nil, err
 		}
 
-		AccountList := new([]AccountContactRole)
-		err = decodeQueryResult(ctx, result.Records, AccountList)
+		AccountContactRoleList := new([]AccountContactRole)
+		err = decodeQueryResult(ctx, result.Records, AccountContactRoleList)
 		if err != nil {
 			return nil, err
 		}
 
-		for _, account := range *AccountList {
+		for _, account := range *AccountContactRoleList {
 			d.StreamListItem(ctx, account)
 		}
 
@@ -70,21 +70,21 @@ func listSalesforceAccountContactRole(ctx context.Context, d *plugin.QueryData, 
 }
 
 func getSalesforceAccountContactRole(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	AccountID := d.KeyColumnQualString("id")
+	accountContactRoleID := d.KeyColumnQualString("id")
 
 	client, err := connect(ctx, d)
 	if err != nil {
 		return nil, err
 	}
 
-	obj := client.SObject("AccountContactRole").Get(AccountID)
+	obj := client.SObject("AccountContactRole").Get(accountContactRoleID)
 	if obj == nil {
 		// Object doesn't exist, handle the error
 		return nil, nil
 	}
 
-	account := new(AccountContactRole)
-	err = decodeQueryResult(ctx, obj, account)
+	accountContactRole := new(AccountContactRole)
+	err = decodeQueryResult(ctx, obj, accountContactRole)
 	if err != nil {
 		return nil, err
 	}
