@@ -74,3 +74,15 @@ type Contract struct {
 	Status                string
 	SystemModstamp        string
 }
+
+type AccountContactRole struct {
+	Id               string
+	ContactId        string
+	AccountId        string
+	CreatedById      string
+	CreatedDate      string
+	Role             string
+	LastModifiedById string
+	LastModifiedDate string
+	IsPrimary        bool
+}
