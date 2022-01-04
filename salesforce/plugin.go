@@ -22,6 +22,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"salesforce_account":              SalesforceAccount(ctx),
 			"salesforce_account_contact_role": SalesforceAccountContactRole(ctx),
 			"salesforce_contract":             SalesforceContract(ctx),
+			"salesforce_opportunity":          SalesforceOpportunity(ctx),
 			"salesforce_user":                 SalesforceUser(ctx),
 		},
 	}

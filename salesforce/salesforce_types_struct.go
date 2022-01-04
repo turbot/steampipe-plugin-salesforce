@@ -86,3 +86,46 @@ type AccountContactRole struct {
 	LastModifiedDate string
 	IsPrimary        bool
 }
+
+type Opportunity struct {
+	AccountId                string
+	Amount                   float64
+	CampaignId               string
+	CloseDate                string
+	CreatedById              string
+	CreatedDate              string
+	Description              string
+	ExpectedRevenue          float64
+	FiscalQuarter            int64
+	FiscalYear               int64
+	ForecastCategory         string
+	ForecastCategoryName     string
+	HasOpenActivity          bool
+	HasOpportunityLineItem   bool
+	HasOverdueTask           bool
+	Id                       string
+	IsClosed                 bool
+	IsDeleted                bool
+	IsPrivate                bool
+	IsWon                    bool
+	LastActivityDate         string
+	LastModifiedById         string
+	LastModifiedDate         string
+	LastReferencedDate       string
+	LastViewedDate           string
+	LeadSource               string
+	Name                     string
+	NextStep                 string
+	OwnerId                  string
+	Pricebook2Id             string
+	Probability              float64
+	StageName                string
+	SystemModstamp           string
+	TotalOpportunityQuantity string
+	Type                     string
+	// CurrentGeneratorsC          string `json:"CurrentGenerators__c,omitempty"`
+	// DeliveryInstallationStatusC string `json:"DeliveryInstallationStatus__c,omitempty"`
+	// MainCompetitorsC            string `json:"MainCompetitors__c,omitempty"`
+	// OrderNumberC                string `json:"OrderNumber__c,omitempty"`
+	// TrackingNumberC             string `json:"TrackingNumber__c,omitempty"`
+}
