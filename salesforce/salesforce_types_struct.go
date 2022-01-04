@@ -41,3 +41,36 @@ type User struct {
 	// LastModifiedDate       *time.Time
 	// CreatedDate            *time.Time
 }
+
+type Contract struct {
+	AccountId             string
+	ActivatedById         string
+	ActivatedDate         string
+	BillingAddress        interface{}
+	CompanySignedDate     string
+	CompanySignedId       string
+	ContractNumber        string
+	ContractTerm          int64
+	CreatedById           string
+	CreatedDate           string
+	CustomerSignedDate    string
+	CustomerSignedId      string
+	CustomerSignedTitle   string
+	Description           string
+	EndDate               string
+	Id                    string
+	IsDeleted             bool
+	LastActivityDate      string
+	LastApprovedDate      string
+	LastModifiedById      string
+	LastModifiedDate      string
+	LastReferencedDate    string
+	LastViewedDate        string
+	OwnerExpirationNotice string
+	OwnerId               string
+	Pricebook2Id          string
+	SpecialTerms          string
+	StartDate             string
+	Status                string
+	SystemModstamp        string
+}

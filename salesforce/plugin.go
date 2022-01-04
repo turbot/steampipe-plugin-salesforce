@@ -19,8 +19,9 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			Schema:      ConfigSchema,
 		},
 		TableMap: map[string]*plugin.Table{
-			"salesforce_account": SalesforceAccount(ctx),
-			"salesforce_user":    SalesforceUser(ctx),
+			"salesforce_account":  SalesforceAccount(ctx),
+			"salesforce_user":     SalesforceUser(ctx),
+			"salesforce_contract": SalesforceContract(ctx),
 		},
 	}
 
