@@ -192,3 +192,54 @@ type Lead struct {
 	Status            string
 	Website           string
 }
+
+type Product struct {
+	CreatedById           string
+	CreatedDate           string
+	Description           string
+	DisplayUrl            string
+	ExternalDataSourceId  string
+	ExternalId            string
+	Family                string
+	Id                    string
+	IsActive              bool
+	IsArchived            bool
+	IsDeleted             bool
+	LastModifiedById      string
+	LastModifiedDate      string
+	LastReferencedDate    string
+	LastViewedDate        string
+	Name                  string
+	ProductCode           string
+	QuantityUnitOfMeasure string
+	StockKeepingUnit      string
+	SystemModstamp        string
+}
+
+// type Product struct {
+//   "CreatedById": "0055j000003GU6IAAW",
+//   "CreatedDate": "2021-12-23T07:50:29.000+0000",
+//   "Description": null,
+//   "DisplayUrl": null,
+//   "ExternalDataSourceId": null,
+//   "ExternalId": null,
+//   "Family": null,
+//   "Id": "01t5j000003FkY2AAK",
+//   "IsActive": true,
+//   "IsArchived": false,
+//   "IsDeleted": false,
+//   "LastModifiedById": "0055j000003GU6IAAW",
+//   "LastModifiedDate": "2021-12-23T07:50:29.000+0000",
+//   "LastReferencedDate": null,
+//   "LastViewedDate": null,
+//   "Name": "GenWatt Propane 500kW",
+//   "ProductCode": "GC3040",
+//   "QuantityUnitOfMeasure": null,
+//   "StockKeepingUnit": null,
+//   "SystemModstamp": "2021-12-23T07:50:29.000+0000",
+//   "__client__": {},
+//   "attributes": {
+//     "type": "Product2",
+//     "url": "/services/data/v43.0/sobjects/Product2/01t5j000003FkY2AAK"
+//   }
+// }

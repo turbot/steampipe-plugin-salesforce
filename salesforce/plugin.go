@@ -26,6 +26,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"salesforce_order":                SalesforceOrder(ctx),
 			"salesforce_user":                 SalesforceUser(ctx),
 			"salesforce_lead":                 SalesforceLead(ctx),
+			"salesforce_product":              SalesforceProduct(ctx),
 		},
 	}
 
