@@ -25,6 +25,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 			"salesforce_opportunity":          SalesforceOpportunity(ctx),
 			"salesforce_order":                SalesforceOrder(ctx),
 			"salesforce_user":                 SalesforceUser(ctx),
+			"salesforce_lead":                 SalesforceLead(ctx),
 		},
 	}
 

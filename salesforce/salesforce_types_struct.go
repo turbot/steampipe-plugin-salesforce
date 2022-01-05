@@ -169,3 +169,26 @@ type Order struct {
 	ShippingAddress        interface{}
 	BillingAddress         interface{}
 }
+
+type Lead struct {
+	Address           interface{}
+	AnnualRevenue     float64
+	Company           string
+	ConvertedDate     string
+	CreatedById       string
+	CreatedDate       string
+	Email             string
+	Id                string
+	Industry          string
+	IsConverted       bool
+	LastModifiedById  string
+	LastModifiedDate  string
+	LeadSource        string
+	Name              string
+	NumberOfEmployees int64
+	OwnerId           string
+	Phone             string
+	Rating            string
+	Status            string
+	Website           string
+}
