@@ -130,6 +130,18 @@ type Opportunity struct {
 	// TrackingNumberC             string `json:"TrackingNumber__c,omitempty"`
 }
 
+type OpportunityContactRole struct {
+	Id               string `json:"Id"`
+	ContactId        string `json:"ContactId"`
+	OpportunityId    string `json:"OpportunityId"`
+	CreatedById      string `json:"CreatedById"`
+	CreatedDate      string `json:"CreatedDate"`
+	Role             string `json:"Role"`
+	LastModifiedById string `json:"LastModifiedById"`
+	LastModifiedDate string `json:"LastModifiedDate"`
+	IsPrimary        bool   `json:"IsPrimary"`
+}
+
 type Order struct {
 	AccountId              string
 	ActivatedById          string
