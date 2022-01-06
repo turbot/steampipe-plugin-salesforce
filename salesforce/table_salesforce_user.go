@@ -2,6 +2,7 @@ package salesforce
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -34,6 +35,7 @@ func SalesforceUser(_ context.Context) *plugin.Table {
 func listSalesforceUser(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("listSalesforceUser", "connect error", err)
 		return nil, err
 	}
 
@@ -43,17 +45,19 @@ func listSalesforceUser(ctx context.Context, d *plugin.QueryData, h *plugin.Hydr
 	for {
 		result, err := client.Query(query)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceUser", "query error", err)
 			return nil, err
 		}
 
 		Users := new([]User)
 		err = decodeQueryResult(ctx, result.Records, Users)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceUser", "decode results error", err)
 			return nil, err
 		}
 
-		for _, account := range *Users {
-			d.StreamListItem(ctx, account)
+		for _, user := range *Users {
+			d.StreamListItem(ctx, user)
 		}
 
 		// Paging
@@ -72,21 +76,23 @@ func getSalesforceUser(ctx context.Context, d *plugin.QueryData, h *plugin.Hydra
 
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceUser", "connect error", err)
 		return nil, err
 	}
 
 	obj := client.SObject("User").Get(userID)
 	if obj == nil {
 		// Object doesn't exist, handle the error
+		plugin.Logger(ctx).Warn("getSalesforceUser", fmt.Sprintf("user \"%s\" not found", userID))
 		return nil, nil
 	}
 
 	user := new(User)
 	err = decodeQueryResult(ctx, obj, user)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceUser", "decode results error", err)
 		return nil, err
 	}
 
 	return user, nil
-
 }

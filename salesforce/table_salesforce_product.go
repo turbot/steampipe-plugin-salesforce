@@ -2,6 +2,7 @@ package salesforce
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -46,6 +47,7 @@ func SalesforceProduct(_ context.Context) *plugin.Table {
 func listSalesforceProduct(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("listSalesforceProduct", "connect error", err)
 		return nil, err
 	}
 
@@ -55,12 +57,14 @@ func listSalesforceProduct(ctx context.Context, d *plugin.QueryData, h *plugin.H
 	for {
 		result, err := client.Query(query)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceProduct", "query error", err)
 			return nil, err
 		}
 
 		Products := new([]Product)
 		err = decodeQueryResult(ctx, result.Records, Products)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceProduct", "decode results error", err)
 			return nil, err
 		}
 
@@ -80,22 +84,25 @@ func listSalesforceProduct(ctx context.Context, d *plugin.QueryData, h *plugin.H
 }
 
 func getSalesforceProduct(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	userID := d.KeyColumnQualString("id")
+	productID := d.KeyColumnQualString("id")
 
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceProduct", "connect error", err)
 		return nil, err
 	}
 
-	obj := client.SObject("Product2").Get(userID)
+	obj := client.SObject("Product2").Get(productID)
 	if obj == nil {
 		// Object doesn't exist, handle the error
+		plugin.Logger(ctx).Warn("getSalesforceProduct", fmt.Sprintf("product \"%s\" not found", productID))
 		return nil, nil
 	}
 
 	product := new(Product)
 	err = decodeQueryResult(ctx, obj, product)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceProduct", "decode results error", err)
 		return nil, err
 	}
 

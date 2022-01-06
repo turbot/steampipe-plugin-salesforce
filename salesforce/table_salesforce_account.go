@@ -2,6 +2,7 @@ package salesforce
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -42,6 +43,7 @@ func SalesforceAccount(_ context.Context) *plugin.Table {
 func listSalesforceAccount(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("listSalesforceAccount", "connect error", err)
 		return nil, err
 	}
 
@@ -51,12 +53,14 @@ func listSalesforceAccount(ctx context.Context, d *plugin.QueryData, h *plugin.H
 	for {
 		result, err := client.Query(query)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceAccount", "query error", err)
 			return nil, err
 		}
 
 		AccountList := new([]Account)
 		err = decodeQueryResult(ctx, result.Records, AccountList)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceAccount", "decode results error", err)
 			return nil, err
 		}
 
@@ -80,18 +84,21 @@ func getSalesforceAccount(ctx context.Context, d *plugin.QueryData, h *plugin.Hy
 
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceAccount", "connect error", err)
 		return nil, err
 	}
 
-	obj := client.SObject("User").Get(accountID)
+	obj := client.SObject("Account").Get(accountID)
 	if obj == nil {
 		// Object doesn't exist, handle the error
+		plugin.Logger(ctx).Warn("getSalesforceAccount", fmt.Sprintf("account \"%s\" not found", accountID))
 		return nil, nil
 	}
 
 	account := new(Account)
 	err = decodeQueryResult(ctx, obj, account)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceAccount", "decode results error", err)
 		return nil, err
 	}
 

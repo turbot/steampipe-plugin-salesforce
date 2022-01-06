@@ -2,6 +2,7 @@ package salesforce
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -66,6 +67,7 @@ func SalesforceOpportunity(_ context.Context) *plugin.Table {
 func listSalesforceOpportunity(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("listSalesforceOpportunity", "connect error", err)
 		return nil, err
 	}
 
@@ -75,12 +77,14 @@ func listSalesforceOpportunity(ctx context.Context, d *plugin.QueryData, h *plug
 	for {
 		result, err := client.Query(query)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceOpportunity", "query error", err)
 			return nil, err
 		}
 
 		Opportunities := new([]Opportunity)
 		err = decodeQueryResult(ctx, result.Records, Opportunities)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceOpportunity", "decode results error", err)
 			return nil, err
 		}
 
@@ -104,18 +108,21 @@ func getSalesforceOpportunity(ctx context.Context, d *plugin.QueryData, h *plugi
 
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceOpportunity", "connect error", err)
 		return nil, err
 	}
 
 	obj := client.SObject("Opportunity").Get(opportunityID)
 	if obj == nil {
 		// Object doesn't exist, handle the error
+		plugin.Logger(ctx).Warn("getSalesforceOpportunity", fmt.Sprintf("opportunity \"%s\" not found", opportunityID))
 		return nil, nil
 	}
 
 	opportunity := new(Opportunity)
 	err = decodeQueryResult(ctx, obj, opportunity)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceOpportunity", "decode results error", err)
 		return nil, err
 	}
 

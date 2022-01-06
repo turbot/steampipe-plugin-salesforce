@@ -2,6 +2,7 @@ package salesforce
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -35,6 +36,7 @@ func SalesforceOpportunityContactRole(_ context.Context) *plugin.Table {
 func listSalesforceOpportunityContactRole(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("listSalesforceOpportunityContactRole", "connect error", err)
 		return nil, err
 	}
 
@@ -44,12 +46,14 @@ func listSalesforceOpportunityContactRole(ctx context.Context, d *plugin.QueryDa
 	for {
 		result, err := client.Query(query)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceOpportunityContactRole", "query error", err)
 			return nil, err
 		}
 
 		OpportunityContactRoles := new([]OpportunityContactRole)
 		err = decodeQueryResult(ctx, result.Records, OpportunityContactRoles)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceOpportunityContactRole", "decode results error", err)
 			return nil, err
 		}
 
@@ -69,22 +73,25 @@ func listSalesforceOpportunityContactRole(ctx context.Context, d *plugin.QueryDa
 }
 
 func getSalesforceOpportunityContactRole(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	opportunityID := d.KeyColumnQualString("id")
+	opportunityContactRoleID := d.KeyColumnQualString("id")
 
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceOpportunityContactRole", "connect error", err)
 		return nil, err
 	}
 
-	obj := client.SObject("OpportunityContactRole").Get(opportunityID)
+	obj := client.SObject("OpportunityContactRole").Get(opportunityContactRoleID)
 	if obj == nil {
 		// Object doesn't exist, handle the error
+		plugin.Logger(ctx).Warn("getSalesforceOpportunityContactRole", fmt.Sprintf("opportunity contact role \"%s\" not found", opportunityContactRoleID))
 		return nil, nil
 	}
 
 	opportunityContactRole := new(OpportunityContactRole)
 	err = decodeQueryResult(ctx, obj, opportunityContactRole)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceOpportunityContactRole", "decode results error", err)
 		return nil, err
 	}
 

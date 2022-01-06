@@ -1,10 +1,6 @@
 package salesforce
 
 import (
-	"context"
-	"fmt"
-
-	"github.com/simpleforce/simpleforce"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/plugin/schema"
 )
@@ -46,19 +42,4 @@ func GetConfig(connection *plugin.Connection) salesforceConfig {
 	}
 	config, _ := connection.Config.(salesforceConfig)
 	return config
-}
-
-func connect(_ context.Context, d *plugin.QueryData) (*simpleforce.Client, error) {
-	config := GetConfig(d.Connection)
-
-	client := simpleforce.NewClient(*config.URL, simpleforce.DefaultClientID, simpleforce.DefaultAPIVersion)
-	if client == nil {
-		return nil, fmt.Errorf("couldn't get salesforce client. Clent generation error.")
-	}
-	err := client.LoginPassword(*config.User, *config.Password, *config.Token)
-	if err != nil {
-		return nil, fmt.Errorf("client LoginPassword Error")
-	}
-
-	return client, nil
 }

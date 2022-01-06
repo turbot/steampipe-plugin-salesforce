@@ -2,6 +2,7 @@ package salesforce
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -63,21 +64,24 @@ func SalesforceOrder(_ context.Context) *plugin.Table {
 func listSalesforceOrder(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("listSalesforceOrder", "connect error", err)
 		return nil, err
 	}
 
 	query := generateQuery(d.QueryContext.Columns, "Order")
-	plugin.Logger(ctx).Info("listSalesforceUser", "Query", query)
+	plugin.Logger(ctx).Info("listSalesforceOrder", "Query", query)
 
 	for {
 		result, err := client.Query(query)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceOrder", "query error", err)
 			return nil, err
 		}
 
 		Orders := new([]Order)
 		err = decodeQueryResult(ctx, result.Records, Orders)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceOrder", "decode results error", err)
 			return nil, err
 		}
 
@@ -101,18 +105,21 @@ func getSalesforceOrder(ctx context.Context, d *plugin.QueryData, h *plugin.Hydr
 
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceOrder", "connect error", err)
 		return nil, err
 	}
 
 	obj := client.SObject("Order").Get(orderID)
 	if obj == nil {
 		// Object doesn't exist, handle the error
+		plugin.Logger(ctx).Warn("getSalesforceOrder", fmt.Sprintf("order \"%s\" not found", orderID))
 		return nil, nil
 	}
 
 	order := new(Order)
 	err = decodeQueryResult(ctx, obj, order)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceOrder", "decode results error", err)
 		return nil, err
 	}
 

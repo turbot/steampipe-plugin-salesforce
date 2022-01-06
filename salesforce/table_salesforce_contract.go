@@ -2,6 +2,7 @@ package salesforce
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -56,6 +57,7 @@ func SalesforceContract(_ context.Context) *plugin.Table {
 func listSalesforceContract(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("listSalesforceContract", "connect error", err)
 		return nil, err
 	}
 
@@ -65,12 +67,14 @@ func listSalesforceContract(ctx context.Context, d *plugin.QueryData, h *plugin.
 	for {
 		result, err := client.Query(query)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceContract", "query error", err)
 			return nil, err
 		}
 
 		ContractList := new([]Contract)
 		err = decodeQueryResult(ctx, result.Records, ContractList)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceContract", "decode results error", err)
 			return nil, err
 		}
 
@@ -94,18 +98,21 @@ func getSalesforceContract(ctx context.Context, d *plugin.QueryData, h *plugin.H
 
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceContract", "connect error", err)
 		return nil, err
 	}
 
 	obj := client.SObject("Contract").Get(contractID)
 	if obj == nil {
 		// Object doesn't exist, handle the error
+		plugin.Logger(ctx).Warn("getSalesforceContract", fmt.Sprintf("contract \"%s\" not found", contractID))
 		return nil, nil
 	}
 
 	account := new(Account)
 	err = decodeQueryResult(ctx, obj, account)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceContract", "decode results error", err)
 		return nil, err
 	}
 

@@ -2,6 +2,7 @@ package salesforce
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -35,22 +36,24 @@ func SalesforceAccountContactRole(_ context.Context) *plugin.Table {
 func listSalesforceAccountContactRole(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("listSalesforceAccountContactRole", "connect error", err)
 		return nil, err
 	}
 
 	query := generateQuery(d.QueryContext.Columns, "AccountContactRole")
-	plugin.Logger(ctx).Info("listSalesforceAccount", "Query", query)
-	query = "SELECT Id, ContactId, AccountId, CreatedById, CreatedDate, Role, LastModifiedById, LastModifiedDate, IsPrimary FROM AccountContactRole"
+	plugin.Logger(ctx).Info("listSalesforceAccountContactRole", "Query", query)
 
 	for {
 		result, err := client.Query(query)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceAccountContactRole", "query error", err)
 			return nil, err
 		}
 
 		AccountContactRoleList := new([]AccountContactRole)
 		err = decodeQueryResult(ctx, result.Records, AccountContactRoleList)
 		if err != nil {
+			plugin.Logger(ctx).Error("listSalesforceAccountContactRole", "decode results error", err)
 			return nil, err
 		}
 
@@ -74,18 +77,21 @@ func getSalesforceAccountContactRole(ctx context.Context, d *plugin.QueryData, h
 
 	client, err := connect(ctx, d)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceAccountContactRole", "connect error", err)
 		return nil, err
 	}
 
 	obj := client.SObject("AccountContactRole").Get(accountContactRoleID)
 	if obj == nil {
 		// Object doesn't exist, handle the error
+		plugin.Logger(ctx).Warn("getSalesforceAccountContactRole", fmt.Sprintf("account contact role \"%s\" not found", accountContactRoleID))
 		return nil, nil
 	}
 
 	accountContactRole := new(AccountContactRole)
 	err = decodeQueryResult(ctx, obj, accountContactRole)
 	if err != nil {
+		plugin.Logger(ctx).Error("getSalesforceAccountContactRole", "decode results error", err)
 		return nil, err
 	}
 
