@@ -11,7 +11,7 @@ import (
 func SalesforceProduct(_ context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "salesforce_product",
-		Description: "salesforce Product",
+		Description: "Salesforce Product",
 		List: &plugin.ListConfig{
 			Hydrate: listSalesforceProduct,
 		},
@@ -21,8 +21,9 @@ func SalesforceProduct(_ context.Context) *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{Name: "id", Type: proto.ColumnType_STRING, Description: ""},
+			{Name: "name", Type: proto.ColumnType_STRING, Description: ""},
 			{Name: "created_by_id", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "created_date", Type: proto.ColumnType_STRING, Description: ""},
+			{Name: "created_date", Type: proto.ColumnType_TIMESTAMP, Description: ""},
 			{Name: "description", Type: proto.ColumnType_STRING, Description: ""},
 			{Name: "display_url", Type: proto.ColumnType_STRING, Description: ""},
 			{Name: "external_data_source_id", Type: proto.ColumnType_STRING, Description: ""},
@@ -32,10 +33,9 @@ func SalesforceProduct(_ context.Context) *plugin.Table {
 			{Name: "is_archived", Type: proto.ColumnType_BOOL, Description: ""},
 			{Name: "is_deleted", Type: proto.ColumnType_BOOL, Description: ""},
 			{Name: "last_modified_by_id", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "last_modified_date", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "last_referenced_date", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "last_viewed_date", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "name", Type: proto.ColumnType_STRING, Description: ""},
+			{Name: "last_modified_date", Type: proto.ColumnType_TIMESTAMP, Description: ""},
+			{Name: "last_referenced_date", Type: proto.ColumnType_TIMESTAMP, Description: ""},
+			{Name: "last_viewed_date", Type: proto.ColumnType_TIMESTAMP, Description: ""},
 			{Name: "product_code", Type: proto.ColumnType_STRING, Description: ""},
 			{Name: "quantity_unit_of_measure", Type: proto.ColumnType_STRING, Description: ""},
 			{Name: "stock_keeping_unit", Type: proto.ColumnType_STRING, Description: ""},

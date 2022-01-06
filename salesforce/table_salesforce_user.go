@@ -11,7 +11,7 @@ import (
 func SalesforceUser(_ context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "salesforce_user",
-		Description: "salesforce_user",
+		Description: "Salesforce User",
 		List: &plugin.ListConfig{
 			Hydrate: listSalesforceUser,
 		},
@@ -22,10 +22,10 @@ func SalesforceUser(_ context.Context) *plugin.Table {
 		Columns: []*plugin.Column{
 			{Name: "id", Type: proto.ColumnType_STRING},
 			{Name: "name", Type: proto.ColumnType_STRING},
+			{Name: "profile_id", Type: proto.ColumnType_STRING},
 			{Name: "username", Type: proto.ColumnType_STRING},
 			{Name: "last_modified_by_id", Type: proto.ColumnType_STRING},
-			{Name: "last_login_date", Type: proto.ColumnType_STRING},
-			{Name: "profile_id", Type: proto.ColumnType_STRING},
+			{Name: "last_login_date", Type: proto.ColumnType_TIMESTAMP},
 			{Name: "created_by_id", Type: proto.ColumnType_STRING},
 			{Name: "is_active", Type: proto.ColumnType_BOOL},
 		},

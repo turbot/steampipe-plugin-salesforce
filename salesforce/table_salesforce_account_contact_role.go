@@ -24,10 +24,10 @@ func SalesforceAccountContactRole(_ context.Context) *plugin.Table {
 			{Name: "contact_id", Type: proto.ColumnType_STRING, Description: ""},
 			{Name: "account_id", Type: proto.ColumnType_STRING, Description: ""},
 			{Name: "created_by_id", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "created_date", Type: proto.ColumnType_STRING, Description: ""},
+			{Name: "created_date", Type: proto.ColumnType_TIMESTAMP, Description: ""},
 			{Name: "role", Type: proto.ColumnType_STRING, Description: ""},
 			{Name: "last_modified_by_id", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "last_modified_date", Type: proto.ColumnType_STRING, Description: ""},
+			{Name: "last_modified_date", Type: proto.ColumnType_TIMESTAMP, Description: ""},
 			{Name: "is_primary", Type: proto.ColumnType_BOOL, Description: ""},
 		},
 	}
