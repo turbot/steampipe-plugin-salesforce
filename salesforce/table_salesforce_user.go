@@ -20,14 +20,15 @@ func SalesforceUser(_ context.Context) *plugin.Table {
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: []*plugin.Column{
-			{Name: "id", Type: proto.ColumnType_STRING, Description: "Salesforce id of the user."},
+			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the user in Salesforce."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "Display name of the user."},
+			{Name: "username", Type: proto.ColumnType_STRING, Description: "Login name of the user."},
+			{Name: "is_active", Type: proto.ColumnType_BOOL, Description: "If false, user login to the service is disabled."},
 			{Name: "profile_id", Type: proto.ColumnType_STRING, Description: "Profile id of the user."},
-			{Name: "username", Type: proto.ColumnType_STRING, Description: "Administrative field that defines the user's login."},
+
 			{Name: "last_modified_by_id", Type: proto.ColumnType_STRING, Description: "Id of the user who last changed the user fields, including modification date and time."},
 			{Name: "last_login_date", Type: proto.ColumnType_TIMESTAMP, Description: "The date and time when the user last successfully logged in."},
 			{Name: "created_by_id", Type: proto.ColumnType_STRING, Description: "Id of the user who created the user including creation date and time."},
-			{Name: "is_active", Type: proto.ColumnType_BOOL, Description: "If false, user login to the service is disabled."},
 		},
 	}
 }

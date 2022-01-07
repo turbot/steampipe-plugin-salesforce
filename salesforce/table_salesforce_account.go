@@ -20,7 +20,7 @@ func SalesforceAccount(_ context.Context) *plugin.Table {
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: []*plugin.Column{
-			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier for the account in Salesforce."},
+			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the account in Salesforce."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the account contact is linked to."},
 			{Name: "owner_id", Type: proto.ColumnType_STRING, Description: "The user id of the assigned owner of the account."},
 			{Name: "created_by_id", Type: proto.ColumnType_STRING, Description: "The id of the user who created the account."},

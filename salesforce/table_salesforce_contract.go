@@ -20,7 +20,7 @@ func SalesforceContract(_ context.Context) *plugin.Table {
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: []*plugin.Column{
-			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier for the contract in Salesforce."},
+			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the contract in Salesforce."},
 			{Name: "account_id", Type: proto.ColumnType_STRING, Description: "Id of the account associated with the contract."},
 			{Name: "contract_number", Type: proto.ColumnType_STRING, Description: "Unique number assigned to the contract."},
 			{Name: "owner_id", Type: proto.ColumnType_STRING, Description: "The user id of the account owner for the contract."},
