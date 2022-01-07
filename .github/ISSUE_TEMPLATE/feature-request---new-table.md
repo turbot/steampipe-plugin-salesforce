@@ -1,7 +1,7 @@
 ---
 name: Feature request - New table
 about: Suggest a new table for this project
-title: Add table pagerduty_<service>_<resource>
+title: Add table salesforce_<resource>
 labels: enhancement, new table
 assignees: ""
 ---
