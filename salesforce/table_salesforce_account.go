@@ -20,7 +20,7 @@ func SalesforceAccount(_ context.Context) *plugin.Table {
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: []*plugin.Column{
-			{Name: "id", Type: proto.ColumnType_STRING},
+			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier for the account in Salesforce."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the account contact is linked to."},
 			{Name: "owner_id", Type: proto.ColumnType_STRING, Description: "The user id of the assigned owner of the account."},
 			{Name: "created_by_id", Type: proto.ColumnType_STRING, Description: "The id of the user who created the account."},
@@ -32,7 +32,7 @@ func SalesforceAccount(_ context.Context) *plugin.Table {
 			{Name: "last_modified_date", Type: proto.ColumnType_TIMESTAMP, Description: "The date and time of last modification to account."},
 			{Name: "website", Type: proto.ColumnType_STRING, Description: "The URL of the account’s website, for example, www.acme.com."},
 			{Name: "phone", Type: proto.ColumnType_STRING, Description: "The contact's primary phone number."},
-			{Name: "account_source", Type: proto.ColumnType_STRING},
+			{Name: "account_source", Type: proto.ColumnType_STRING, Description: "The record source, for example, Advertisement, Partner, or Web."},
 			{Name: "type", Type: proto.ColumnType_STRING, Description: "The type of account, such as business or individual."},
 			{Name: "billing_address", Type: proto.ColumnType_JSON, Description: "The billing adress of the account."},
 			{Name: "shipping_address", Type: proto.ColumnType_JSON, Description: "The shipping adress of the account."},
