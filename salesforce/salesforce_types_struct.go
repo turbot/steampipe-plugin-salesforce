@@ -111,8 +111,6 @@ type Opportunity struct {
 	LastActivityDate         string
 	LastModifiedById         string
 	LastModifiedDate         string
-	LastReferencedDate       string
-	LastViewedDate           string
 	LeadSource               string
 	Name                     string
 	NextStep                 string
@@ -123,11 +121,6 @@ type Opportunity struct {
 	SystemModstamp           string
 	TotalOpportunityQuantity string
 	Type                     string
-	// CurrentGeneratorsC          string `json:"CurrentGenerators__c,omitempty"`
-	// DeliveryInstallationStatusC string `json:"DeliveryInstallationStatus__c,omitempty"`
-	// MainCompetitorsC            string `json:"MainCompetitors__c,omitempty"`
-	// OrderNumberC                string `json:"OrderNumber__c,omitempty"`
-	// TrackingNumberC             string `json:"TrackingNumber__c,omitempty"`
 }
 
 type OpportunityContactRole struct {
