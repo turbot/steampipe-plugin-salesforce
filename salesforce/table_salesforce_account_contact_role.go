@@ -11,7 +11,7 @@ import (
 func SalesforceAccountContactRole(_ context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "salesforce_account_contact_role",
-		Description: "Salesforce Account Contact Role",
+		Description: "Contact Role is the position/post of contact for any account",
 		List: &plugin.ListConfig{
 			Hydrate: listSalesforceAccountContactRole,
 		},
@@ -20,15 +20,15 @@ func SalesforceAccountContactRole(_ context.Context) *plugin.Table {
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: []*plugin.Column{
-			{Name: "id", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "contact_id", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "account_id", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "created_by_id", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "created_date", Type: proto.ColumnType_TIMESTAMP, Description: ""},
-			{Name: "role", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "last_modified_by_id", Type: proto.ColumnType_STRING, Description: ""},
-			{Name: "last_modified_date", Type: proto.ColumnType_TIMESTAMP, Description: ""},
-			{Name: "is_primary", Type: proto.ColumnType_BOOL, Description: ""},
+			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the account contact role in Salesforce."},
+			{Name: "contact_id", Type: proto.ColumnType_STRING, Description: "The id of the contact or person account."},
+			{Name: "account_id", Type: proto.ColumnType_STRING, Description: "Id of the account for the contact role."},
+			{Name: "created_by_id", Type: proto.ColumnType_STRING, Description: "Id of the user who created contact role record."},
+			{Name: "created_date", Type: proto.ColumnType_TIMESTAMP, Description: "Date and time of the creation of the contact role record."},
+			{Name: "role", Type: proto.ColumnType_STRING, Description: "The role of the contact for the record."},
+			{Name: "last_modified_by_id", Type: proto.ColumnType_STRING, Description: "Id of the user who most recently changed the contact role record."},
+			{Name: "last_modified_date", Type: proto.ColumnType_TIMESTAMP, Description: "Date of most recent change in the contact role record."},
+			{Name: "is_primary", Type: proto.ColumnType_BOOL, Description: "Indiacates person as the primary contact for the record."},
 		},
 	}
 }
