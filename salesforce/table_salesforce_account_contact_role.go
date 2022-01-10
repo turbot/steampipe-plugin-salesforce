@@ -96,5 +96,5 @@ func getSalesforceAccountContactRole(ctx context.Context, d *plugin.QueryData, h
 		return nil, err
 	}
 
-	return nil, nil
+	return accountContactRole, nil
 }

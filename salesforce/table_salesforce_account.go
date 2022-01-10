@@ -103,5 +103,5 @@ func getSalesforceAccount(ctx context.Context, d *plugin.QueryData, h *plugin.Hy
 		return nil, err
 	}
 
-	return nil, nil
+	return account, nil
 }
