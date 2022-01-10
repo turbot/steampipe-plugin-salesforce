@@ -11,7 +11,7 @@ import (
 func SalesforceAccount(_ context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "salesforce_account",
-		Description: "Salesforce Account",
+		Description: "Represents an individual account, which is an organization or person involved with business (such as customers, competitors, and partners).",
 		List: &plugin.ListConfig{
 			Hydrate: listSalesforceAccount,
 		},
@@ -21,19 +21,20 @@ func SalesforceAccount(_ context.Context) *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the account in Salesforce."},
-			{Name: "name", Type: proto.ColumnType_STRING, Description: "The name of the account contact is linked to."},
-			{Name: "owner_id", Type: proto.ColumnType_STRING, Description: "The user id of the assigned owner of the account."},
+			{Name: "annual_revenue", Type: proto.ColumnType_DOUBLE, Description: "Estimated annual revenue of the account."},
+			{Name: "industry", Type: proto.ColumnType_STRING, Description: "Primary business of account."},
+			{Name: "name", Type: proto.ColumnType_STRING, Description: "Name of the account."},
+			{Name: "owner_id", Type: proto.ColumnType_STRING, Description: "The ID of the user who currently owns this account. Default value is the user logged in to the API to perform the create."},
+			{Name: "type", Type: proto.ColumnType_STRING, Description: "Type of account, for example, Customer, Competitor, or Partner."},
+
+			{Name: "account_source", Type: proto.ColumnType_STRING, Description: "The source of the account record. For example, Advertisement, Data.com, or Trade Show."},
 			{Name: "created_by_id", Type: proto.ColumnType_STRING, Description: "The id of the user who created the account."},
 			{Name: "created_date", Type: proto.ColumnType_TIMESTAMP, Description: "The creation date and time of the account."},
-			{Name: "industry", Type: proto.ColumnType_STRING, Description: "Primary business of account."},
-			{Name: "annual_revenue", Type: proto.ColumnType_DOUBLE, Description: "Amount of revenue reported in a year."},
-			{Name: "number_of_employees", Type: proto.ColumnType_DOUBLE, Description: "Number of people employed by the account."},
 			{Name: "last_modified_by_id", Type: proto.ColumnType_STRING, Description: "The id of the user who last changed the contact fields, including modification date and time."},
 			{Name: "last_modified_date", Type: proto.ColumnType_TIMESTAMP, Description: "The date and time of last modification to account."},
-			{Name: "website", Type: proto.ColumnType_STRING, Description: "The URL of the account’s website, for example, www.acme.com."},
+			{Name: "number_of_employees", Type: proto.ColumnType_DOUBLE, Description: "Number of employees working at the company represented by this account."},
 			{Name: "phone", Type: proto.ColumnType_STRING, Description: "The contact's primary phone number."},
-			{Name: "account_source", Type: proto.ColumnType_STRING, Description: "The record source, for example, Advertisement, Partner, or Web."},
-			{Name: "type", Type: proto.ColumnType_STRING, Description: "The type of account, such as business or individual."},
+			{Name: "website", Type: proto.ColumnType_STRING, Description: "The website of this account, for example, www.acme.com."},
 			{Name: "billing_address", Type: proto.ColumnType_JSON, Description: "The billing adress of the account."},
 			{Name: "shipping_address", Type: proto.ColumnType_JSON, Description: "The shipping adress of the account."},
 		},
