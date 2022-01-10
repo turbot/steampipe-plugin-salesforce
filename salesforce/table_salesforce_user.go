@@ -37,7 +37,6 @@ func SalesforceUser(_ context.Context) *plugin.Table {
 			{Name: "last_login_date", Type: proto.ColumnType_TIMESTAMP, Description: "The date and time when the user last successfully logged in. This value is updated if 60 seconds elapses since the user's last login."},
 			{Name: "last_modified_by_id", Type: proto.ColumnType_STRING, Description: "Id of the user who last changed the user fields, including modification date and time."},
 			{Name: "profile_id", Type: proto.ColumnType_STRING, Description: "ID of the user's Profile."},
-			{Name: "profile_id", Type: proto.ColumnType_STRING, Description: "Profile id of the user."},
 			{Name: "state", Type: proto.ColumnType_STRING, Description: "The state associated with the User."},
 			{Name: "user_type", Type: proto.ColumnType_STRING, Description: "The category of user license. Can be one of Standard, PowerPartner, CSPLitePortal, CustomerSuccess, PowerCustomerSuccess, CsnOnly, and Guest."},
 		},
