@@ -69,7 +69,7 @@ func decodeQueryResult(ctx context.Context, response interface{}, respObject int
 		return err
 	}
 
-	// plugin.Logger(ctx).Info("decodeQueryResult", "Items", string(resp))
+	plugin.Logger(ctx).Info("decodeQueryResult", "Items", string(resp))
 	err = json.Unmarshal(resp, respObject)
 	if err != nil {
 		return err

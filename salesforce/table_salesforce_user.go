@@ -11,7 +11,7 @@ import (
 func SalesforceUser(_ context.Context) *plugin.Table {
 	return &plugin.Table{
 		Name:        "salesforce_user",
-		Description: "Salesforce User",
+		Description: "Represents a user in organization.",
 		List: &plugin.ListConfig{
 			Hydrate: listSalesforceUser,
 		},
@@ -21,14 +21,25 @@ func SalesforceUser(_ context.Context) *plugin.Table {
 		},
 		Columns: []*plugin.Column{
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the user in Salesforce."},
-			{Name: "name", Type: proto.ColumnType_STRING, Description: "Display name of the user."},
+			{Name: "alias", Type: proto.ColumnType_STRING, Description: "The user's alias. For example, jsmith."},
 			{Name: "username", Type: proto.ColumnType_STRING, Description: "Login name of the user."},
-			{Name: "is_active", Type: proto.ColumnType_BOOL, Description: "If false, user login to the service is disabled."},
-			{Name: "profile_id", Type: proto.ColumnType_STRING, Description: "Profile id of the user."},
+			{Name: "name", Type: proto.ColumnType_STRING, Description: "Display name of the user."},
+			{Name: "email", Type: proto.ColumnType_STRING, Description: "The user's email address."},
+			{Name: "is_active", Type: proto.ColumnType_BOOL, Description: "Indicates whether the user has access to log in (true) or not (false)."},
 
-			{Name: "last_modified_by_id", Type: proto.ColumnType_STRING, Description: "Id of the user who last changed the user fields, including modification date and time."},
-			{Name: "last_login_date", Type: proto.ColumnType_TIMESTAMP, Description: "The date and time when the user last successfully logged in."},
+			{Name: "account_id", Type: proto.ColumnType_STRING, Description: "ID of the Account associated with a Customer Portal user. This field is null for Salesforce users."},
 			{Name: "created_by_id", Type: proto.ColumnType_STRING, Description: "Id of the user who created the user including creation date and time."},
+			{Name: "department", Type: proto.ColumnType_STRING, Description: "The company department associated with the user."},
+			{Name: "employee_number", Type: proto.ColumnType_STRING, Description: "The user's employee number."},
+			{Name: "forecast_enabled", Type: proto.ColumnType_BOOL, Description: "Indicates whether the user is enabled as a forecast manager (true) or not (false)."},
+			{Name: "is_partner ", Type: proto.ColumnType_BOOL, Description: "Indicates whether the user is a partner who has access to the partner portal (true) or not (false)."},
+			{Name: "is_portal_enabled", Type: proto.ColumnType_BOOL, Description: "Indicates whether an active, external, user has access to Experience Cloud sites or portals (true) or not (false)."},
+			{Name: "last_login_date", Type: proto.ColumnType_TIMESTAMP, Description: "The date and time when the user last successfully logged in. This value is updated if 60 seconds elapses since the user's last login."},
+			{Name: "last_modified_by_id", Type: proto.ColumnType_STRING, Description: "Id of the user who last changed the user fields, including modification date and time."},
+			{Name: "profile_id", Type: proto.ColumnType_STRING, Description: "ID of the user's Profile."},
+			{Name: "profile_id", Type: proto.ColumnType_STRING, Description: "Profile id of the user."},
+			{Name: "state", Type: proto.ColumnType_STRING, Description: "The state associated with the User."},
+			{Name: "user_type", Type: proto.ColumnType_STRING, Description: "The category of user license. Can be one of Standard, PowerPartner, CSPLitePortal, CustomerSuccess, PowerCustomerSuccess, CsnOnly, and Guest."},
 		},
 	}
 }

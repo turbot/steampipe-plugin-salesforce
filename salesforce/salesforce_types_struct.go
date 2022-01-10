@@ -23,12 +23,19 @@ type Account struct {
 type User struct {
 	AboutMe                string
 	AccountId              string
+	Alias                  string
+	CompanyName            string
 	CreatedById            string
 	CreatedDate            string
+	Department             string
 	Email                  string
+	EmployeeNumber         string
 	FirstName              string
+	ForecastEnabled        bool
 	Id                     string
 	IsActive               bool
+	IsPortalEnabled        bool
+	IsPartner              bool
 	LastLoginDate          string
 	LastModifiedById       string
 	LastModifiedDate       string
@@ -36,10 +43,9 @@ type User struct {
 	LastPasswordChangeDate string
 	Name                   string
 	ProfileId              string
+	State                  string
+	UserType               string
 	Username               string
-	// LastPasswordChangeDate *time.Time
-	// LastModifiedDate       *time.Time
-	// CreatedDate            *time.Time
 }
 
 type Contract struct {
