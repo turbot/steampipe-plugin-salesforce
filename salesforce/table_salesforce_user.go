@@ -20,6 +20,7 @@ func SalesforceUser(_ context.Context) *plugin.Table {
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: []*plugin.Column{
+			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the user in Salesforce."},
 			{Name: "alias", Type: proto.ColumnType_STRING, Description: "The user's alias. For example, jsmith."},
 			{Name: "username", Type: proto.ColumnType_STRING, Description: "Login name of the user."},
@@ -27,6 +28,7 @@ func SalesforceUser(_ context.Context) *plugin.Table {
 			{Name: "email", Type: proto.ColumnType_STRING, Description: "The user's email address."},
 			{Name: "is_active", Type: proto.ColumnType_BOOL, Description: "Indicates whether the user has access to log in (true) or not (false)."},
 
+			// Other columns
 			{Name: "account_id", Type: proto.ColumnType_STRING, Description: "ID of the Account associated with a Customer Portal user. This field is null for Salesforce users."},
 			{Name: "created_by_id", Type: proto.ColumnType_STRING, Description: "Id of the user who created the user including creation date and time."},
 			{Name: "department", Type: proto.ColumnType_STRING, Description: "The company department associated with the user."},
