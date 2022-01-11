@@ -8,12 +8,23 @@ import (
 
 	"github.com/iancoleman/strcase"
 	"github.com/simpleforce/simpleforce"
+	"github.com/turbot/steampipe-plugin-sdk/connection"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
+func connect(ctx context.Context, d *plugin.QueryData) (*simpleforce.Client, error) {
+	return connectRaw(ctx, d.ConnectionManager, d.Connection)
+}
+
 // connect:: returns salesforce client after authentication
-func connect(_ context.Context, d *plugin.QueryData) (*simpleforce.Client, error) {
-	config := GetConfig(d.Connection)
+func connectRaw(_ context.Context, cm *connection.Manager, c *plugin.Connection) (*simpleforce.Client, error) {
+	// Load connection from cache, which preserves throttling protection etc
+	cacheKey := "simpleforce"
+	if cachedData, ok := cm.Cache.Get(cacheKey); ok {
+		return cachedData.(*simpleforce.Client), nil
+	}
+
+	config := GetConfig(c)
 	clientID := simpleforce.DefaultClientID
 	apiVersion := simpleforce.DefaultAPIVersion
 
@@ -48,6 +59,9 @@ func connect(_ context.Context, d *plugin.QueryData) (*simpleforce.Client, error
 	if err != nil {
 		return nil, fmt.Errorf("client logging error %v", err)
 	}
+
+	// Save to cache
+	cm.Cache.Set(cacheKey, client)
 
 	return client, nil
 }
