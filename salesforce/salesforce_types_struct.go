@@ -2,22 +2,30 @@ package salesforce
 
 // TODO: Handle time fields
 type Account struct {
-	Id                string
-	Name              string
-	OwnerId           string
+	AccountSource     string
+	AnnualRevenue     float64
+	BillingAddress    map[string]string
+	CleanStatus       string
 	CreatedById       string
 	CreatedDate       string
+	Description       string
+	Id                string
 	Industry          string
-	AnnualRevenue     float64
-	NumberOfEmployees int64
+	IsDeleted         bool
 	LastModifiedById  string
 	LastModifiedDate  string
-	Website           string
+	Name              string
+	NumberOfEmployees int64
+	OwnerId           string
+	Ownership         string
 	Phone             string
-	AccountSource     string
-	Type              string
-	BillingAddress    map[string]string
+	Rating            string
 	ShippingAddress   map[string]string
+	Sic               string
+	TickerSymbol      string
+	Tradestyle        string
+	Type              string
+	Website           string
 }
 
 type User struct {
