@@ -70,7 +70,11 @@ func connectRaw(_ context.Context, cm *connection.Manager, c *plugin.Connection)
 func generateQuery(columns []string, tableName string) string {
 	var queryColumns []string
 	for _, column := range columns {
-		queryColumns = append(queryColumns, strcase.ToCamel(column))
+		columnName := strcase.ToCamel(column)
+		if strings.HasSuffix(columnName, "C") {
+			columnName = columnName[0:len(columnName)-1] + "__c"
+		}
+		queryColumns = append(queryColumns, columnName)
 	}
 
 	return fmt.Sprintf("SELECT %s FROM %s", strings.Join(queryColumns, ", "), tableName)
@@ -83,7 +87,8 @@ func decodeQueryResult(ctx context.Context, response interface{}, respObject int
 		return err
 	}
 
-	plugin.Logger(ctx).Info("decodeQueryResult", "Items", string(resp))
+	// For debugging purpose - commenting out to avoid unnecessary logs
+	// plugin.Logger(ctx).Info("decodeQueryResult", "Items", string(resp))
 	err = json.Unmarshal(resp, respObject)
 	if err != nil {
 		return err
