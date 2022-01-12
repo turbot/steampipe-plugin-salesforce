@@ -6,12 +6,13 @@ import (
 )
 
 type salesforceConfig struct {
-	URL        *string `cty:"url"`
-	User       *string `cty:"user"`
-	Password   *string `cty:"password"`
-	Token      *string `cty:"token"`
-	ClientId   *string `cty:"client_id"`
-	APIVersion *string `cty:"api_version"`
+	URL        *string   `cty:"url"`
+	User       *string   `cty:"user"`
+	Password   *string   `cty:"password"`
+	Token      *string   `cty:"token"`
+	ClientId   *string   `cty:"client_id"`
+	APIVersion *string   `cty:"api_version"`
+	Tables     *[]string `cty:"tables"`
 }
 
 var ConfigSchema = map[string]*schema.Attribute{
@@ -32,6 +33,12 @@ var ConfigSchema = map[string]*schema.Attribute{
 	},
 	"api_version": {
 		Type: schema.TypeString,
+	},
+	"tables": {
+		Type: schema.TypeList,
+		Elem: &schema.Attribute{
+			Type: schema.TypeString,
+		},
 	},
 }
 

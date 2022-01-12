@@ -36,12 +36,17 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	salesforceTables := []string{
 		"Account",
 		"AccountContactRole",
+		"Asset",
+		"Campaign",
+		"Case",
 		"Contact",
 		"Contract",
 		"Lead",
 		"Opportunity",
 		"OpportunityContactRole",
 		"Order",
+		"Pricebook2",
+		"PricebookEntry",
 		"Product2",
 		"User",
 	}
