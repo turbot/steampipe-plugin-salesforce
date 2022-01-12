@@ -10,7 +10,7 @@ og_description: "Query Salesforce with SQL! Open source CLI. No DB required."
 og_image: "/images/plugins/turbot/salesforce-social-graphic.png"
 ---
 
-# PagerDuty + Steampipe
+# Salesforce + Steampipe
 
 [Salesforce](https://www.salesforce.com/) is a customer relationship management (CRM) platform.
 
