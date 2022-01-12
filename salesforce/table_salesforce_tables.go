@@ -19,7 +19,7 @@ func listSalesforceResourceWithName(tableName string, listquery string) func(ctx
 		}
 
 		query := generateQuery(d.QueryContext.Columns, tableName)
-		plugin.Logger(ctx).Info("listSalesforceResourceWithName", "query", query)
+		// plugin.Logger(ctx).Info("listSalesforceResourceWithName", "query", query)
 
 		for {
 			result, err := client.Query(query)

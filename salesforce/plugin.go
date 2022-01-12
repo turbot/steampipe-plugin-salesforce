@@ -16,6 +16,8 @@ import (
 
 const pluginName = "steampipe-plugin-salesforce"
 
+type contextKey string
+
 func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
 		Name:             pluginName,
@@ -67,9 +69,9 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	var substitution = ``
 
 	for _, table := range salesforceTables {
-		ctx = context.WithValue(ctx, "SalesforceTableName", table)
+		ctx = context.WithValue(ctx, contextKey("SalesforceTableName"), table)
 		tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(table, substitution))
-		ctx = context.WithValue(ctx, "PluginTableName", tableName)
+		ctx = context.WithValue(ctx, contextKey("PluginTableName"), tableName)
 		plugin.Logger(ctx).Debug("pluginTableDefinitions Table Names", "SALESFORCE_NAME", table, "STEAMPIPE_NAME", tableName)
 		if tables[tableName] == nil {
 			tables[tableName] = generateDynamicTables(ctx, p)
@@ -89,8 +91,8 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 	}
 
 	// Get the query for the metric (required)
-	salesforceTableName := ctx.Value("SalesforceTableName").(string)
-	tableName := ctx.Value("PluginTableName").(string)
+	salesforceTableName := ctx.Value(contextKey("SalesforceTableName")).(string)
+	tableName := ctx.Value(contextKey("PluginTableName")).(string)
 
 	sObjectMeta := client.SObject(salesforceTableName).Describe()
 	if sObjectMeta == nil {
