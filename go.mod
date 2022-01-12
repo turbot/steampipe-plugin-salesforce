@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/iancoleman/strcase v0.1.2
 	github.com/simpleforce/simpleforce v0.0.0-20211207104336-af9d9a281fea
+	github.com/turbot/go-kit v0.3.0
 	github.com/turbot/steampipe-plugin-sdk v1.8.3
 )
 
@@ -38,7 +39,6 @@ require (
 	github.com/sethvargo/go-retry v0.1.0 // indirect
 	github.com/stevenle/topsort v0.0.0-20130922064739-8130c1d7596b // indirect
 	github.com/tkrajina/go-reflector v0.5.4 // indirect
-	github.com/turbot/go-kit v0.3.0 // indirect
 	github.com/zclconf/go-cty v1.8.2 // indirect
 	golang.org/x/net v0.0.0-20200822124328-c89045814202 // indirect
 	golang.org/x/sys v0.0.0-20211102061401-a2f17f7b995c // indirect
