@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
+	"github.com/turbot/go-kit/helpers"
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/plugin/transform"
@@ -51,6 +52,14 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		"User",
 	}
 
+	config := GetConfig(p.Connection)
+	if config.Tables != nil && len(*config.Tables) > 0 {
+		for _, tableName := range *config.Tables {
+			if !helpers.StringSliceContains(salesforceTables, tableName) {
+				salesforceTables = append(salesforceTables, tableName)
+			}
+		}
+	}
 	// Initialize tables
 	tables := map[string]*plugin.Table{}
 
