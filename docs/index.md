@@ -65,10 +65,10 @@ steampipe plugin install salesforce
   - **For example**, if you’re creating a connected app to integrate an external application with your Salesforce API, configure the connected app with OAuth authorization settings.
 
 |                                            | `REQUIRED EDITIONS`                                                                           |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------- | --- |
-| Available in                               | both `Salesforce Classic` (not available in all orgs) and `Lightning Experience`              |     |
-| Connected applications can be created in   | `Group, Professional, Enterprise, Essentials, Performance, Unlimited, and Developer Editions` |     |
-| Connected applications can be installed in | `All Editions`                                                                                |     |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| Available in                               | both `Salesforce Classic` (not available in all orgs) and `Lightning Experience`              |
+| Connected applications can be created in   | `Group, Professional, Enterprise, Essentials, Performance, Unlimited, and Developer Editions` |
+| Connected applications can be installed in | `All Editions`                                                                                |
 
 #### Configure basic connected application settings
 
