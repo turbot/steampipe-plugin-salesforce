@@ -58,9 +58,35 @@ steampipe plugin install salesforce
 
 ### Credentials
 
-| Item        | Description                                                                                                                             |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Credentials | [Get your user token](https://onlinehelp.coveo.com/en/ces/7.0/administrator/getting_the_security_token_for_your_salesforce_account.htm) |
+#### Setup your connected application for `Client Id & Client Secret`:
+
+- [Create your connected application](https://trailhead.salesforce.com/en/content/learn/projects/build-a-connected-app-for-api-integration/create-a-connected-app)
+- When you create a connected app, make sure that you understand how it’s going to be used so you can configure the appropriate settings.
+  - **For example**, if you’re creating a connected app to integrate an external application with your Salesforce API, configure the connected app with OAuth authorization settings.
+
+|                                            | `REQUIRED EDITIONS`                                                                           |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------- | --- |
+| Available in                               | both `Salesforce Classic` (not available in all orgs) and `Lightning Experience`              |     |
+| Connected applications can be created in   | `Group, Professional, Enterprise, Essentials, Performance, Unlimited, and Developer Editions` |     |
+| Connected applications can be installed in | `All Editions`                                                                                |     |
+
+#### Configure basic connected application settings
+
+1. From Setup, enter Apps in the Quick Find box, and select `App Manager.`
+2. Click New `Connected App.`
+3. Enter the connected app’s name, which displays in the App Manager and on its App Launcher tile.
+4. The connected app name must be unique within your org. If the connected app was created in the Spring ‘14 release or later, you can reuse the name of a deleted connected app.
+5. If you have a web page with more information about your app, provide an info URL.
+
+#### Reset Your Security Token
+
+- [Reset your security token](https://help.salesforce.com/articleView?id=user_security_token.htm&type=5)
+- From your personal settings, enter Reset in the Quick Find box, then select Reset My Security Toke
+- Click Reset Security Token. The new security token is sent to the email address in your Salesforce personal settings.
+
+  A new security token is emailed to you when you reset your password. Or you can reset your token separately.
+
+  After generating the `ClientId and Security Token` with the above steps. Update the value in `~/steampipe/config/salesforce.spc`
 
 ### Configuration
 
@@ -84,6 +110,9 @@ connection "salesforce" {
 
   # Client Id of Salesforce from Connected App"
   # client_id = "YOUR_SALESFORCE_CLIENT_ID"
+
+  # List of salesforce tables to be generated"
+  # tables = ["Account", "User"]
 }
 ```
 
