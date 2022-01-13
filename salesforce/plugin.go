@@ -117,42 +117,46 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 	}
 
 	for _, fields := range metadata {
-		if fields["compoundFieldName"] == nil {
-			if fields["name"] == nil {
-				continue
-			}
-			fieldName := fields["name"].(string)
-			queryColumns = append(queryColumns, fieldName)
-			if fields["soapType"] == nil {
-				continue
-			}
-			soapType := strings.Split((fields["soapType"]).(string), ":")
-			fieldType := soapType[len(soapType)-1]
-
-			// Coloumn dynamic generation
-			column := plugin.Column{
-				Name:        strcase.ToSnake(fieldName),
-				Description: fmt.Sprintf("The %s.", fields["label"].(string)),
-				Transform:   transform.FromP(getFieldFromMap, fieldName),
-			}
-
-			// Set column type based on the `soapType` from salesforce schema
-			switch fieldType {
-			case "string", "ID":
-				column.Type = proto.ColumnType_STRING
-			case "date", "dateTime":
-				column.Type = proto.ColumnType_TIMESTAMP
-			case "boolean":
-				column.Type = proto.ColumnType_BOOL
-			case "double":
-				column.Type = proto.ColumnType_DOUBLE
-			case "int":
-				column.Type = proto.ColumnType_INT
-			default:
-				column.Type = proto.ColumnType_JSON
-			}
-			cols = append(cols, &column)
+		if fields["name"] == nil {
+			continue
 		}
+		fieldName := fields["name"].(string)
+		compoundFieldName := fields["compoundFieldName"]
+		if compoundFieldName != nil && compoundFieldName.(string) != fieldName {
+			continue
+		}
+
+		queryColumns = append(queryColumns, fieldName)
+		if fields["soapType"] == nil {
+			continue
+		}
+		soapType := strings.Split((fields["soapType"]).(string), ":")
+		fieldType := soapType[len(soapType)-1]
+
+		// Coloumn dynamic generation
+		column := plugin.Column{
+			Name:        strcase.ToSnake(fieldName),
+			Description: fmt.Sprintf("The %s.", fields["label"].(string)),
+			Transform:   transform.FromP(getFieldFromMap, fieldName),
+		}
+
+		// Set column type based on the `soapType` from salesforce schema
+		switch fieldType {
+		case "string", "ID":
+			column.Type = proto.ColumnType_STRING
+		case "date", "dateTime":
+			column.Type = proto.ColumnType_TIMESTAMP
+		case "boolean":
+			column.Type = proto.ColumnType_BOOL
+		case "double":
+			column.Type = proto.ColumnType_DOUBLE
+		case "int":
+			column.Type = proto.ColumnType_INT
+		default:
+			column.Type = proto.ColumnType_JSON
+		}
+		cols = append(cols, &column)
+
 	}
 
 	query := fmt.Sprintf("SELECT %s FROM %s", strings.Join(queryColumns, ", "), salesforceTableName)
