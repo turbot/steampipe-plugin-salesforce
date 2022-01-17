@@ -17,7 +17,7 @@ func connect(ctx context.Context, d *plugin.QueryData) (*simpleforce.Client, err
 }
 
 // connect:: returns salesforce client after authentication
-func connectRaw(_ context.Context, cm *connection.Manager, c *plugin.Connection) (*simpleforce.Client, error) {
+func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connection) (*simpleforce.Client, error) {
 	// Load connection from cache, which preserves throttling protection etc
 	cacheKey := "simpleforce"
 	if cachedData, ok := cm.Cache.Get(cacheKey); ok {
@@ -37,27 +37,32 @@ func connectRaw(_ context.Context, cm *connection.Manager, c *plugin.Connection)
 	}
 
 	if config.Password == nil {
-		return nil, fmt.Errorf("'password' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
+		plugin.Logger(ctx).Warn("'password' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
+		return nil, nil
 	}
 
 	if config.Token == nil {
-		return nil, fmt.Errorf("'token' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
+		plugin.Logger(ctx).Warn("'token' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
+		return nil, nil
 	}
 
 	if config.User == nil {
-		return nil, fmt.Errorf("'user' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
+		plugin.Logger(ctx).Warn("'user' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
+		return nil, nil
 	}
 
 	// setup client
 	client := simpleforce.NewClient(*config.URL, clientID, apiVersion)
 	if client == nil {
+		plugin.Logger(ctx).Warn("couldn't get salesforce client. Client setup error.")
 		return nil, fmt.Errorf("couldn't get salesforce client. Client setup error.")
 	}
 
 	// login client
 	err := client.LoginPassword(*config.User, *config.Password, *config.Token)
 	if err != nil {
-		return nil, fmt.Errorf("client logging error %v", err)
+		plugin.Logger(ctx).Warn("client login error", err)
+		return nil, fmt.Errorf("client login error %v", err)
 	}
 
 	// Save to cache

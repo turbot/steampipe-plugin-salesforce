@@ -54,6 +54,19 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		"User",
 	}
 
+	// Initialize tables
+	tables := map[string]*plugin.Table{
+		"salesforce_account":                  SalesforceAccount(ctx),
+		"salesforce_account_contact_role":     SalesforceAccountContactRole(ctx),
+		"salesforce_contract":                 SalesforceContract(ctx),
+		"salesforce_lead":                     SalesforceLead(ctx),
+		"salesforce_opportunity":              SalesforceOpportunity(ctx),
+		"salesforce_opportunity_contact_role": SalesforceOpportunityContactRole(ctx),
+		"salesforce_order":                    SalesforceOrder(ctx),
+		"salesforce_product":                  SalesforceProduct(ctx),
+		"salesforce_user":                     SalesforceUser(ctx),
+	}
+
 	config := GetConfig(p.Connection)
 	if config.Tables != nil && len(*config.Tables) > 0 {
 		for _, tableName := range *config.Tables {
@@ -62,9 +75,17 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 			}
 		}
 	}
-	// Initialize tables
-	tables := map[string]*plugin.Table{}
 
+	// If unable to connect to salesforce instance, log warning and abort dynamic table creation
+	client, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
+	if err != nil {
+		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+		return tables, nil
+	}
+	if client == nil {
+		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+		return tables, nil
+	}
 	var re = regexp.MustCompile(`\d+`)
 	var substitution = ``
 
@@ -72,12 +93,9 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		ctx = context.WithValue(ctx, contextKey("SalesforceTableName"), table)
 		tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(table, substitution))
 		ctx = context.WithValue(ctx, contextKey("PluginTableName"), tableName)
-		plugin.Logger(ctx).Debug("pluginTableDefinitions Table Names", "SALESFORCE_NAME", table, "STEAMPIPE_NAME", tableName)
-		if tables[tableName] == nil {
-			tables[tableName] = generateDynamicTables(ctx, p)
-		} else {
-			plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "table_already_exists", tableName)
-		}
+		plugin.Logger(ctx).Debug("pluginTableDefinitions Table Names", "SALESFORCE_OBJECT_NAME", table, "STEAMPIPE_TABLE_NAME", tableName)
+		delete(tables, tableName)
+		tables[tableName] = generateDynamicTables(ctx, p)
 	}
 	return tables, nil
 }
