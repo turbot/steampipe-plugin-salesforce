@@ -20,6 +20,7 @@ func SalesforceContract(_ context.Context) *plugin.Table {
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: []*plugin.Column{
+			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the contract in Salesforce."},
 			{Name: "account_id", Type: proto.ColumnType_STRING, Description: "ID of the Account associated with this contract."},
 			{Name: "contract_number", Type: proto.ColumnType_STRING, Description: "Number of the contract."},
@@ -29,6 +30,7 @@ func SalesforceContract(_ context.Context) *plugin.Table {
 			{Name: "start_date", Type: proto.ColumnType_TIMESTAMP, Description: "Start date for this contract."},
 			{Name: "status", Type: proto.ColumnType_STRING, Description: "The picklist of values that indicate order status. A contract can be Draft, InApproval, or Activated."},
 
+			// Other columns
 			{Name: "activated_by_id", Type: proto.ColumnType_STRING, Description: "ID of the User who activated this contract."},
 			{Name: "activated_date", Type: proto.ColumnType_TIMESTAMP, Description: "Date and time when this contract was activated."},
 			{Name: "billing_address", Type: proto.ColumnType_JSON, Description: "Billing address of the account."},

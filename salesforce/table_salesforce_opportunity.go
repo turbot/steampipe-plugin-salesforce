@@ -20,12 +20,14 @@ func SalesforceOpportunity(_ context.Context) *plugin.Table {
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: []*plugin.Column{
+			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the opportunity in Salesforce."},
 			{Name: "account_id", Type: proto.ColumnType_STRING, Description: "ID of the account associated with this opportunity."},
 			{Name: "amount", Type: proto.ColumnType_DOUBLE, Description: "Estimated total sale amount. For opportunities with products, the amount is the sum of the related products."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "A name for this opportunity."},
 			{Name: "owner_id", Type: proto.ColumnType_STRING, Description: "ID of the User who has been assigned to work this opportunity."},
 
+			// Other columns
 			{Name: "campaign_id", Type: proto.ColumnType_STRING, Description: "ID of a related Campaign. This field is defined only for those organizations that have the campaign feature Campaigns enabled."},
 			{Name: "close_date", Type: proto.ColumnType_TIMESTAMP, Description: "Date when the opportunity is expected to close."},
 			{Name: "created_by_id", Type: proto.ColumnType_STRING, Description: "Id of the user who created the opportunity."},

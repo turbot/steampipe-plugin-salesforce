@@ -20,12 +20,14 @@ func SalesforceProduct(_ context.Context) *plugin.Table {
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: []*plugin.Column{
+			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the product in Salesforce."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The product's name."},
 			{Name: "family", Type: proto.ColumnType_STRING, Description: "Name of the product family associated with this record."},
 			{Name: "product_code", Type: proto.ColumnType_STRING, Description: "The internal code or product number that you use to identify the product."},
 			{Name: "is_active", Type: proto.ColumnType_BOOL, Description: "Indicates that the product is ready for use in a price book, opportunity, or quote, and whether you can see the product in views."},
 
+			// Other columns
 			{Name: "created_by_id", Type: proto.ColumnType_STRING, Description: "The id of the user who created the product record, with the date and time of creation."},
 			{Name: "created_date", Type: proto.ColumnType_TIMESTAMP, Description: "Date and time of the creation of the product role record."},
 			{Name: "description", Type: proto.ColumnType_STRING, Description: "Description of the product."},

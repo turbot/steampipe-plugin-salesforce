@@ -1,6 +1,6 @@
-# Table: salesforce_account
+# Table: salesforce_account_contact_role
 
-Represents an individual account, which is an organization or person involved with business (such as customers, competitors, and partners).
+Represents the role that a Contact plays on an Account.
 
 ## Examples
 
@@ -14,7 +14,7 @@ select
   ownership,
   rating
 from
-  salesforce_account;
+  salesforce_account_contact_role;
 ```
 
 ### List Active users
@@ -27,7 +27,7 @@ select
   is_active,
   last_login_date
 from
-  salesforce_user
+  salesforce_account_contact_role
 where
   is_active;
 ```
@@ -42,7 +42,7 @@ select
   is_active,
   last_login_date
 from
-  salesforce_user
+  salesforce_account_contact_role
 where
   user_type = 'Standard';
 ```

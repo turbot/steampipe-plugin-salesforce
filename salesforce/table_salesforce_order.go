@@ -20,6 +20,7 @@ func SalesforceOrder(_ context.Context) *plugin.Table {
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: []*plugin.Column{
+			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the order in Salesforce."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "Title for the order that distinguishes it from other orders."},
 			{Name: "account_id", Type: proto.ColumnType_STRING, Description: "ID of the Account associated with this order."},
@@ -29,6 +30,7 @@ func SalesforceOrder(_ context.Context) *plugin.Table {
 			{Name: "total_amount", Type: proto.ColumnType_DOUBLE, Description: "Total amount of the order."},
 			{Name: "type", Type: proto.ColumnType_STRING, Description: "Type of order."},
 
+			// Other columns
 			{Name: "activated_by_id", Type: proto.ColumnType_STRING, Description: "ID of the User who activated this order."},
 			{Name: "activated_date", Type: proto.ColumnType_TIMESTAMP, Description: "Date and time when the order was activated."},
 			{Name: "bill_to_contact_id", Type: proto.ColumnType_STRING, Description: "ID of the contact that the order is billed to."},

@@ -20,6 +20,7 @@ func SalesforceLead(_ context.Context) *plugin.Table {
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: []*plugin.Column{
+			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the lead in Salesforce."},
 			{Name: "email", Type: proto.ColumnType_STRING, Description: "The lead's email address."},
 			{Name: "is_converted", Type: proto.ColumnType_BOOL, Description: "Indicates whether the lead has been converted (true) or not (false)."},
@@ -27,6 +28,7 @@ func SalesforceLead(_ context.Context) *plugin.Table {
 			{Name: "phone", Type: proto.ColumnType_STRING, Description: "Lead's primary phone number."},
 			{Name: "status", Type: proto.ColumnType_STRING, Description: "Status of the lead, for example, Open, Contacted, Qualified."},
 
+			// Other columns
 			{Name: "address", Type: proto.ColumnType_JSON, Description: "Street address for the lead."},
 			{Name: "annual_revenue", Type: proto.ColumnType_DOUBLE, Description: "Annual revenue for the lead's company."},
 			{Name: "company", Type: proto.ColumnType_STRING, Description: "The lead's company."},
