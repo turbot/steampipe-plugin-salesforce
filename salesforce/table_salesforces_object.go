@@ -10,28 +10,28 @@ import (
 
 //// LIST HYDRATE FUNCTION
 
-func listSalesforceResourceWithName(tableName string, listquery string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+func listSalesforceObjectsWithName(tableName string, listquery string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 		client, err := connect(ctx, d)
 		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceResourceWithName", "connect error", err)
+			plugin.Logger(ctx).Error("listSalesforceObjectsWithName", "connect error", err)
 			return nil, err
 		}
 
 		query := generateQuery(d.QueryContext.Columns, tableName)
-		plugin.Logger(ctx).Info("listSalesforceResourceWithName", "query", query)
+		plugin.Logger(ctx).Info("listSalesforceObjectsWithName", "query", query)
 
 		for {
 			result, err := client.Query(query)
 			if err != nil {
-				plugin.Logger(ctx).Error("listSalesforceResourceWithName", "query error", err)
+				plugin.Logger(ctx).Error("listSalesforceObjectsWithName", "query error", err)
 				return nil, err
 			}
 
 			AccountList := new([]map[string]interface{})
 			err = decodeQueryResult(ctx, result.Records, AccountList)
 			if err != nil {
-				plugin.Logger(ctx).Error("listSalesforceResourceWithName", "results decoding error", err)
+				plugin.Logger(ctx).Error("listSalesforceObjectsWithName", "results decoding error", err)
 				return nil, err
 			}
 
@@ -58,7 +58,7 @@ func listSalesforceResourceWithName(tableName string, listquery string) func(ctx
 
 //// GET HYDRATE FUNCTION
 
-func getSalesforceResourceWithName(tableName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+func getSalesforceObjectWithName(tableName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 		id := d.KeyColumnQualString("id")
 
