@@ -156,7 +156,7 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 		column := plugin.Column{
 			Name:        columnFieldName,
 			Description: fmt.Sprintf("The %s.", fields["label"].(string)),
-			Transform:   transform.FromP(getFieldFromMap, fieldName),
+			Transform:   transform.FromP(getFieldFromSObjectMap, fieldName),
 		}
 
 		if columns, ok := columnDescriptions[salesforceTableName]; ok {

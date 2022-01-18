@@ -88,7 +88,7 @@ func getSalesforceObjectWithName(tableName string) func(ctx context.Context, d *
 
 //// TRANSFORM FUNCTION
 
-func getFieldFromMap(ctx context.Context, d *transform.TransformData) (interface{}, error) {
+func getFieldFromSObjectMap(ctx context.Context, d *transform.TransformData) (interface{}, error) {
 	param := d.Param.(string)
 	ls := d.HydrateItem.(map[string]interface{})
 	return ls[param], nil
