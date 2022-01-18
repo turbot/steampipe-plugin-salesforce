@@ -14,6 +14,9 @@ func SalesforceUser(_ context.Context) *plugin.Table {
 		Description: "Represents a user in organization.",
 		List: &plugin.ListConfig{
 			Hydrate: listSalesforceUser,
+			KeyColumns: plugin.KeyColumnSlice{
+				{Name: "user_type", Require: plugin.Optional},
+			},
 		},
 		Get: &plugin.GetConfig{
 			Hydrate:    getSalesforceUser,

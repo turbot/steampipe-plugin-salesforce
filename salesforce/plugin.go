@@ -128,7 +128,7 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 	}
 
 	metadata := []map[string]interface{}{}
-	var queryColumns []string
+	// var queryColumns []string
 	err = json.Unmarshal(data1, &metadata)
 	if err != nil {
 		plugin.Logger(ctx).Error("[simpleforce] json unmarshal error %v", err)
@@ -144,7 +144,7 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 			continue
 		}
 
-		queryColumns = append(queryColumns, fieldName)
+		// queryColumns = append(queryColumns, fieldName)
 		if fields["soapType"] == nil {
 			continue
 		}
@@ -184,18 +184,18 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 
 	}
 
-	query := fmt.Sprintf("SELECT %s FROM %s", strings.Join(queryColumns, ", "), salesforceTableName)
+	// query := fmt.Sprintf("SELECT %s FROM %s", strings.Join(queryColumns, ", "), salesforceTableName)
 
 	Table := plugin.Table{
 		Name:        tableName,
 		Description: fmt.Sprintf("Salesforce %s.", data["label"]),
 		List: &plugin.ListConfig{
 			// KeyColumns: keyColumns,
-			Hydrate: listSalesforceObjectsWithName(salesforceTableName, query),
+			Hydrate: listSalesforceObjectsByTable(salesforceTableName),
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
-			Hydrate:    getSalesforceObjectWithName(salesforceTableName),
+			Hydrate:    getSalesforceObjectbyID(salesforceTableName),
 		},
 		Columns: cols,
 	}

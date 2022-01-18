@@ -10,28 +10,28 @@ import (
 
 //// LIST HYDRATE FUNCTION
 
-func listSalesforceObjectsWithName(tableName string, listquery string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+func listSalesforceObjectsByTable(tableName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 		client, err := connect(ctx, d)
 		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceObjectsWithName", "connect error", err)
+			plugin.Logger(ctx).Error("listSalesforceObjectsByTable", "connect error", err)
 			return nil, err
 		}
 
 		query := generateQuery(d.QueryContext.Columns, tableName)
-		plugin.Logger(ctx).Info("listSalesforceObjectsWithName", "query", query)
+		plugin.Logger(ctx).Info("listSalesforceObjectsByTable", "query", query)
 
 		for {
 			result, err := client.Query(query)
 			if err != nil {
-				plugin.Logger(ctx).Error("listSalesforceObjectsWithName", "query error", err)
+				plugin.Logger(ctx).Error("listSalesforceObjectsByTable", "query error", err)
 				return nil, err
 			}
 
 			AccountList := new([]map[string]interface{})
 			err = decodeQueryResult(ctx, result.Records, AccountList)
 			if err != nil {
-				plugin.Logger(ctx).Error("listSalesforceObjectsWithName", "results decoding error", err)
+				plugin.Logger(ctx).Error("listSalesforceObjectsByTable", "results decoding error", err)
 				return nil, err
 			}
 
@@ -58,27 +58,27 @@ func listSalesforceObjectsWithName(tableName string, listquery string) func(ctx 
 
 //// GET HYDRATE FUNCTION
 
-func getSalesforceObjectWithName(tableName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+func getSalesforceObjectbyID(tableName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 		id := d.KeyColumnQualString("id")
 
 		client, err := connect(ctx, d)
 		if err != nil {
-			plugin.Logger(ctx).Error("getSalesforceResourceWithName", "connect error", err)
+			plugin.Logger(ctx).Error("getSalesforceObjectbyID", "connect error", err)
 			return nil, err
 		}
 
 		obj := client.SObject(tableName).Get(id)
 		if obj == nil {
 			// Object doesn't exist, handle the error
-			plugin.Logger(ctx).Warn("getSalesforceResourceWithName", fmt.Sprintf("%s with Id \"%s\" not found", tableName, id))
+			plugin.Logger(ctx).Warn("getSalesforceObjectbyID", fmt.Sprintf("%s with Id \"%s\" not found", tableName, id))
 			return nil, nil
 		}
 
 		opportunityContactRole := new(map[string]interface{})
 		err = decodeQueryResult(ctx, obj, opportunityContactRole)
 		if err != nil {
-			plugin.Logger(ctx).Error("getSalesforceResourceWithName", "result decoding error", err)
+			plugin.Logger(ctx).Error("getSalesforceObjectbyID", "result decoding error", err)
 			return nil, err
 		}
 
