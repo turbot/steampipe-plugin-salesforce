@@ -120,6 +120,8 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 
 	// Top columns
 	cols := []*plugin.Column{}
+	// Key columns
+	keyColumns := plugin.KeyColumnSlice{}
 
 	data := *sObjectMeta
 	data1, err := json.Marshal(data["fields"])
@@ -169,14 +171,19 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 		switch fieldType {
 		case "string", "ID":
 			column.Type = proto.ColumnType_STRING
+			keyColumns = append(keyColumns, &plugin.KeyColumn{Name: columnFieldName, Require: plugin.Optional, Operators: []string{"=", "<>"}})
 		case "date", "dateTime":
 			column.Type = proto.ColumnType_TIMESTAMP
+			keyColumns = append(keyColumns, &plugin.KeyColumn{Name: columnFieldName, Require: plugin.Optional, Operators: []string{"=", ">", ">=", "<=", "<"}})
 		case "boolean":
 			column.Type = proto.ColumnType_BOOL
+			keyColumns = append(keyColumns, &plugin.KeyColumn{Name: columnFieldName, Require: plugin.Optional, Operators: []string{"=", "<>"}})
 		case "double":
 			column.Type = proto.ColumnType_DOUBLE
+			keyColumns = append(keyColumns, &plugin.KeyColumn{Name: columnFieldName, Require: plugin.Optional, Operators: []string{"=", ">", ">=", "<=", "<"}})
 		case "int":
 			column.Type = proto.ColumnType_INT
+			keyColumns = append(keyColumns, &plugin.KeyColumn{Name: columnFieldName, Require: plugin.Optional, Operators: []string{"=", ">", ">=", "<=", "<"}})
 		default:
 			column.Type = proto.ColumnType_JSON
 		}
@@ -190,8 +197,8 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 		Name:        tableName,
 		Description: fmt.Sprintf("Salesforce %s.", data["label"]),
 		List: &plugin.ListConfig{
-			// KeyColumns: keyColumns,
-			Hydrate: listSalesforceObjectsByTable(salesforceTableName),
+			KeyColumns: keyColumns,
+			Hydrate:    listSalesforceObjectsByTable(salesforceTableName, cols),
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),

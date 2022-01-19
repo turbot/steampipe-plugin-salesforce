@@ -9,6 +9,7 @@ import (
 	"github.com/iancoleman/strcase"
 	"github.com/simpleforce/simpleforce"
 	"github.com/turbot/steampipe-plugin-sdk/connection"
+	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
@@ -75,12 +76,12 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 func generateQuery(columns []string, tableName string) string {
 	var queryColumns []string
 	for _, column := range columns {
-		columnName := strcase.ToCamel(column)
-		// Salesforce custom fields are suffixed with '__c' after the custom field name.
-		if strings.HasSuffix(columnName, "C") {
-			columnName = columnName[0:len(columnName)-1] + "__c"
-		}
-		queryColumns = append(queryColumns, columnName)
+		// columnName := strcase.ToCamel(column)
+		// // Salesforce custom fields are suffixed with '__c' after the custom field name.
+		// if strings.HasSuffix(columnName, "C") {
+		// 	columnName = columnName[0:len(columnName)-1] + "__c"
+		// }
+		queryColumns = append(queryColumns, getSalesforceColumnName(column))
 	}
 
 	return fmt.Sprintf("SELECT %s FROM %s", strings.Join(queryColumns, ", "), tableName)
@@ -101,4 +102,97 @@ func decodeQueryResult(ctx context.Context, response interface{}, respObject int
 	}
 
 	return nil
+}
+
+func buildQueryFromQuals(equalQuals plugin.KeyColumnQualMap, tableColumns []*plugin.Column) string {
+	filters := []string{}
+
+	for _, filterQualItem := range tableColumns {
+		filterQual := equalQuals[filterQualItem.Name]
+		if filterQual == nil {
+			continue
+		}
+
+		// Check only if filter qual map matches with optional column name
+		if filterQual.Name == filterQualItem.Name {
+			if filterQual.Quals == nil {
+				continue
+			}
+
+			for _, qual := range filterQual.Quals {
+				if qual.Value != nil {
+					value := qual.Value
+					switch filterQualItem.Type {
+					case proto.ColumnType_STRING:
+						// In case of IN caluse
+						if value.GetListValue() != nil {
+							// continue
+							switch qual.Operator {
+							case "=":
+								stringValueSlice := []string{}
+								for _, q := range value.GetListValue().Values {
+									stringValueSlice = append(stringValueSlice, q.GetStringValue())
+								}
+								if len(stringValueSlice) > 0 {
+									filters = append(filters, fmt.Sprintf("%s IN ('%s')", getSalesforceColumnName(filterQualItem.Name), strings.Join(stringValueSlice, "','")))
+								}
+							case "<>":
+								stringValueSlice := []string{}
+								for _, q := range value.GetListValue().Values {
+									stringValueSlice = append(stringValueSlice, q.GetStringValue())
+								}
+								if len(stringValueSlice) > 0 {
+									filters = append(filters, fmt.Sprintf("%s NOT IN ('%s')", getSalesforceColumnName(filterQualItem.Name), strings.Join(stringValueSlice, "','")))
+								}
+							}
+						} else {
+							switch qual.Operator {
+							case "=":
+								filters = append(filters, fmt.Sprintf("%s = '%s'", getSalesforceColumnName(filterQualItem.Name), value.GetStringValue()))
+							case "<>":
+								filters = append(filters, fmt.Sprintf("%s != '%s'", getSalesforceColumnName(filterQualItem.Name), value.GetStringValue()))
+							}
+						}
+					case proto.ColumnType_BOOL:
+						switch qual.Operator {
+						case "<>":
+							filters = append(filters, fmt.Sprintf("%s = %s", getSalesforceColumnName(filterQualItem.Name), "FALSE"))
+						case "=":
+							filters = append(filters, fmt.Sprintf("%s = %s", getSalesforceColumnName(filterQualItem.Name), "TRUE"))
+						}
+					case proto.ColumnType_INT:
+						switch qual.Operator {
+						case "<>":
+							filters = append(filters, fmt.Sprintf("%s != %d", getSalesforceColumnName(filterQualItem.Name), value.GetInt64Value()))
+						case "=":
+							filters = append(filters, fmt.Sprintf("%s %s %d", getSalesforceColumnName(filterQualItem.Name), qual.Operator, value.GetInt64Value()))
+						}
+					case proto.ColumnType_DOUBLE:
+						switch qual.Operator {
+						case "<>":
+							filters = append(filters, fmt.Sprintf("%s != %f", getSalesforceColumnName(filterQualItem.Name), value.GetDoubleValue()))
+						case "=":
+							filters = append(filters, fmt.Sprintf("%s %s %f", getSalesforceColumnName(filterQualItem.Name), qual.Operator, value.GetDoubleValue()))
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+	if len(filters) > 0 {
+		return strings.Join(filters, " AND ")
+	}
+
+	return "s"
+}
+
+func getSalesforceColumnName(name string) string {
+	columnName := strcase.ToCamel(name)
+	// Salesforce custom fields are suffixed with '__c' after the custom field name.
+	if strings.HasSuffix(columnName, "C") {
+		columnName = columnName[0:len(columnName)-1] + "__c"
+	}
+	return columnName
 }

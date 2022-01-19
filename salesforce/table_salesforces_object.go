@@ -10,7 +10,7 @@ import (
 
 //// LIST HYDRATE FUNCTION
 
-func listSalesforceObjectsByTable(tableName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+func listSalesforceObjectsByTable(tableName string, cols []*plugin.Column) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 		client, err := connect(ctx, d)
 		if err != nil {
@@ -20,6 +20,7 @@ func listSalesforceObjectsByTable(tableName string) func(ctx context.Context, d 
 
 		query := generateQuery(d.QueryContext.Columns, tableName)
 		plugin.Logger(ctx).Info("listSalesforceObjectsByTable", "query", query)
+		plugin.Logger(ctx).Info("listSalesforceObjectsByTable", "Where Condition", buildQueryFromQuals(d.Quals, cols))
 
 		for {
 			result, err := client.Query(query)
