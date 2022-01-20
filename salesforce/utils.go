@@ -11,6 +11,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/connection"
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/plugin/transform"
 )
 
 func connect(ctx context.Context, d *plugin.QueryData) (*simpleforce.Client, error) {
@@ -55,8 +56,8 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 	// setup client
 	client := simpleforce.NewClient(*config.URL, clientID, apiVersion)
 	if client == nil {
-		plugin.Logger(ctx).Warn("couldn't get salesforce client. Client setup error.")
-		return nil, fmt.Errorf("couldn't get salesforce client. Client setup error.")
+		plugin.Logger(ctx).Warn("salesforce.connectRaw", "couldn't get salesforce client. Client setup error.")
+		return nil, fmt.Errorf("salesforce.connectRaw", "couldn't get salesforce client. Client setup error.")
 	}
 
 	// login client
@@ -195,4 +196,118 @@ func getSalesforceColumnName(name string) string {
 		columnName = columnName[0:len(columnName)-1] + "__c"
 	}
 	return columnName
+}
+
+// append the dynamic columns with static columns for the table
+func mergeTableColumns(ctx context.Context, p *plugin.Plugin, dynamicColumns []*plugin.Column, staticColumns []*plugin.Column) []*plugin.Column {
+	var columns []*plugin.Column
+	columns = append(columns, staticColumns...)
+	for _, col := range dynamicColumns {
+		if isColumnAvailable(col.Name, staticColumns) {
+			continue
+		}
+		columns = append(columns, col)
+	}
+	return columns
+}
+
+func dynamicColumns(ctx context.Context, salesforceTableName string, p *plugin.Plugin) ([]*plugin.Column, plugin.KeyColumnSlice) {
+	// If unable to connect to salesforce instance, log warning and abort dynamic table creation
+	client, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
+	if err != nil {
+		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+		return []*plugin.Column{}, plugin.KeyColumnSlice{}
+	}
+	if client == nil {
+		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+		return []*plugin.Column{}, plugin.KeyColumnSlice{}
+	}
+
+	sObjectMeta := client.SObject(salesforceTableName).Describe()
+	if sObjectMeta == nil {
+		plugin.Logger(ctx).Error("salesforce.generateDynamicTables", fmt.Sprintf("Table %s not present in salesforce", salesforceTableName))
+		return []*plugin.Column{}, plugin.KeyColumnSlice{}
+	}
+
+	// Top columns
+	cols := []*plugin.Column{}
+	// Key columns
+	keyColumns := plugin.KeyColumnSlice{}
+
+	salesforceObjectMetadata := *sObjectMeta
+	salesforceObjectMetadataAsByte, err := json.Marshal(salesforceObjectMetadata["fields"])
+	if err != nil {
+		plugin.Logger(ctx).Error("salesforce.dynamicColumns", "json marshal error %v", err)
+	}
+
+	salesforceObjectFields := []map[string]interface{}{}
+	// var queryColumns []string
+	err = json.Unmarshal(salesforceObjectMetadataAsByte, &salesforceObjectFields)
+	if err != nil {
+		plugin.Logger(ctx).Error("salesforce.dynamicColumns", "json unmarshal error %v", err)
+	}
+	for _, fields := range salesforceObjectFields {
+		if fields["name"] == nil {
+			continue
+		}
+		fieldName := fields["name"].(string)
+		compoundFieldName := fields["compoundFieldName"]
+		if compoundFieldName != nil && compoundFieldName.(string) != fieldName {
+			continue
+		}
+
+		// queryColumns = append(queryColumns, fieldName)
+		if fields["soapType"] == nil {
+			continue
+		}
+		soapType := strings.Split((fields["soapType"]).(string), ":")
+		fieldType := soapType[len(soapType)-1]
+
+		// Coloumn dynamic generation
+		columnFieldName := strcase.ToSnake(fieldName)
+		column := plugin.Column{
+			Name:        columnFieldName,
+			Description: fmt.Sprintf("The %s.", fields["label"].(string)),
+			Transform:   transform.FromP(getFieldFromSObjectMap, fieldName),
+		}
+
+		if columns, ok := columnDescriptions[salesforceTableName]; ok {
+			if columnFieldName, ok := columns.Columns[columnFieldName]; ok {
+				column.Description = columnFieldName
+			}
+		}
+
+		// Set column type based on the `soapType` from salesforce schema
+		switch fieldType {
+		case "string", "ID":
+			column.Type = proto.ColumnType_STRING
+			keyColumns = append(keyColumns, &plugin.KeyColumn{Name: columnFieldName, Require: plugin.Optional, Operators: []string{"=", "<>"}})
+		case "date", "dateTime":
+			column.Type = proto.ColumnType_TIMESTAMP
+			keyColumns = append(keyColumns, &plugin.KeyColumn{Name: columnFieldName, Require: plugin.Optional, Operators: []string{"=", ">", ">=", "<=", "<"}})
+		case "boolean":
+			column.Type = proto.ColumnType_BOOL
+			keyColumns = append(keyColumns, &plugin.KeyColumn{Name: columnFieldName, Require: plugin.Optional, Operators: []string{"=", "<>"}})
+		case "double":
+			column.Type = proto.ColumnType_DOUBLE
+			keyColumns = append(keyColumns, &plugin.KeyColumn{Name: columnFieldName, Require: plugin.Optional, Operators: []string{"=", ">", ">=", "<=", "<"}})
+		case "int":
+			column.Type = proto.ColumnType_INT
+			keyColumns = append(keyColumns, &plugin.KeyColumn{Name: columnFieldName, Require: plugin.Optional, Operators: []string{"=", ">", ">=", "<=", "<"}})
+		default:
+			column.Type = proto.ColumnType_JSON
+		}
+		cols = append(cols, &column)
+	}
+
+	return cols, keyColumns
+}
+
+func isColumnAvailable(columnName string, columns []*plugin.Column) bool {
+	for _, col := range columns {
+		if col.Name == columnName {
+			return true
+		}
+	}
+	return false
 }

@@ -56,7 +56,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 
 	// Initialize tables
 	tables := map[string]*plugin.Table{
-		"salesforce_account":                  SalesforceAccount(ctx),
+		"salesforce_account":                  SalesforceAccount(ctx, p),
 		"salesforce_account_contact_role":     SalesforceAccountContactRole(ctx),
 		"salesforce_contract":                 SalesforceContract(ctx),
 		"salesforce_lead":                     SalesforceLead(ctx),
@@ -123,41 +123,41 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 	// Key columns
 	keyColumns := plugin.KeyColumnSlice{}
 
-	data := *sObjectMeta
-	data1, err := json.Marshal(data["fields"])
+	salesforceObjectMetadata := *sObjectMeta
+	salesforceObjectMetadataAsByte, err := json.Marshal(salesforceObjectMetadata["fields"])
 	if err != nil {
 		plugin.Logger(ctx).Error("[simpleforce] json marshal error %v", err)
 	}
 
-	metadata := []map[string]interface{}{}
+	salesforceObjectFields := []map[string]interface{}{}
 	// var queryColumns []string
-	err = json.Unmarshal(data1, &metadata)
+	err = json.Unmarshal(salesforceObjectMetadataAsByte, &salesforceObjectFields)
 	if err != nil {
 		plugin.Logger(ctx).Error("[simpleforce] json unmarshal error %v", err)
 	}
 
-	for _, fields := range metadata {
-		if fields["name"] == nil {
+	for _, properties := range salesforceObjectFields {
+		if properties["name"] == nil {
 			continue
 		}
-		fieldName := fields["name"].(string)
-		compoundFieldName := fields["compoundFieldName"]
+		fieldName := properties["name"].(string)
+		compoundFieldName := properties["compoundFieldName"]
 		if compoundFieldName != nil && compoundFieldName.(string) != fieldName {
 			continue
 		}
 
 		// queryColumns = append(queryColumns, fieldName)
-		if fields["soapType"] == nil {
+		if properties["soapType"] == nil {
 			continue
 		}
-		soapType := strings.Split((fields["soapType"]).(string), ":")
+		soapType := strings.Split((properties["soapType"]).(string), ":")
 		fieldType := soapType[len(soapType)-1]
 
 		// Coloumn dynamic generation
 		columnFieldName := strcase.ToSnake(fieldName)
 		column := plugin.Column{
 			Name:        columnFieldName,
-			Description: fmt.Sprintf("The %s.", fields["label"].(string)),
+			Description: fmt.Sprintf("The %s.", properties["label"].(string)),
 			Transform:   transform.FromP(getFieldFromSObjectMap, fieldName),
 		}
 
@@ -195,7 +195,7 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 
 	Table := plugin.Table{
 		Name:        tableName,
-		Description: fmt.Sprintf("Salesforce %s.", data["label"]),
+		Description: fmt.Sprintf("Salesforce %s.", salesforceObjectMetadata["label"]),
 		List: &plugin.ListConfig{
 			KeyColumns: keyColumns,
 			Hydrate:    listSalesforceObjectsByTable(salesforceTableName, cols),

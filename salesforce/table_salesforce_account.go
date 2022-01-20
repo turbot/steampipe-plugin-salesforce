@@ -8,18 +8,20 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
-func SalesforceAccount(_ context.Context) *plugin.Table {
+func SalesforceAccount(ctx context.Context, p *plugin.Plugin) *plugin.Table {
+	cols, keyColumns := dynamicColumns(ctx, "Account", p)
 	return &plugin.Table{
 		Name:        "salesforce_account",
 		Description: "Represents an individual account, which is an organization or person involved with business (such as customers, competitors, and partners).",
 		List: &plugin.ListConfig{
-			Hydrate: listSalesforceAccount,
+			Hydrate:    listSalesforceAccount,
+			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
 			Hydrate:    getSalesforceAccount,
 			KeyColumns: plugin.SingleColumn("id"),
 		},
-		Columns: []*plugin.Column{
+		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the account in Salesforce."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "Name of the account."},
@@ -49,7 +51,7 @@ func SalesforceAccount(_ context.Context) *plugin.Table {
 			// JSON columns
 			{Name: "billing_address", Type: proto.ColumnType_JSON, Description: "The billing adress of the account."},
 			{Name: "shipping_address", Type: proto.ColumnType_JSON, Description: "The shipping adress of the account."},
-		},
+		}),
 	}
 }
 
