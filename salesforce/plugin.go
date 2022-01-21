@@ -36,10 +36,9 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 
 	// Initialize tables with static tables with static and dynamic columns(if credentials are set)
 	tables := map[string]*plugin.Table{
-		"salesforce_account":              SalesforceAccount(ctx, p),
-		"salesforce_account_contact_role": SalesforceAccountContactRole(ctx, p),
-		"salesforce_asset":                SalesforceAsset(ctx, p),
-		// "salesforce_campaign":                 SalesforceCampaign(ctx, p),
+		"salesforce_account":                  SalesforceAccount(ctx, p),
+		"salesforce_account_contact_role":     SalesforceAccountContactRole(ctx, p),
+		"salesforce_asset":                    SalesforceAsset(ctx, p),
 		"salesforce_contact":                  SalesforceContact(ctx, p),
 		"salesforce_contract":                 SalesforceContract(ctx, p),
 		"salesforce_lead":                     SalesforceLead(ctx, p),
