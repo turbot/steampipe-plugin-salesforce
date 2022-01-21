@@ -12,6 +12,7 @@ import (
 
 func listSalesforceObjectsByTable(tableName string, cols []*plugin.Column) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+		plugin.Logger(ctx).Debug("salesforce.listSalesforceObjectsByTable", "Table_Name", d.Table.Name)
 		client, err := connect(ctx, d)
 		if err != nil {
 			plugin.Logger(ctx).Error("salesforce.listSalesforceObjectsByTable", "connection error", err)
@@ -65,6 +66,7 @@ func listSalesforceObjectsByTable(tableName string, cols []*plugin.Column) func(
 
 func getSalesforceObjectbyID(tableName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+		plugin.Logger(ctx).Debug("salesforce.getSalesforceObjectbyID", "Table_Name", d.Table.Name)
 		id := d.KeyColumnQualString("id")
 
 		client, err := connect(ctx, d)
