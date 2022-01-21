@@ -14,7 +14,7 @@ func SalesforceContract(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 		Name:        "salesforce_contract",
 		Description: "Represents a contract (a business agreement) associated with an Account.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceContract,
+			Hydrate:    listSalesforceObjectsByTable("Contract", cols),
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
@@ -57,45 +57,6 @@ func SalesforceContract(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			{Name: "system_modstamp", Type: proto.ColumnType_TIMESTAMP, Description: "The date and time when contract was last modified by a user or by an automated process."},
 		}),
 	}
-}
-
-func listSalesforceContract(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("listSalesforceContract", "connect error", err)
-		return nil, err
-	}
-
-	query := generateQuery(d.QueryContext.Columns, "Contract")
-	plugin.Logger(ctx).Info("listSalesforceContract", "Query", query)
-
-	for {
-		result, err := client.Query(query)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceContract", "query error", err)
-			return nil, err
-		}
-
-		ContractList := new([]Contract)
-		err = decodeQueryResult(ctx, result.Records, ContractList)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceContract", "decode results error", err)
-			return nil, err
-		}
-
-		for _, contract := range *ContractList {
-			d.StreamListItem(ctx, contract)
-		}
-
-		// Paging
-		if result.Done {
-			break
-		} else {
-			query = result.NextRecordsURL
-		}
-	}
-
-	return nil, nil
 }
 
 func getSalesforceContract(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {

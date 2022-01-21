@@ -94,3 +94,9 @@ func getFieldFromSObjectMap(ctx context.Context, d *transform.TransformData) (in
 	ls := d.HydrateItem.(map[string]interface{})
 	return ls[param], nil
 }
+
+func getFieldFromSObjectMapByColumnName(ctx context.Context, d *transform.TransformData) (interface{}, error) {
+	salesforceColumnName := getSalesforceColumnName(d.ColumnName)
+	ls := d.HydrateItem.(map[string]interface{})
+	return ls[salesforceColumnName], nil
+}

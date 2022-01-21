@@ -14,7 +14,7 @@ func SalesforceAccountContactRole(ctx context.Context, p *plugin.Plugin) *plugin
 		Name:        "salesforce_account_contact_role",
 		Description: "Represents the role that a Contact plays on an Account.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceAccountContactRole,
+			Hydrate:    listSalesforceObjectsByTable("AccountContactRole", cols),
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
@@ -36,45 +36,6 @@ func SalesforceAccountContactRole(ctx context.Context, p *plugin.Plugin) *plugin
 			{Name: "last_modified_date", Type: proto.ColumnType_TIMESTAMP, Description: "Date of most recent change in the contact role record."},
 		}),
 	}
-}
-
-func listSalesforceAccountContactRole(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("listSalesforceAccountContactRole", "connect error", err)
-		return nil, err
-	}
-
-	query := generateQuery(d.QueryContext.Columns, "AccountContactRole")
-	plugin.Logger(ctx).Info("listSalesforceAccountContactRole", "Query", query)
-
-	for {
-		result, err := client.Query(query)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceAccountContactRole", "query error", err)
-			return nil, err
-		}
-
-		AccountContactRoleList := new([]AccountContactRole)
-		err = decodeQueryResult(ctx, result.Records, AccountContactRoleList)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceAccountContactRole", "decode results error", err)
-			return nil, err
-		}
-
-		for _, account := range *AccountContactRoleList {
-			d.StreamListItem(ctx, account)
-		}
-
-		// Paging
-		if result.Done {
-			break
-		} else {
-			query = result.NextRecordsURL
-		}
-	}
-
-	return nil, nil
 }
 
 func getSalesforceAccountContactRole(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {

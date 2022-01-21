@@ -14,7 +14,7 @@ func SalesforceLead(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 		Name:        "salesforce_lead",
 		Description: "Represents a prospect or lead.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceLead,
+			Hydrate:    listSalesforceObjectsByTable("Lead", cols),
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
@@ -47,45 +47,6 @@ func SalesforceLead(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			{Name: "website", Type: proto.ColumnType_STRING, Description: "URL of the lead's company's website."},
 		}),
 	}
-}
-
-func listSalesforceLead(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("listSalesforceLead", "connect error", err)
-		return nil, err
-	}
-
-	query := generateQuery(d.QueryContext.Columns, "Lead")
-	plugin.Logger(ctx).Info("listSalesforceLead", "Query", query)
-
-	for {
-		result, err := client.Query(query)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceLead", "query error", err)
-			return nil, err
-		}
-
-		Leads := new([]Lead)
-		err = decodeQueryResult(ctx, result.Records, Leads)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceLead", "decode results error", err)
-			return nil, err
-		}
-
-		for _, account := range *Leads {
-			d.StreamListItem(ctx, account)
-		}
-
-		// Paging
-		if result.Done {
-			break
-		} else {
-			query = result.NextRecordsURL
-		}
-	}
-
-	return nil, nil
 }
 
 func getSalesforceLead(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {

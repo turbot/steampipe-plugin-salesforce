@@ -14,7 +14,7 @@ func SalesforceProduct(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 		Name:        "salesforce_product",
 		Description: "Represents a product that org sells.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceProduct,
+			Hydrate:    listSalesforceObjectsByTable("Product2", cols),
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
@@ -47,45 +47,6 @@ func SalesforceProduct(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			{Name: "system_modstamp", Type: proto.ColumnType_STRING, Description: "The date and time when order record was last modified by a user or by an automated process."},
 		}),
 	}
-}
-
-func listSalesforceProduct(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("listSalesforceProduct", "connect error", err)
-		return nil, err
-	}
-
-	query := generateQuery(d.QueryContext.Columns, "Product2")
-	plugin.Logger(ctx).Info("listSalesforceProduct", "Query", query)
-
-	for {
-		result, err := client.Query(query)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceProduct", "query error", err)
-			return nil, err
-		}
-
-		Products := new([]Product)
-		err = decodeQueryResult(ctx, result.Records, Products)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceProduct", "decode results error", err)
-			return nil, err
-		}
-
-		for _, product := range *Products {
-			d.StreamListItem(ctx, product)
-		}
-
-		// Paging
-		if result.Done {
-			break
-		} else {
-			query = result.NextRecordsURL
-		}
-	}
-
-	return nil, nil
 }
 
 func getSalesforceProduct(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {

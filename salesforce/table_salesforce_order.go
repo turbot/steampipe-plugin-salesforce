@@ -14,7 +14,7 @@ func SalesforceOrder(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 		Name:        "salesforce_order",
 		Description: "Represents an order associated with a contract or an account.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceOrder,
+			Hydrate:    listSalesforceObjectsByTable("Order", cols),
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
@@ -64,45 +64,6 @@ func SalesforceOrder(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			{Name: "shipping_address", Type: proto.ColumnType_JSON, Description: "The shipping adress for the order."},
 		}),
 	}
-}
-
-func listSalesforceOrder(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("listSalesforceOrder", "connect error", err)
-		return nil, err
-	}
-
-	query := generateQuery(d.QueryContext.Columns, "Order")
-	plugin.Logger(ctx).Info("listSalesforceOrder", "Query", query)
-
-	for {
-		result, err := client.Query(query)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceOrder", "query error", err)
-			return nil, err
-		}
-
-		Orders := new([]Order)
-		err = decodeQueryResult(ctx, result.Records, Orders)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceOrder", "decode results error", err)
-			return nil, err
-		}
-
-		for _, order := range *Orders {
-			d.StreamListItem(ctx, order)
-		}
-
-		// Paging
-		if result.Done {
-			break
-		} else {
-			query = result.NextRecordsURL
-		}
-	}
-
-	return nil, nil
 }
 
 func getSalesforceOrder(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {

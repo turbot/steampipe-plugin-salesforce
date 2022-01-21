@@ -14,7 +14,7 @@ func SalesforceOpportunity(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 		Name:        "salesforce_opportunity",
 		Description: "Represents an opportunity, which is a sale or pending deal.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceOpportunity,
+			Hydrate:    listSalesforceObjectsByTable("Opportunity", cols),
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
@@ -60,45 +60,6 @@ func SalesforceOpportunity(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 			{Name: "type", Type: proto.ColumnType_STRING, Description: "Type of opportunity, such as Existing Business or New Business."},
 		}),
 	}
-}
-
-func listSalesforceOpportunity(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("listSalesforceOpportunity", "connect error", err)
-		return nil, err
-	}
-
-	query := generateQuery(d.QueryContext.Columns, "Opportunity")
-	plugin.Logger(ctx).Info("listSalesforceOpportunity", "Query", query)
-
-	for {
-		result, err := client.Query(query)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceOpportunity", "query error", err)
-			return nil, err
-		}
-
-		Opportunities := new([]Opportunity)
-		err = decodeQueryResult(ctx, result.Records, Opportunities)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceOpportunity", "decode results error", err)
-			return nil, err
-		}
-
-		for _, opportunity := range *Opportunities {
-			d.StreamListItem(ctx, opportunity)
-		}
-
-		// Paging
-		if result.Done {
-			break
-		} else {
-			query = result.NextRecordsURL
-		}
-	}
-
-	return nil, nil
 }
 
 func getSalesforceOpportunity(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {

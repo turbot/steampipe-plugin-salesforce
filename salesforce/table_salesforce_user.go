@@ -14,7 +14,7 @@ func SalesforceUser(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 		Name:        "salesforce_user",
 		Description: "Represents a user in organization.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceUser,
+			Hydrate:    listSalesforceObjectsByTable("User", cols),
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
@@ -43,45 +43,6 @@ func SalesforceUser(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			{Name: "user_type", Type: proto.ColumnType_STRING, Description: "The category of user license. Can be one of Standard, PowerPartner, CSPLitePortal, CustomerSuccess, PowerCustomerSuccess, CsnOnly, and Guest."},
 		}),
 	}
-}
-
-func listSalesforceUser(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("listSalesforceUser", "connect error", err)
-		return nil, err
-	}
-
-	query := generateQuery(d.QueryContext.Columns, "User")
-	plugin.Logger(ctx).Info("listSalesforceUser", "Query", query)
-
-	for {
-		result, err := client.Query(query)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceUser", "query error", err)
-			return nil, err
-		}
-
-		Users := new([]User)
-		err = decodeQueryResult(ctx, result.Records, Users)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceUser", "decode results error", err)
-			return nil, err
-		}
-
-		for _, user := range *Users {
-			d.StreamListItem(ctx, user)
-		}
-
-		// Paging
-		if result.Done {
-			break
-		} else {
-			query = result.NextRecordsURL
-		}
-	}
-
-	return nil, nil
 }
 
 func getSalesforceUser(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {

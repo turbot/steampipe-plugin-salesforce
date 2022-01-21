@@ -14,7 +14,7 @@ func SalesforceAccount(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 		Name:        "salesforce_account",
 		Description: "Represents an individual account, which is an organization or person involved with business (such as customers, competitors, and partners).",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceAccount,
+			Hydrate:    listSalesforceObjectsByTable("Account", cols),
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
@@ -53,45 +53,6 @@ func SalesforceAccount(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			{Name: "shipping_address", Type: proto.ColumnType_JSON, Description: "The shipping adress of the account."},
 		}),
 	}
-}
-
-func listSalesforceAccount(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("listSalesforceAccount", "connect error", err)
-		return nil, err
-	}
-
-	query := generateQuery(d.QueryContext.Columns, "Account")
-	plugin.Logger(ctx).Info("listSalesforceAccount", "Query", query)
-
-	for {
-		result, err := client.Query(query)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceAccount", "query error", err)
-			return nil, err
-		}
-
-		AccountList := new([]Account)
-		err = decodeQueryResult(ctx, result.Records, AccountList)
-		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceAccount", "decode results error", err)
-			return nil, err
-		}
-
-		for _, account := range *AccountList {
-			d.StreamListItem(ctx, account)
-		}
-
-		// Paging
-		if result.Done {
-			break
-		} else {
-			query = result.NextRecordsURL
-		}
-	}
-
-	return nil, nil
 }
 
 func getSalesforceAccount(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
