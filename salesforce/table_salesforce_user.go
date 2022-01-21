@@ -8,21 +8,20 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
-func SalesforceUser(_ context.Context) *plugin.Table {
+func SalesforceUser(ctx context.Context, p *plugin.Plugin) *plugin.Table {
+	cols, keyColumns := dynamicColumns(ctx, "User", p)
 	return &plugin.Table{
 		Name:        "salesforce_user",
 		Description: "Represents a user in organization.",
 		List: &plugin.ListConfig{
-			Hydrate: listSalesforceUser,
-			KeyColumns: plugin.KeyColumnSlice{
-				{Name: "user_type", Require: plugin.Optional},
-			},
+			Hydrate:    listSalesforceUser,
+			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
 			Hydrate:    getSalesforceUser,
 			KeyColumns: plugin.SingleColumn("id"),
 		},
-		Columns: []*plugin.Column{
+		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the user in Salesforce."},
 			{Name: "alias", Type: proto.ColumnType_STRING, Description: "The user's alias. For example, jsmith."},
@@ -42,7 +41,7 @@ func SalesforceUser(_ context.Context) *plugin.Table {
 			{Name: "profile_id", Type: proto.ColumnType_STRING, Description: "ID of the user's Profile."},
 			{Name: "state", Type: proto.ColumnType_STRING, Description: "The state associated with the User."},
 			{Name: "user_type", Type: proto.ColumnType_STRING, Description: "The category of user license. Can be one of Standard, PowerPartner, CSPLitePortal, CustomerSuccess, PowerCustomerSuccess, CsnOnly, and Guest."},
-		},
+		}),
 	}
 }
 

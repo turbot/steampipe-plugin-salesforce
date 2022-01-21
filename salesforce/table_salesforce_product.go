@@ -8,18 +8,20 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
-func SalesforceProduct(_ context.Context) *plugin.Table {
+func SalesforceProduct(ctx context.Context, p *plugin.Plugin) *plugin.Table {
+	cols, keyColumns := dynamicColumns(ctx, "Product2", p)
 	return &plugin.Table{
 		Name:        "salesforce_product",
 		Description: "Represents a product that org sells.",
 		List: &plugin.ListConfig{
-			Hydrate: listSalesforceProduct,
+			Hydrate:    listSalesforceProduct,
+			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
 			Hydrate:    getSalesforceProduct,
 			KeyColumns: plugin.SingleColumn("id"),
 		},
-		Columns: []*plugin.Column{
+		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the product in Salesforce."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The product's name."},
@@ -43,7 +45,7 @@ func SalesforceProduct(_ context.Context) *plugin.Table {
 			{Name: "quantity_unit_of_measure", Type: proto.ColumnType_STRING, Description: "Unit of the product—for example, kilograms, liters, or cases."},
 			{Name: "stock_keeping_unit", Type: proto.ColumnType_STRING, Description: "The product's SKU, which can be used with or in place of the Product Code field."},
 			{Name: "system_modstamp", Type: proto.ColumnType_STRING, Description: "The date and time when order record was last modified by a user or by an automated process."},
-		},
+		}),
 	}
 }
 

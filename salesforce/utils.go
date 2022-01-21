@@ -57,13 +57,13 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 	client := simpleforce.NewClient(*config.URL, clientID, apiVersion)
 	if client == nil {
 		plugin.Logger(ctx).Warn("salesforce.connectRaw", "couldn't get salesforce client. Client setup error.")
-		return nil, fmt.Errorf("salesforce.connectRaw", "couldn't get salesforce client. Client setup error.")
+		return nil, fmt.Errorf("salesforce.connectRaw couldn't get salesforce client. Client setup error.")
 	}
 
 	// login client
 	err := client.LoginPassword(*config.User, *config.Password, *config.Token)
 	if err != nil {
-		plugin.Logger(ctx).Warn("client login error", err)
+		plugin.Logger(ctx).Warn("salesforce.connectRaw", "client login error", err)
 		return nil, fmt.Errorf("client login error %v", err)
 	}
 
@@ -269,12 +269,6 @@ func dynamicColumns(ctx context.Context, salesforceTableName string, p *plugin.P
 			Name:        columnFieldName,
 			Description: fmt.Sprintf("The %s.", fields["label"].(string)),
 			Transform:   transform.FromP(getFieldFromSObjectMap, fieldName),
-		}
-
-		if columns, ok := columnDescriptions[salesforceTableName]; ok {
-			if columnFieldName, ok := columns.Columns[columnFieldName]; ok {
-				column.Description = columnFieldName
-			}
 		}
 
 		// Set column type based on the `soapType` from salesforce schema

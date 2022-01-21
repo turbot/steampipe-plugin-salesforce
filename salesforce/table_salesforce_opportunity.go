@@ -8,18 +8,20 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
-func SalesforceOpportunity(_ context.Context) *plugin.Table {
+func SalesforceOpportunity(ctx context.Context, p *plugin.Plugin) *plugin.Table {
+	cols, keyColumns := dynamicColumns(ctx, "Opportunity", p)
 	return &plugin.Table{
 		Name:        "salesforce_opportunity",
 		Description: "Represents an opportunity, which is a sale or pending deal.",
 		List: &plugin.ListConfig{
-			Hydrate: listSalesforceOpportunity,
+			Hydrate:    listSalesforceOpportunity,
+			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
 			Hydrate:    getSalesforceOpportunity,
 			KeyColumns: plugin.SingleColumn("id"),
 		},
-		Columns: []*plugin.Column{
+		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the opportunity in Salesforce."},
 			{Name: "account_id", Type: proto.ColumnType_STRING, Description: "ID of the account associated with this opportunity."},
@@ -56,7 +58,7 @@ func SalesforceOpportunity(_ context.Context) *plugin.Table {
 			{Name: "system_modstamp", Type: proto.ColumnType_STRING, Description: "The date and time when opportunity was last modified by a user or by an automated process."},
 			{Name: "total_opportunity_quantity", Type: proto.ColumnType_STRING, Description: "Number of items included in this opportunity. Used in quantity-based forecasting."},
 			{Name: "type", Type: proto.ColumnType_STRING, Description: "Type of opportunity, such as Existing Business or New Business."},
-		},
+		}),
 	}
 }
 

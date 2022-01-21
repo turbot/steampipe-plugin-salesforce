@@ -8,18 +8,20 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
-func SalesforceOrder(_ context.Context) *plugin.Table {
+func SalesforceOrder(ctx context.Context, p *plugin.Plugin) *plugin.Table {
+	cols, keyColumns := dynamicColumns(ctx, "Order", p)
 	return &plugin.Table{
 		Name:        "salesforce_order",
 		Description: "Represents an order associated with a contract or an account.",
 		List: &plugin.ListConfig{
-			Hydrate: listSalesforceOrder,
+			Hydrate:    listSalesforceOrder,
+			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
 			Hydrate:    getSalesforceOrder,
 			KeyColumns: plugin.SingleColumn("id"),
 		},
-		Columns: []*plugin.Column{
+		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the order in Salesforce."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "Title for the order that distinguishes it from other orders."},
@@ -60,7 +62,7 @@ func SalesforceOrder(_ context.Context) *plugin.Table {
 			{Name: "status_code", Type: proto.ColumnType_STRING, Description: "Status code of the stage that the order has reached in the order business process."},
 			{Name: "system_modstamp", Type: proto.ColumnType_TIMESTAMP, Description: "The date and time when order record was last modified by a user or by an automated process."},
 			{Name: "shipping_address", Type: proto.ColumnType_JSON, Description: "The shipping adress for the order."},
-		},
+		}),
 	}
 }
 

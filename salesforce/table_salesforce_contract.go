@@ -8,18 +8,20 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
-func SalesforceContract(_ context.Context) *plugin.Table {
+func SalesforceContract(ctx context.Context, p *plugin.Plugin) *plugin.Table {
+	cols, keyColumns := dynamicColumns(ctx, "Contract", p)
 	return &plugin.Table{
 		Name:        "salesforce_contract",
 		Description: "Represents a contract (a business agreement) associated with an Account.",
 		List: &plugin.ListConfig{
-			Hydrate: listSalesforceContract,
+			Hydrate:    listSalesforceContract,
+			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
 			Hydrate:    getSalesforceContract,
 			KeyColumns: plugin.SingleColumn("id"),
 		},
-		Columns: []*plugin.Column{
+		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the contract in Salesforce."},
 			{Name: "account_id", Type: proto.ColumnType_STRING, Description: "ID of the Account associated with this contract."},
@@ -53,7 +55,7 @@ func SalesforceContract(_ context.Context) *plugin.Table {
 			{Name: "pricebook_2_id", Type: proto.ColumnType_STRING, Description: "ID of the pricebook, if any, associated with this contract."},
 			{Name: "special_terms", Type: proto.ColumnType_STRING, Description: "Special terms that apply to the contract."},
 			{Name: "system_modstamp", Type: proto.ColumnType_TIMESTAMP, Description: "The date and time when contract was last modified by a user or by an automated process."},
-		},
+		}),
 	}
 }
 
