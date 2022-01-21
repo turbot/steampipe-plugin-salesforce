@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
-	"github.com/turbot/go-kit/helpers"
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/plugin/transform"
@@ -44,15 +43,22 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		"salesforce_opportunity":              SalesforceOpportunity(ctx, p),
 		"salesforce_opportunity_contact_role": SalesforceOpportunityContactRole(ctx, p),
 		"salesforce_order":                    SalesforceOrder(ctx, p),
+		"salesforce_pricebook":                SalesforcePricebook(ctx, p),
 		"salesforce_product":                  SalesforceProduct(ctx, p),
 		"salesforce_user":                     SalesforceUser(ctx, p),
+		"salesforce_contact":                  SalesforceContact(ctx, p),
+		"salesforce_campaign":                 SalesforceCampaign(ctx, p),
+		"salesforce_asset":                    SalesforceAsset(ctx, p),
 	}
 
+	var re = regexp.MustCompile(`\d+`)
+	var substitution = ``
 	salesforceTables := []string{}
 	config := GetConfig(p.Connection)
 	if config.Tables != nil && len(*config.Tables) > 0 {
 		for _, tableName := range *config.Tables {
-			if !helpers.StringSliceContains(salesforceTables, tableName) {
+			pluginTableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(tableName, substitution))
+			if _, ok := tables[pluginTableName]; !ok {
 				salesforceTables = append(salesforceTables, tableName)
 			}
 		}
@@ -68,8 +74,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "client_not_found: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
 		return tables, nil
 	}
-	var re = regexp.MustCompile(`\d+`)
-	var substitution = ``
+	// var re = regexp.MustCompile(`\d+`)
 
 	for _, table := range salesforceTables {
 		ctx = context.WithValue(ctx, contextKey("SalesforceTableName"), table)

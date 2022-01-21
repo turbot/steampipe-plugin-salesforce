@@ -12,7 +12,7 @@ import (
 
 func listSalesforceObjectsByTable(tableName string, cols []*plugin.Column) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-		plugin.Logger(ctx).Debug("salesforce.listSalesforceObjectsByTable", "Table_Name", d.Table.Name)
+		plugin.Logger(ctx).Debug("salesforce.listSalesforceObjectsByTable", "Table_Name", d.Connection.Name)
 		client, err := connect(ctx, d)
 		if err != nil {
 			plugin.Logger(ctx).Error("salesforce.listSalesforceObjectsByTable", "connection error", err)
@@ -21,11 +21,11 @@ func listSalesforceObjectsByTable(tableName string, cols []*plugin.Column) func(
 
 		query := generateQuery(d.QueryContext.Columns, tableName)
 		condition := buildQueryFromQuals(d.Quals, cols)
-		plugin.Logger(ctx).Debug("salesforce.listSalesforceObjectsByTable", "query condition", condition)
+		// plugin.Logger(ctx).Debug("salesforce.listSalesforceObjectsByTable", "query condition", condition)
 		if condition != "" {
 			query = fmt.Sprintf("%s where %s", query, condition)
 		}
-		plugin.Logger(ctx).Debug("salesforce.listSalesforceObjectsByTable", "query", query)
+		// plugin.Logger(ctx).Debug("salesforce.listSalesforceObjectsByTable", "query", query)
 
 		for {
 			result, err := client.Query(query)
