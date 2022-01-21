@@ -35,17 +35,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 
 func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Table, error) {
 
-	// Some fixed tables added to plugin
-	salesforceTables := []string{}
-	// 	"Asset",
-	// 	"Campaign",
-	// 	"Case",
-	// 	"Contact",
-	// 	"Pricebook2",
-	// 	"PricebookEntry",
-	// }
-
-	// Initialize tables
+	// Initialize tables with static tables with static and dynamic columns(if credentials are set)
 	tables := map[string]*plugin.Table{
 		"salesforce_account":                  SalesforceAccount(ctx, p),
 		"salesforce_account_contact_role":     SalesforceAccountContactRole(ctx, p),
@@ -58,6 +48,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		"salesforce_user":                     SalesforceUser(ctx, p),
 	}
 
+	salesforceTables := []string{}
 	config := GetConfig(p.Connection)
 	if config.Tables != nil && len(*config.Tables) > 0 {
 		for _, tableName := range *config.Tables {
