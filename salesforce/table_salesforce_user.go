@@ -8,16 +8,17 @@ import (
 )
 
 func SalesforceUser(ctx context.Context, p *plugin.Plugin) *plugin.Table {
-	cols, keyColumns := dynamicColumns(ctx, "User", p)
+	tableName := "User"
+	cols, keyColumns := dynamicColumns(ctx, tableName, p)
 	return &plugin.Table{
 		Name:        "salesforce_user",
 		Description: "Represents a user in organization.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable("User", cols),
+			Hydrate:    listSalesforceObjectsByTable(tableName, cols),
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
-			Hydrate:    getSalesforceObjectbyID("User"),
+			Hydrate:    getSalesforceObjectbyID(tableName),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{

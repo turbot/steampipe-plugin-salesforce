@@ -8,16 +8,17 @@ import (
 )
 
 func SalesforceOpportunity(ctx context.Context, p *plugin.Plugin) *plugin.Table {
-	cols, keyColumns := dynamicColumns(ctx, "Opportunity", p)
+	tableName := "OpportunityContactRole"
+	cols, keyColumns := dynamicColumns(ctx, tableName, p)
 	return &plugin.Table{
 		Name:        "salesforce_opportunity",
 		Description: "Represents an opportunity, which is a sale or pending deal.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable("Opportunity", cols),
+			Hydrate:    listSalesforceObjectsByTable(tableName, cols),
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
-			Hydrate:    getSalesforceObjectbyID("Opportunity"),
+			Hydrate:    getSalesforceObjectbyID(tableName),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{

@@ -8,16 +8,17 @@ import (
 )
 
 func SalesforceContract(ctx context.Context, p *plugin.Plugin) *plugin.Table {
-	cols, keyColumns := dynamicColumns(ctx, "Contract", p)
+	tableName := "Contract"
+	cols, keyColumns := dynamicColumns(ctx, tableName, p)
 	return &plugin.Table{
 		Name:        "salesforce_contract",
 		Description: "Represents a contract (a business agreement) associated with an Account.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable("Contract", cols),
+			Hydrate:    listSalesforceObjectsByTable(tableName, cols),
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
-			Hydrate:    getSalesforceObjectbyID("Contract"),
+			Hydrate:    getSalesforceObjectbyID(tableName),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{

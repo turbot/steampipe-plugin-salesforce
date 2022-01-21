@@ -8,16 +8,17 @@ import (
 )
 
 func SalesforceAccountContactRole(ctx context.Context, p *plugin.Plugin) *plugin.Table {
-	cols, keyColumns := dynamicColumns(ctx, "AccountContactRole", p)
+	tableName := "AccountContactRole"
+	cols, keyColumns := dynamicColumns(ctx, tableName, p)
 	return &plugin.Table{
 		Name:        "salesforce_account_contact_role",
 		Description: "Represents the role that a Contact plays on an Account.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable("AccountContactRole", cols),
+			Hydrate:    listSalesforceObjectsByTable(tableName, cols),
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
-			Hydrate:    getSalesforceObjectbyID("AccountContactRole"),
+			Hydrate:    getSalesforceObjectbyID(tableName),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
