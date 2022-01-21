@@ -101,6 +101,8 @@ func decodeQueryResult(ctx context.Context, response interface{}, respObject int
 }
 
 // buildQueryFromQuals :: generate SOQL based on the contions specified in sql query
+// refrences
+// - https://developer.salesforce.com/docs/atlas.en-us.234.0.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_select_comparisonoperators.htm
 func buildQueryFromQuals(equalQuals plugin.KeyColumnQualMap, tableColumns []*plugin.Column) string {
 	filters := []string{}
 
