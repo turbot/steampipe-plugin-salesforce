@@ -100,6 +100,7 @@ func decodeQueryResult(ctx context.Context, response interface{}, respObject int
 	return nil
 }
 
+// buildQueryFromQuals :: generate SOQL based on the contions specified in sql query
 func buildQueryFromQuals(equalQuals plugin.KeyColumnQualMap, tableColumns []*plugin.Column) string {
 	filters := []string{}
 

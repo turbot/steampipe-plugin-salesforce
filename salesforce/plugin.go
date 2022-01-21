@@ -79,7 +79,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		ctx = context.WithValue(ctx, contextKey("SalesforceTableName"), table)
 		tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(table, substitution))
 		ctx = context.WithValue(ctx, contextKey("PluginTableName"), tableName)
-		plugin.Logger(ctx).Info("pluginTableDefinitions Table Names", "SALESFORCE_OBJECT_NAME", table, "STEAMPIPE_TABLE_NAME", tableName)
+		plugin.Logger(ctx).Debug("salesforce.pluginTableDefinitions", "SALESFORCE_OBJECT_NAME", table, "STEAMPIPE_TABLE_NAME", tableName)
 
 		if tables[tableName] != nil {
 			continue
@@ -117,14 +117,14 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 	salesforceObjectMetadata := *sObjectMeta
 	salesforceObjectMetadataAsByte, err := json.Marshal(salesforceObjectMetadata["fields"])
 	if err != nil {
-		plugin.Logger(ctx).Error("[simpleforce] json marshal error %v", err)
+		plugin.Logger(ctx).Error("salesforce.generateDynamicTables", "json marshal error", err)
 	}
 
 	salesforceObjectFields := []map[string]interface{}{}
 	// var queryColumns []string
 	err = json.Unmarshal(salesforceObjectMetadataAsByte, &salesforceObjectFields)
 	if err != nil {
-		plugin.Logger(ctx).Error("[simpleforce] json unmarshal error %v", err)
+		plugin.Logger(ctx).Error("salesforce.generateDynamicTables", "json unmarshal error", err)
 	}
 
 	for _, properties := range salesforceObjectFields {
