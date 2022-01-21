@@ -2,7 +2,6 @@ package salesforce
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -18,7 +17,7 @@ func SalesforceContract(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
-			Hydrate:    getSalesforceContract,
+			Hydrate:    getSalesforceObjectbyID("Contract"),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
@@ -57,30 +56,4 @@ func SalesforceContract(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			{Name: "system_modstamp", Type: proto.ColumnType_TIMESTAMP, Description: "The date and time when contract was last modified by a user or by an automated process."},
 		}),
 	}
-}
-
-func getSalesforceContract(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	contractID := d.KeyColumnQualString("id")
-
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceContract", "connect error", err)
-		return nil, err
-	}
-
-	obj := client.SObject("Contract").Get(contractID)
-	if obj == nil {
-		// Object doesn't exist, handle the error
-		plugin.Logger(ctx).Warn("getSalesforceContract", fmt.Sprintf("contract \"%s\" not found", contractID))
-		return nil, nil
-	}
-
-	account := new(Account)
-	err = decodeQueryResult(ctx, obj, account)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceContract", "decode results error", err)
-		return nil, err
-	}
-
-	return account, nil
 }

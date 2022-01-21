@@ -2,7 +2,6 @@ package salesforce
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -18,7 +17,7 @@ func SalesforceUser(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
-			Hydrate:    getSalesforceUser,
+			Hydrate:    getSalesforceObjectbyID("User"),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
@@ -43,30 +42,4 @@ func SalesforceUser(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			{Name: "user_type", Type: proto.ColumnType_STRING, Description: "The category of user license. Can be one of Standard, PowerPartner, CSPLitePortal, CustomerSuccess, PowerCustomerSuccess, CsnOnly, and Guest."},
 		}),
 	}
-}
-
-func getSalesforceUser(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	userID := d.KeyColumnQualString("id")
-
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceUser", "connect error", err)
-		return nil, err
-	}
-
-	obj := client.SObject("User").Get(userID)
-	if obj == nil {
-		// Object doesn't exist, handle the error
-		plugin.Logger(ctx).Warn("getSalesforceUser", fmt.Sprintf("user \"%s\" not found", userID))
-		return nil, nil
-	}
-
-	user := new(User)
-	err = decodeQueryResult(ctx, obj, user)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceUser", "decode results error", err)
-		return nil, err
-	}
-
-	return user, nil
 }

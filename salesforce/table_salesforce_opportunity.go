@@ -2,7 +2,6 @@ package salesforce
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -18,7 +17,7 @@ func SalesforceOpportunity(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
-			Hydrate:    getSalesforceOpportunity,
+			Hydrate:    getSalesforceObjectbyID("Opportunity"),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
@@ -60,30 +59,4 @@ func SalesforceOpportunity(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 			{Name: "type", Type: proto.ColumnType_STRING, Description: "Type of opportunity, such as Existing Business or New Business."},
 		}),
 	}
-}
-
-func getSalesforceOpportunity(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	opportunityID := d.KeyColumnQualString("id")
-
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceOpportunity", "connect error", err)
-		return nil, err
-	}
-
-	obj := client.SObject("Opportunity").Get(opportunityID)
-	if obj == nil {
-		// Object doesn't exist, handle the error
-		plugin.Logger(ctx).Warn("getSalesforceOpportunity", fmt.Sprintf("opportunity \"%s\" not found", opportunityID))
-		return nil, nil
-	}
-
-	opportunity := new(Opportunity)
-	err = decodeQueryResult(ctx, obj, opportunity)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceOpportunity", "decode results error", err)
-		return nil, err
-	}
-
-	return opportunity, nil
 }

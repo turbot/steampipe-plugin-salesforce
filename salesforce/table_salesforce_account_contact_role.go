@@ -2,7 +2,6 @@ package salesforce
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -18,7 +17,7 @@ func SalesforceAccountContactRole(ctx context.Context, p *plugin.Plugin) *plugin
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
-			Hydrate:    getSalesforceAccountContactRole,
+			Hydrate:    getSalesforceObjectbyID("AccountContactRole"),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
@@ -36,30 +35,4 @@ func SalesforceAccountContactRole(ctx context.Context, p *plugin.Plugin) *plugin
 			{Name: "last_modified_date", Type: proto.ColumnType_TIMESTAMP, Description: "Date of most recent change in the contact role record."},
 		}),
 	}
-}
-
-func getSalesforceAccountContactRole(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	accountContactRoleID := d.KeyColumnQualString("id")
-
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceAccountContactRole", "connect error", err)
-		return nil, err
-	}
-
-	obj := client.SObject("AccountContactRole").Get(accountContactRoleID)
-	if obj == nil {
-		// Object doesn't exist, handle the error
-		plugin.Logger(ctx).Warn("getSalesforceAccountContactRole", fmt.Sprintf("account contact role \"%s\" not found", accountContactRoleID))
-		return nil, nil
-	}
-
-	accountContactRole := new(AccountContactRole)
-	err = decodeQueryResult(ctx, obj, accountContactRole)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceAccountContactRole", "decode results error", err)
-		return nil, err
-	}
-
-	return accountContactRole, nil
 }

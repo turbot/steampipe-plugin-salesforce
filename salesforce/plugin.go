@@ -65,7 +65,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		return tables, nil
 	}
 	if client == nil {
-		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "client_not_found: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
 		return tables, nil
 	}
 	var re = regexp.MustCompile(`\d+`)

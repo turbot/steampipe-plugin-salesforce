@@ -77,11 +77,6 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 func generateQuery(columns []string, tableName string) string {
 	var queryColumns []string
 	for _, column := range columns {
-		// columnName := strcase.ToCamel(column)
-		// // Salesforce custom fields are suffixed with '__c' after the custom field name.
-		// if strings.HasSuffix(columnName, "C") {
-		// 	columnName = columnName[0:len(columnName)-1] + "__c"
-		// }
 		queryColumns = append(queryColumns, getSalesforceColumnName(column))
 	}
 
@@ -186,7 +181,7 @@ func buildQueryFromQuals(equalQuals plugin.KeyColumnQualMap, tableColumns []*plu
 		return strings.Join(filters, " AND ")
 	}
 
-	return "s"
+	return ""
 }
 
 func getSalesforceColumnName(name string) string {

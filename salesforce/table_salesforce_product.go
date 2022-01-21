@@ -2,7 +2,6 @@ package salesforce
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -18,7 +17,7 @@ func SalesforceProduct(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
-			Hydrate:    getSalesforceProduct,
+			Hydrate:    getSalesforceObjectbyID("Product2"),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
@@ -47,30 +46,4 @@ func SalesforceProduct(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			{Name: "system_modstamp", Type: proto.ColumnType_STRING, Description: "The date and time when order record was last modified by a user or by an automated process."},
 		}),
 	}
-}
-
-func getSalesforceProduct(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	productID := d.KeyColumnQualString("id")
-
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceProduct", "connect error", err)
-		return nil, err
-	}
-
-	obj := client.SObject("Product2").Get(productID)
-	if obj == nil {
-		// Object doesn't exist, handle the error
-		plugin.Logger(ctx).Warn("getSalesforceProduct", fmt.Sprintf("product \"%s\" not found", productID))
-		return nil, nil
-	}
-
-	product := new(Product)
-	err = decodeQueryResult(ctx, obj, product)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceProduct", "decode results error", err)
-		return nil, err
-	}
-
-	return product, nil
 }

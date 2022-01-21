@@ -2,7 +2,6 @@ package salesforce
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -18,7 +17,7 @@ func SalesforceAccount(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
-			Hydrate:    getSalesforceAccount,
+			Hydrate:    getSalesforceObjectbyID("Account"),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
@@ -53,30 +52,4 @@ func SalesforceAccount(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			{Name: "shipping_address", Type: proto.ColumnType_JSON, Description: "The shipping adress of the account."},
 		}),
 	}
-}
-
-func getSalesforceAccount(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	accountID := d.KeyColumnQualString("id")
-
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceAccount", "connect error", err)
-		return nil, err
-	}
-
-	obj := client.SObject("Account").Get(accountID)
-	if obj == nil {
-		// Object doesn't exist, handle the error
-		plugin.Logger(ctx).Warn("getSalesforceAccount", fmt.Sprintf("account \"%s\" not found", accountID))
-		return nil, nil
-	}
-
-	account := new(Account)
-	err = decodeQueryResult(ctx, obj, account)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceAccount", "decode results error", err)
-		return nil, err
-	}
-
-	return account, nil
 }

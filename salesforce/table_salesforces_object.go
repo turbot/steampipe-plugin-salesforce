@@ -14,25 +14,29 @@ func listSalesforceObjectsByTable(tableName string, cols []*plugin.Column) func(
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 		client, err := connect(ctx, d)
 		if err != nil {
-			plugin.Logger(ctx).Error("listSalesforceObjectsByTable", "connect error", err)
+			plugin.Logger(ctx).Error("salesforce.listSalesforceObjectsByTable", "connection error", err)
 			return nil, err
 		}
 
 		query := generateQuery(d.QueryContext.Columns, tableName)
-		plugin.Logger(ctx).Info("listSalesforceObjectsByTable", "query", query)
-		plugin.Logger(ctx).Info("listSalesforceObjectsByTable", "Where Condition", buildQueryFromQuals(d.Quals, cols))
+		condition := buildQueryFromQuals(d.Quals, cols)
+		plugin.Logger(ctx).Debug("salesforce.listSalesforceObjectsByTable", "query condition", condition)
+		if condition != "" {
+			query = fmt.Sprintf("%s where %s", query, condition)
+		}
+		plugin.Logger(ctx).Debug("salesforce.listSalesforceObjectsByTable", "query", query)
 
 		for {
 			result, err := client.Query(query)
 			if err != nil {
-				plugin.Logger(ctx).Error("listSalesforceObjectsByTable", "query error", err)
+				plugin.Logger(ctx).Error("salesforce.listSalesforceObjectsByTable", "query error", err)
 				return nil, err
 			}
 
 			AccountList := new([]map[string]interface{})
 			err = decodeQueryResult(ctx, result.Records, AccountList)
 			if err != nil {
-				plugin.Logger(ctx).Error("listSalesforceObjectsByTable", "results decoding error", err)
+				plugin.Logger(ctx).Error("salesforce.listSalesforceObjectsByTable", "results decoding error", err)
 				return nil, err
 			}
 
@@ -65,21 +69,21 @@ func getSalesforceObjectbyID(tableName string) func(ctx context.Context, d *plug
 
 		client, err := connect(ctx, d)
 		if err != nil {
-			plugin.Logger(ctx).Error("getSalesforceObjectbyID", "connect error", err)
+			plugin.Logger(ctx).Error("salesforce.getSalesforceObjectbyID", "connection error", err)
 			return nil, err
 		}
 
 		obj := client.SObject(tableName).Get(id)
 		if obj == nil {
 			// Object doesn't exist, handle the error
-			plugin.Logger(ctx).Warn("getSalesforceObjectbyID", fmt.Sprintf("%s with Id \"%s\" not found", tableName, id))
+			plugin.Logger(ctx).Warn("salesforce.getSalesforceObjectbyID", fmt.Sprintf("%s with Id \"%s\" not found", tableName, id))
 			return nil, nil
 		}
 
 		opportunityContactRole := new(map[string]interface{})
 		err = decodeQueryResult(ctx, obj, opportunityContactRole)
 		if err != nil {
-			plugin.Logger(ctx).Error("getSalesforceObjectbyID", "result decoding error", err)
+			plugin.Logger(ctx).Error("salesforce.getSalesforceObjectbyID", "result decoding error", err)
 			return nil, err
 		}
 

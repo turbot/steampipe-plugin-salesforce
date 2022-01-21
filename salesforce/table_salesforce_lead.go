@@ -2,7 +2,6 @@ package salesforce
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
@@ -18,7 +17,7 @@ func SalesforceLead(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			KeyColumns: keyColumns,
 		},
 		Get: &plugin.GetConfig{
-			Hydrate:    getSalesforceLead,
+			Hydrate:    getSalesforceObjectbyID("Lead"),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
 		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
@@ -47,30 +46,4 @@ func SalesforceLead(ctx context.Context, p *plugin.Plugin) *plugin.Table {
 			{Name: "website", Type: proto.ColumnType_STRING, Description: "URL of the lead's company's website."},
 		}),
 	}
-}
-
-func getSalesforceLead(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	leadID := d.KeyColumnQualString("id")
-
-	client, err := connect(ctx, d)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceLead", "connect error", err)
-		return nil, err
-	}
-
-	obj := client.SObject("Lead").Get(leadID)
-	if obj == nil {
-		// Object doesn't exist, handle the error
-		plugin.Logger(ctx).Warn("getSalesforceLead", fmt.Sprintf("lead \"%s\" not found", leadID))
-		return nil, nil
-	}
-
-	lead := new(User)
-	err = decodeQueryResult(ctx, obj, lead)
-	if err != nil {
-		plugin.Logger(ctx).Error("getSalesforceLead", "decode results error", err)
-		return nil, err
-	}
-
-	return lead, nil
 }
