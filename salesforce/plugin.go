@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/iancoleman/strcase"
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
@@ -33,6 +34,7 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 }
 
 func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Table, error) {
+	plugin.Logger(ctx).Info("########################", "START", time.Now())
 
 	// Initialize tables with static tables with static and dynamic columns(if credentials are set)
 	tables := map[string]*plugin.Table{
@@ -88,6 +90,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		}
 
 	}
+	plugin.Logger(ctx).Info("########################", "END", time.Now())
 	return tables, nil
 }
 

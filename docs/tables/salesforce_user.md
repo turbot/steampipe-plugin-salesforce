@@ -46,3 +46,17 @@ from
 where
   user_type = 'Standard';
 ```
+
+### List user enabled as forecast manager
+
+```sql
+select
+  id,
+  username,
+  user_type,
+  forecast_enabled
+from
+  salesforce_user
+where
+  forecast_enabled;
+```
