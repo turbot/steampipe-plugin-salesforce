@@ -8,41 +8,25 @@ Represents the role that a Contact plays on an Account.
 
 ```sql
 select
-  name,
-  industry,
-  type,
-  ownership,
-  rating
+  id,
+  account_id,
+  contact_id,
+  is_primary,
+  role
 from
   salesforce_account_contact_role;
 ```
 
-### List Active users
+### List primary account contact role
 
 ```sql
 select
-  username,
-  alias,
-  user_type,
-  is_active,
-  last_login_date
+  id,
+  account_id,
+  contact_id,
+  is_primary
 from
   salesforce_account_contact_role
 where
-  is_active;
-```
-
-### List Standard users
-
-```sql
-select
-  username,
-  alias,
-  user_type,
-  is_active,
-  last_login_date
-from
-  salesforce_account_contact_role
-where
-  user_type = 'Standard';
+  is_primary;
 ```

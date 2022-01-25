@@ -26,7 +26,7 @@ func SalesforceAccountContactRole(ctx context.Context, p *plugin.Plugin) *plugin
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the account contact role in Salesforce."},
 			{Name: "account_id", Type: proto.ColumnType_STRING, Description: "ID of the Account."},
 			{Name: "contact_id", Type: proto.ColumnType_STRING, Description: "ID of the Contact associated with this account."},
-			{Name: "is_primary", Type: proto.ColumnType_BOOL, Description: "Specifies whether the Contact plays the primary role on the Account (true) or not (false). Note that each account has only one primary contact role. Label is Primary. Default value is false."},
+			{Name: "is_primary", Type: proto.ColumnType_BOOL, Description: "Specifies whether the Contact plays the primary role on the Account (true) or not (false). Note that each account has only one primary contact role."},
 			{Name: "role", Type: proto.ColumnType_STRING, Description: "Name of the role played by the Contact on this Account, such as Decision Maker, Approver, Buyer, and so on."},
 
 			// Other columns
