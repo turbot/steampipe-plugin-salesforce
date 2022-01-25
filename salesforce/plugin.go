@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/iancoleman/strcase"
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
@@ -34,7 +33,6 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 }
 
 func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Table, error) {
-	plugin.Logger(ctx).Info("########################", "START", time.Now())
 
 	// Initialize tables with static tables with static and dynamic columns(if credentials are set)
 	tables := map[string]*plugin.Table{
@@ -86,11 +84,14 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		if tables[tableName] != nil {
 			continue
 		} else {
-			tables[tableName] = generateDynamicTables(ctx, p)
+			table := generateDynamicTables(ctx, p)
+			// Ignore if the requested Salesforce object is not present.
+			if table != nil {
+				tables[tableName] = table
+			}
 		}
 
 	}
-	plugin.Logger(ctx).Info("########################", "END", time.Now())
 	return tables, nil
 }
 
@@ -108,7 +109,7 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 
 	sObjectMeta := client.SObject(salesforceTableName).Describe()
 	if sObjectMeta == nil {
-		plugin.Logger(ctx).Error("salesforce.generateDynamicTables", fmt.Sprintf("Table %s not present in salesforce", salesforceTableName))
+		plugin.Logger(ctx).Error("salesforce.generateDynamicTables", fmt.Sprintf("Object %s not found in salesforce", salesforceTableName))
 		return nil
 	}
 
