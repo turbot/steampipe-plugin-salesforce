@@ -21,7 +21,7 @@ from
   salesforce_account
 ```
 
-### List number of accounts by industry
+### List number of accounts by industry type
 
 ```sql
 select
