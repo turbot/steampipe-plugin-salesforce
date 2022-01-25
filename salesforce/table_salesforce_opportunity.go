@@ -8,7 +8,7 @@ import (
 )
 
 func SalesforceOpportunity(ctx context.Context, p *plugin.Plugin) *plugin.Table {
-	tableName := "OpportunityContactRole"
+	tableName := "Opportunity"
 	cols, keyColumns := dynamicColumns(ctx, tableName, p)
 	return &plugin.Table{
 		Name:        "salesforce_opportunity",
