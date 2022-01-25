@@ -16,7 +16,7 @@ og_image: "/images/plugins/turbot/salesforce-social-graphic.png"
 
 [Steampipe](https://steampipe.io) is an open source CLI to instantly query cloud APIs using SQL.
 
-List won oppurtinities:
+List won opportunities:
 
 ```sql
 select
@@ -50,7 +50,7 @@ where
 
 ### Install
 
-Download and install the latest Salesforce plugin:
+Download and install the latest salesforce plugin:
 
 ```bash
 steampipe plugin install salesforce
