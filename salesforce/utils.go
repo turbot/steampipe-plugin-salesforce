@@ -209,21 +209,22 @@ func mergeTableColumns(ctx context.Context, p *plugin.Plugin, dynamicColumns []*
 	return columns
 }
 
+// dynamicColumns:: Returns list coulms for a salesforce object
 func dynamicColumns(ctx context.Context, salesforceTableName string, p *plugin.Plugin) ([]*plugin.Column, plugin.KeyColumnSlice) {
 	// If unable to connect to salesforce instance, log warning and abort dynamic table creation
 	client, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
 	if err != nil {
-		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+		plugin.Logger(ctx).Error("salesforce.dynamicColumns", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
 		return []*plugin.Column{}, plugin.KeyColumnSlice{}
 	}
 	if client == nil {
-		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+		plugin.Logger(ctx).Error("salesforce.dynamicColumns", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
 		return []*plugin.Column{}, plugin.KeyColumnSlice{}
 	}
 
 	sObjectMeta := client.SObject(salesforceTableName).Describe()
 	if sObjectMeta == nil {
-		plugin.Logger(ctx).Error("salesforce.generateDynamicTables", fmt.Sprintf("Table %s not present in salesforce", salesforceTableName))
+		plugin.Logger(ctx).Error("salesforce.dynamicColumns", fmt.Sprintf("Table %s not present in salesforce", salesforceTableName))
 		return []*plugin.Column{}, plugin.KeyColumnSlice{}
 	}
 
@@ -254,7 +255,6 @@ func dynamicColumns(ctx context.Context, salesforceTableName string, p *plugin.P
 			continue
 		}
 
-		// queryColumns = append(queryColumns, fieldName)
 		if fields["soapType"] == nil {
 			continue
 		}
@@ -295,6 +295,7 @@ func dynamicColumns(ctx context.Context, salesforceTableName string, p *plugin.P
 	return cols, keyColumns
 }
 
+// isColumnAvailable:: Checks if the column is not present in the existing columns slice
 func isColumnAvailable(columnName string, columns []*plugin.Column) bool {
 	for _, col := range columns {
 		if col.Name == columnName {
