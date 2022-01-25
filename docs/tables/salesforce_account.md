@@ -8,41 +8,58 @@ Represents an individual account, which is an organization or person involved wi
 
 ```sql
 select
+  id,
   name,
-  industry,
-  type,
+  description,
+  annual_revenue,
   ownership,
-  rating
+  industry,
+  created_date,
+  rating,
+  website
 from
-  salesforce_account;
+  salesforce_account
 ```
 
-### List Active users
+### List number of accounts by industry
 
 ```sql
 select
-  username,
-  alias,
-  user_type,
-  is_active,
-  last_login_date
+  count(*),
+  industry
 from
-  salesforce_user
-where
-  is_active;
+  salesforce_account
+group by
+  industry;
 ```
 
-### List Standard users
+### List number of accounts by ownership
 
 ```sql
 select
-  username,
-  alias,
-  user_type,
-  is_active,
-  last_login_date
+  count(*),
+  ownership
 from
-  salesforce_user
+  salesforce_account
+group by
+  ownership;
+```
+
+### List accounts with hot rating
+
+```sql
+select
+  id,
+  name,
+  description,
+  annual_revenue,
+  ownership,
+  industry,
+  created_date,
+  rating,
+  website
+from
+  salesforce_account
 where
-  user_type = 'Standard';
+  rating = 'Hot'
 ```
