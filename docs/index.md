@@ -112,7 +112,7 @@ connection "salesforce" {
   # client_id = "YOUR_SALESFORCE_CLIENT_ID"
 
   # List of salesforce tables to be generated"
-  # tables = ["Account", "User"]
+  # tables = ["Case", "Campaign"]
 }
 ```
 
