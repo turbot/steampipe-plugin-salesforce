@@ -48,17 +48,21 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 
 	staticTables := []string{"Account", "AccountContactRole", "Asset", "Contact", "Contract", "Lead", "Opportunity", "OpportunityContactRole", "Order", "Pricebook2", "Product2", "User"}
 
-	var wgd sync.WaitGroup
-	wgd.Add(len(staticTables))
 	dynamicColumnsMap := map[string]dynamicMap{}
-	for _, st := range staticTables {
-		go func(staticTable string) {
-			defer wgd.Done()
-			dynamicCols, dynamicKeyColumns := dynamicColumns(ctx, client, staticTable, p)
-			dynamicColumnsMap[staticTable] = dynamicMap{dynamicCols, dynamicKeyColumns}
-		}(st)
+
+	// If salesorce client was obtained, don't generate dynamic columns
+	if client != nil {
+		var wgd sync.WaitGroup
+		wgd.Add(len(staticTables))
+		for _, st := range staticTables {
+			go func(staticTable string) {
+				defer wgd.Done()
+				dynamicCols, dynamicKeyColumns := dynamicColumns(ctx, client, staticTable, p)
+				dynamicColumnsMap[staticTable] = dynamicMap{dynamicCols, dynamicKeyColumns}
+			}(st)
+		}
+		wgd.Wait()
 	}
-	wgd.Wait()
 
 	// Initialize tables with static tables with static and dynamic columns(if credentials are set)
 	tables := map[string]*plugin.Table{
