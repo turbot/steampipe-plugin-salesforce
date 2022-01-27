@@ -97,23 +97,24 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 
 	var wg sync.WaitGroup
 	wg.Add(len(salesforceTables))
-	for i, table := range salesforceTables {
-		tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(table, substitution))
-		ctx = context.WithValue(ctx, contextKey("PluginTableName"), tableName)
-		plugin.Logger(ctx).Debug("salesforce.pluginTableDefinitions", "SALESFORCE_OBJECT_NAME", table, "STEAMPIPE_TABLE_NAME", tableName)
-		ctx = context.WithValue(ctx, contextKey("SalesforceTableName"), table)
+	for _, sfTable := range salesforceTables {
+		tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(sfTable, substitution))
 		if tables[tableName] != nil {
 			wg.Done()
 			continue
 		}
-		go func(i int) {
+		go func(name string) {
 			defer wg.Done()
+			tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(name, substitution))
+			plugin.Logger(ctx).Debug("salesforce.pluginTableDefinitions", "SALESFORCE_OBJECT_NAME", name, "STEAMPIPE_TABLE_NAME", tableName)
+			ctx = context.WithValue(ctx, contextKey("PluginTableName"), tableName)
+			ctx = context.WithValue(ctx, contextKey("SalesforceTableName"), name)
 			table := generateDynamicTables(ctx, p)
 			// Ignore if the requested Salesforce object is not present.
 			if table != nil {
 				tables[tableName] = table
 			}
-		}(i)
+		}(sfTable)
 	}
 	wg.Wait()
 	return tables, nil
@@ -208,7 +209,7 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 
 	Table := plugin.Table{
 		Name:        tableName,
-		Description: fmt.Sprintf("Salesforce %s.", salesforceObjectMetadata["label"]),
+		Description: fmt.Sprintf("Represents salesforce %s.", salesforceObjectMetadata["name"]),
 		List: &plugin.ListConfig{
 			KeyColumns: keyColumns,
 			Hydrate:    listSalesforceObjectsByTable(salesforceTableName, cols),
