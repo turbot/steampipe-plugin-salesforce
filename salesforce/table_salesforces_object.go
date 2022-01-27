@@ -12,7 +12,6 @@ import (
 
 func listSalesforceObjectsByTable(tableName string, cols []*plugin.Column) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-		plugin.Logger(ctx).Debug("salesforce.listSalesforceObjectsByTable", "Table_Name", d.Connection.Name)
 		client, err := connect(ctx, d)
 		if err != nil {
 			plugin.Logger(ctx).Error("salesforce.listSalesforceObjectsByTable", "connection error", err)
@@ -20,6 +19,7 @@ func listSalesforceObjectsByTable(tableName string, cols []*plugin.Column) func(
 		}
 		if client == nil {
 			plugin.Logger(ctx).Error("salesforce.listSalesforceObjectsByTable", "client_not_found: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+			return nil, fmt.Errorf("salesforce.listSalesforceObjectsByTable: client_not_found, unable to query table %s because of invalid steampipe salesforce configuration", d.Table.Name)
 		}
 
 		query := generateQuery(d.QueryContext.Columns, tableName)
@@ -79,6 +79,7 @@ func getSalesforceObjectbyID(tableName string) func(ctx context.Context, d *plug
 		}
 		if client == nil {
 			plugin.Logger(ctx).Error("salesforce.getSalesforceObjectbyID", "client_not_found: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+			return nil, fmt.Errorf("salesforce.getSalesforceObjectbyID: client_not_found, unable to query table %s because of invalid steampipe salesforce configuration", d.Table.Name)
 		}
 
 		obj := client.SObject(tableName).Get(id)
