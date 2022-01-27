@@ -105,7 +105,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		go func(name string) {
 			defer wg.Done()
 			tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(name, substitution))
-			plugin.Logger(ctx).Debug("salesforce.pluginTableDefinitions", "SALESFORCE_OBJECT_NAME", name, "STEAMPIPE_TABLE_NAME", tableName)
+			plugin.Logger(ctx).Debug("salesforce.pluginTableDefinitions", "object_name", name, "table_name", tableName)
 			ctx = context.WithValue(ctx, contextKey("PluginTableName"), tableName)
 			ctx = context.WithValue(ctx, contextKey("SalesforceTableName"), name)
 			table := generateDynamicTables(ctx, p)
