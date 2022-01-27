@@ -18,6 +18,9 @@ func listSalesforceObjectsByTable(tableName string, cols []*plugin.Column) func(
 			plugin.Logger(ctx).Error("salesforce.listSalesforceObjectsByTable", "connection error", err)
 			return nil, err
 		}
+		if client == nil {
+			plugin.Logger(ctx).Error("salesforce.listSalesforceObjectsByTable", "client_not_found: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+		}
 
 		query := generateQuery(d.QueryContext.Columns, tableName)
 		condition := buildQueryFromQuals(d.Quals, cols)
@@ -73,6 +76,9 @@ func getSalesforceObjectbyID(tableName string) func(ctx context.Context, d *plug
 		if err != nil {
 			plugin.Logger(ctx).Error("salesforce.getSalesforceObjectbyID", "connection error", err)
 			return nil, err
+		}
+		if client == nil {
+			plugin.Logger(ctx).Error("salesforce.getSalesforceObjectbyID", "client_not_found: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
 		}
 
 		obj := client.SObject(tableName).Get(id)
