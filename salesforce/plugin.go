@@ -55,7 +55,6 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		go func(staticTable string) {
 			defer wgd.Done()
 			dynamicCols, dynamicKeyColumns := dynamicColumns(ctx, client, staticTable, p)
-			// Ignore if the requested Salesforce object is not present.
 			dynamicColumnsMap[staticTable] = dynamicMap{dynamicCols, dynamicKeyColumns}
 		}(st)
 	}
