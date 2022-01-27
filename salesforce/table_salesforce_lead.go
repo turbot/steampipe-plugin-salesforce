@@ -7,21 +7,20 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 )
 
-func SalesforceLead(ctx context.Context, p *plugin.Plugin) *plugin.Table {
+func SalesforceLead(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *plugin.Table {
 	tableName := "Lead"
-	cols, keyColumns := dynamicColumns(ctx, tableName, p)
 	return &plugin.Table{
 		Name:        "salesforce_lead",
 		Description: "Represents a prospect or lead.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName, cols),
-			KeyColumns: keyColumns,
+			Hydrate:    listSalesforceObjectsByTable(tableName, dm.cols),
+			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{
 			Hydrate:    getSalesforceObjectbyID(tableName),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
-		Columns: mergeTableColumns(ctx, p, cols, []*plugin.Column{
+		Columns: mergeTableColumns(ctx, p, dm.cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the lead in Salesforce."},
 			{Name: "email", Type: proto.ColumnType_STRING, Description: "The lead's email address."},

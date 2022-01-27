@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/iancoleman/strcase"
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
@@ -32,22 +33,48 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 	return p
 }
 
+type dynamicMap struct {
+	cols       []*plugin.Column
+	keyColumns plugin.KeyColumnSlice
+}
+
 func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Table, error) {
+	// If unable to connect to salesforce instance, log warning and abort dynamic table creation
+	client, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
+	if err != nil {
+		// do not abort the plugin as static table needs to be generated
+		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+	}
+
+	staticTables := []string{"Account", "AccountContactRole", "Asset", "Contact", "Contract", "Lead", "Opportunity", "OpportunityContactRole", "Order", "Pricebook2", "Product2", "User"}
+
+	var wgd sync.WaitGroup
+	wgd.Add(len(staticTables))
+	dynamicColumnsMap := map[string]dynamicMap{}
+	for _, st := range staticTables {
+		go func(staticTable string) {
+			defer wgd.Done()
+			dynamicCols, dynamicKeyColumns := dynamicColumns(ctx, client, staticTable, p)
+			// Ignore if the requested Salesforce object is not present.
+			dynamicColumnsMap[staticTable] = dynamicMap{dynamicCols, dynamicKeyColumns}
+		}(st)
+	}
+	wgd.Wait()
 
 	// Initialize tables with static tables with static and dynamic columns(if credentials are set)
 	tables := map[string]*plugin.Table{
-		"salesforce_account":                  SalesforceAccount(ctx, p),
-		"salesforce_account_contact_role":     SalesforceAccountContactRole(ctx, p),
-		"salesforce_asset":                    SalesforceAsset(ctx, p),
-		"salesforce_contact":                  SalesforceContact(ctx, p),
-		"salesforce_contract":                 SalesforceContract(ctx, p),
-		"salesforce_lead":                     SalesforceLead(ctx, p),
-		"salesforce_opportunity":              SalesforceOpportunity(ctx, p),
-		"salesforce_opportunity_contact_role": SalesforceOpportunityContactRole(ctx, p),
-		"salesforce_order":                    SalesforceOrder(ctx, p),
-		"salesforce_pricebook":                SalesforcePricebook(ctx, p),
-		"salesforce_product":                  SalesforceProduct(ctx, p),
-		"salesforce_user":                     SalesforceUser(ctx, p),
+		"salesforce_account":                  SalesforceAccount(ctx, dynamicColumnsMap["Account"], p),
+		"salesforce_account_contact_role":     SalesforceAccountContactRole(ctx, dynamicColumnsMap["AccountContactRole"], p),
+		"salesforce_asset":                    SalesforceAsset(ctx, dynamicColumnsMap["Asset"], p),
+		"salesforce_contact":                  SalesforceContact(ctx, dynamicColumnsMap["Contact"], p),
+		"salesforce_contract":                 SalesforceContract(ctx, dynamicColumnsMap["Contract"], p),
+		"salesforce_lead":                     SalesforceLead(ctx, dynamicColumnsMap["Lead"], p),
+		"salesforce_opportunity":              SalesforceOpportunity(ctx, dynamicColumnsMap["Opportunity"], p),
+		"salesforce_opportunity_contact_role": SalesforceOpportunityContactRole(ctx, dynamicColumnsMap["OpportunityContactRole"], p),
+		"salesforce_order":                    SalesforceOrder(ctx, dynamicColumnsMap["Order"], p),
+		"salesforce_pricebook":                SalesforcePricebook(ctx, dynamicColumnsMap["Pricebook2"], p),
+		"salesforce_product":                  SalesforceProduct(ctx, dynamicColumnsMap["Product2"], p),
+		"salesforce_user":                     SalesforceUser(ctx, dynamicColumnsMap["User"], p),
 	}
 
 	var re = regexp.MustCompile(`\d+`)
@@ -63,35 +90,32 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		}
 	}
 
-	// If unable to connect to salesforce instance, log warning and abort dynamic table creation
-	client, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
-	if err != nil {
-		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
-		return tables, nil
-	}
 	if client == nil {
 		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "client_not_found: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
 		return tables, nil
 	}
-	// var re = regexp.MustCompile(`\d+`)
 
-	for _, table := range salesforceTables {
-		ctx = context.WithValue(ctx, contextKey("SalesforceTableName"), table)
+	var wg sync.WaitGroup
+	wg.Add(len(salesforceTables))
+	for i, table := range salesforceTables {
 		tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(table, substitution))
 		ctx = context.WithValue(ctx, contextKey("PluginTableName"), tableName)
 		plugin.Logger(ctx).Debug("salesforce.pluginTableDefinitions", "SALESFORCE_OBJECT_NAME", table, "STEAMPIPE_TABLE_NAME", tableName)
-
+		ctx = context.WithValue(ctx, contextKey("SalesforceTableName"), table)
 		if tables[tableName] != nil {
+			wg.Done()
 			continue
-		} else {
+		}
+		go func(i int) {
+			defer wg.Done()
 			table := generateDynamicTables(ctx, p)
 			// Ignore if the requested Salesforce object is not present.
 			if table != nil {
 				tables[tableName] = table
 			}
-		}
-
+		}(i)
 	}
+	wg.Wait()
 	return tables, nil
 }
 

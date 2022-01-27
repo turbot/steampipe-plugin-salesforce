@@ -210,15 +210,10 @@ func mergeTableColumns(ctx context.Context, p *plugin.Plugin, dynamicColumns []*
 }
 
 // dynamicColumns:: Returns list coulms for a salesforce object
-func dynamicColumns(ctx context.Context, salesforceTableName string, p *plugin.Plugin) ([]*plugin.Column, plugin.KeyColumnSlice) {
+func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceTableName string, p *plugin.Plugin) ([]*plugin.Column, plugin.KeyColumnSlice) {
 	// If unable to connect to salesforce instance, log warning and abort dynamic table creation
-	client, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
-	if err != nil {
-		plugin.Logger(ctx).Error("salesforce.dynamicColumns", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
-		return []*plugin.Column{}, plugin.KeyColumnSlice{}
-	}
 	if client == nil {
-		plugin.Logger(ctx).Error("salesforce.dynamicColumns", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+		plugin.Logger(ctx).Warn("salesforce.dynamicColumns", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", "")
 		return []*plugin.Column{}, plugin.KeyColumnSlice{}
 	}
 
