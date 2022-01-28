@@ -173,6 +173,18 @@ func buildQueryFromQuals(equalQuals plugin.KeyColumnQualMap, tableColumns []*plu
 						case "=":
 							filters = append(filters, fmt.Sprintf("%s %s %f", getSalesforceColumnName(filterQualItem.Name), qual.Operator, value.GetDoubleValue()))
 						}
+						// TODO - Works fine for salesforce dateTime fields but for the date fields
+						// Need a way to distinguish b/w date and dateTime fields
+						// case proto.ColumnType_TIMESTAMP:
+						// 	switch qual.Operator {
+						// 	case "=", ">=", ">", "<=", "<":
+						// 		filters = append(filters, fmt.Sprintf("%s %s %s", getSalesforceColumnName(filterQualItem.Name), qual.Operator, value.GetTimestampValue().AsTime().Format("2006-01-02T15:04:05Z")))
+						// 	}
+
+						// steampipe-plugin-salesforce.plugin: [INFO]  salesforce.listSalesforceObjectsByTable: query="SELECT Name, Industry, SlaExpirationDate__c FROM Account where SlaExpirationDate__c <= 2022-01-18T09:44:02Z"
+						// steampipe-plugin-salesforce.plugin: [INFO]  [simpleforce] request failed, 400
+						// steampipe-plugin-salesforce.plugin: [INFO]  [simpleforce] Failed resp.body:  [{"message":"\nSlaExpirationDate__c FROM Account where SlaExpirationDate__c <= 2022-01-18T09:44:02Z\n  ^\nERROR at Row:1:Column:64\nvalue of filter criterion for field 'SlaExpirationDate__c' must be of type date and should not be enclosed in quotes","errorCode":"INVALID_FIELD"}]
+
 					}
 				}
 			}
