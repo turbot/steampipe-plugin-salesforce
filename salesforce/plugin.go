@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/iancoleman/strcase"
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
@@ -85,7 +84,6 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		"salesforce_product":                   SalesforceProduct(ctx, dynamicColumnsMap["Product2"], p),
 		"salesforce_user":                      SalesforceUser(ctx, dynamicColumnsMap["User"], p),
 	}
-	plugin.Logger(ctx).Info("############ TABLES", "END", time.Now())
 
 	var re = regexp.MustCompile(`\d+`)
 	var substitution = ``
