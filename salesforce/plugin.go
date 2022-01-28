@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/iancoleman/strcase"
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
@@ -49,6 +50,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	staticTables := []string{"Account", "AccountContactRole", "Asset", "Contact", "Contract", "Lead", "Opportunity", "OpportunityContactRole", "Order", "Pricebook2", "Product2", "User", "PermissionSet", "PermissionSetAssignment"}
 
 	dynamicColumnsMap := map[string]dynamicMap{}
+	var mapLock sync.Mutex
 
 	// If salesorce client was obtained, don't generate dynamic columns
 	if client != nil {
@@ -58,7 +60,9 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 			go func(staticTable string) {
 				defer wgd.Done()
 				dynamicCols, dynamicKeyColumns := dynamicColumns(ctx, client, staticTable, p)
+				mapLock.Lock()
 				dynamicColumnsMap[staticTable] = dynamicMap{dynamicCols, dynamicKeyColumns}
+				defer mapLock.Unlock()
 			}(st)
 		}
 		wgd.Wait()
@@ -81,6 +85,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		"salesforce_product":                   SalesforceProduct(ctx, dynamicColumnsMap["Product2"], p),
 		"salesforce_user":                      SalesforceUser(ctx, dynamicColumnsMap["User"], p),
 	}
+	plugin.Logger(ctx).Info("############ TABLES", "END", time.Now())
 
 	var re = regexp.MustCompile(`\d+`)
 	var substitution = ``
