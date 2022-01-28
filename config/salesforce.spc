@@ -18,4 +18,7 @@ connection "salesforce" {
 
   # List of salesforce tables to be generated"
   # tables = ["Case", "Campaign"]
+
+  # Version of the salesforce API
+  # api_version = "43.0"
 }
