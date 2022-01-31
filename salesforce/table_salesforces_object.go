@@ -3,6 +3,7 @@ package salesforce
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/turbot/steampipe-plugin-sdk/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/plugin/transform"
@@ -28,7 +29,7 @@ func listSalesforceObjectsByTable(tableName string, cols []*plugin.Column) func(
 		if condition != "" {
 			query = fmt.Sprintf("%s where %s", query, condition)
 		}
-		// plugin.Logger(ctx).Debug("salesforce.listSalesforceObjectsByTable", "query", query)
+		plugin.Logger(ctx).Info("salesforce.listSalesforceObjectsByTable", "query", query)
 
 		for {
 			result, err := client.Query(query)
@@ -69,8 +70,11 @@ func listSalesforceObjectsByTable(tableName string, cols []*plugin.Column) func(
 
 func getSalesforceObjectbyID(tableName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-		plugin.Logger(ctx).Debug("salesforce.getSalesforceObjectbyID", "Table_Name", d.Table.Name)
+		plugin.Logger(ctx).Info("salesforce.getSalesforceObjectbyID", "Table_Name", d.Table.Name)
 		id := d.KeyColumnQualString("id")
+		if strings.TrimSpace(id) == "" {
+			return nil, nil
+		}
 
 		client, err := connect(ctx, d)
 		if err != nil {
@@ -85,18 +89,18 @@ func getSalesforceObjectbyID(tableName string) func(ctx context.Context, d *plug
 		obj := client.SObject(tableName).Get(id)
 		if obj == nil {
 			// Object doesn't exist, handle the error
-			plugin.Logger(ctx).Warn("salesforce.getSalesforceObjectbyID", fmt.Sprintf("%s with Id \"%s\" not found", tableName, id))
+			plugin.Logger(ctx).Warn("salesforce.getSalesforceObjectbyID", fmt.Sprintf("%s with id \"%s\" not found", tableName, id))
 			return nil, nil
 		}
 
-		opportunityContactRole := new(map[string]interface{})
-		err = decodeQueryResult(ctx, obj, opportunityContactRole)
+		object := new(map[string]interface{})
+		err = decodeQueryResult(ctx, obj, object)
 		if err != nil {
 			plugin.Logger(ctx).Error("salesforce.getSalesforceObjectbyID", "result decoding error", err)
 			return nil, err
 		}
 
-		return *opportunityContactRole, nil
+		return *object, nil
 	}
 }
 
