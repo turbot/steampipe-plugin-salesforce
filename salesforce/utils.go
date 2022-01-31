@@ -39,17 +39,17 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 	}
 
 	if config.Password == nil {
-		plugin.Logger(ctx).Warn("'password' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
+		plugin.Logger(ctx).Warn("salesforce.connectRaw", "'password' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
 		return nil, nil
 	}
 
 	if config.Token == nil {
-		plugin.Logger(ctx).Warn("'token' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
+		plugin.Logger(ctx).Warn("salesforce.connectRaw", "'token' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
 		return nil, nil
 	}
 
 	if config.User == nil {
-		plugin.Logger(ctx).Warn("'user' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
+		plugin.Logger(ctx).Warn("salesforce.connectRaw", "'user' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
 		return nil, nil
 	}
 
