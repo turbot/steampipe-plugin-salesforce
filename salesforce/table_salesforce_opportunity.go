@@ -13,7 +13,7 @@ func SalesforceOpportunity(ctx context.Context, dm dynamicMap, p *plugin.Plugin)
 		Name:        "salesforce_opportunity",
 		Description: "Represents an opportunity, which is a sale or pending deal.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName, dm.cols),
+			Hydrate:    listSalesforceObjectsByTable(tableName),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

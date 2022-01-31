@@ -13,7 +13,7 @@ func SalesforcePermissionSetAssignment(ctx context.Context, dm dynamicMap, p *pl
 		Name:        "salesforce_permission_set_assignment",
 		Description: "Represents the association between a User and a PermissionSet.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName, dm.cols),
+			Hydrate:    listSalesforceObjectsByTable(tableName),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

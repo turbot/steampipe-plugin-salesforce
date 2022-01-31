@@ -11,7 +11,7 @@ import (
 
 //// LIST HYDRATE FUNCTION
 
-func listSalesforceObjectsByTable(tableName string, cols []*plugin.Column) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+func listSalesforceObjectsByTable(tableName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 		client, err := connect(ctx, d)
 		if err != nil {
@@ -23,13 +23,12 @@ func listSalesforceObjectsByTable(tableName string, cols []*plugin.Column) func(
 			return nil, fmt.Errorf("salesforce.listSalesforceObjectsByTable: client_not_found, unable to query table %s because of invalid steampipe salesforce configuration", d.Table.Name)
 		}
 
-		query := generateQuery(d.QueryContext.Columns, tableName)
-		condition := buildQueryFromQuals(d.Quals, cols)
-		// plugin.Logger(ctx).Debug("salesforce.listSalesforceObjectsByTable", "query condition", condition)
+		query := generateQuery(d.Table.Columns, tableName)
+		condition := buildQueryFromQuals(d.Quals, d.Table.Columns)
+		plugin.Logger(ctx).Info("salesforce.listSalesforceObjectsByTable", "table_name", d.Table.Name, "query_condition", condition)
 		if condition != "" {
 			query = fmt.Sprintf("%s where %s", query, condition)
 		}
-		plugin.Logger(ctx).Info("salesforce.listSalesforceObjectsByTable", "query", query)
 
 		for {
 			result, err := client.Query(query)

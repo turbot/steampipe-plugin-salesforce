@@ -13,7 +13,7 @@ func SalesforceContact(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *pl
 		Name:        "salesforce_contact",
 		Description: "Represents a contact, which is a person associated with an account.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName, dm.cols),
+			Hydrate:    listSalesforceObjectsByTable(tableName),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

@@ -13,7 +13,7 @@ func SalesforceLead(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *plugi
 		Name:        "salesforce_lead",
 		Description: "Represents a prospect or lead.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName, dm.cols),
+			Hydrate:    listSalesforceObjectsByTable(tableName),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

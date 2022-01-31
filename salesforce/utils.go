@@ -74,10 +74,10 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 }
 
 // generateQuery:: returns sql query based on the column names, table name passed
-func generateQuery(columns []string, tableName string) string {
+func generateQuery(columns []*plugin.Column, tableName string) string {
 	var queryColumns []string
 	for _, column := range columns {
-		queryColumns = append(queryColumns, getSalesforceColumnName(column))
+		queryColumns = append(queryColumns, getSalesforceColumnName(column.Name))
 	}
 
 	return fmt.Sprintf("SELECT %s FROM %s", strings.Join(queryColumns, ", "), tableName)

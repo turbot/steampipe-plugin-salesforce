@@ -13,7 +13,7 @@ func SalesforcePermissionSet(ctx context.Context, dm dynamicMap, p *plugin.Plugi
 		Name:        "salesforce_permission_set",
 		Description: "Represents a set of permissions that's used to grant more access to one or more users without changing their profile or reassigning profiles.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName, dm.cols),
+			Hydrate:    listSalesforceObjectsByTable(tableName),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

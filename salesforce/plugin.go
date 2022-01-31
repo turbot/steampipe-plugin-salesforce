@@ -220,7 +220,7 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 		Description: fmt.Sprintf("Represents salesforce %s.", salesforceObjectMetadata["name"]),
 		List: &plugin.ListConfig{
 			KeyColumns: keyColumns,
-			Hydrate:    listSalesforceObjectsByTable(salesforceTableName, cols),
+			Hydrate:    listSalesforceObjectsByTable(salesforceTableName),
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),
