@@ -110,7 +110,7 @@ connection "salesforce" {
   # Client Id of Salesforce from Connected App"
   # client_id = "YOUR_SALESFORCE_CLIENT_ID"
 
-  # List of salesforce tables to be generated"
+  # List of salesforce tables to be generated. Salesforce Object API Name should be used here""
   # tables = ["Case", "Campaign"]
 
   # Version of the salesforce API
