@@ -81,12 +81,11 @@ steampipe plugin install salesforce
 #### Reset Your Security Token
 
 - [Reset your security token](https://help.salesforce.com/articleView?id=user_security_token.htm&type=5)
-- From your personal settings, enter Reset in the Quick Find box, then select Reset My Security Toke
+- From your personal settings, enter `Reset` in the `Quick Find` box, then select `Reset My Security Token`
 - Click Reset Security Token. The new security token is sent to the email address in your Salesforce personal settings.
 
-  A new security token is emailed to you when you reset your password. Or you can reset your token separately.
-
-  After generating the `ClientId and Security Token` with the above steps. Update the value in `~/steampipe/config/salesforce.spc`
+  - A new security token is emailed to you when you reset your password. Or you can reset your token separately.
+  - After generating the `ClientId and Security Token` with the above steps. Update the value in `~/steampipe/config/salesforce.spc`
 
 ### Configuration
 
