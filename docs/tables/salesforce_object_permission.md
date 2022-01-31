@@ -2,9 +2,6 @@
 
 Represents the enabled object permissions for the parent PermissionSet.
 
-**Note**:
-This table has one field for each permission with pattern `Permissions_PermissionName` like `permissions_edit_task`. If true, users assigned to this permission set have the named permission. The number of fields varies depending on the permissions for the organization and license type.
-
 ## Examples
 
 ### Basic info
