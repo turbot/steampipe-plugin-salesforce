@@ -1,6 +1,6 @@
 # Table: salesforce_permission_set_assignment
 
-Represents the association between a User and a PermissionSet.
+Represents the association between a `salesforce_user` and `salesforce_permission_set_assignment`.
 
 ## Examples
 
@@ -9,57 +9,47 @@ Represents the association between a User and a PermissionSet.
 ```sql
 select
   id,
-  name,
-  description,
-  annual_revenue,
-  ownership,
-  industry,
-  created_date,
-  rating,
-  website
+  assignee_id,
+  permission_set_group_id,
+  permission_set_id
 from
-  salesforce_account
+  salesforce_permission_set_assignment;
 ```
 
-### List number of accounts by industry type
+### List users with permission to "Modify All Data"
 
 ```sql
+with sps as (
+  select
+    id,
+    name,
+    description,
+    label
+  from
+    salesforce_permission_set
+  where
+    permissions_modify_all_data
+),
+spsa as (
+  select
+    *
+  from
+    salesforce_permission_set_assignment
+)
 select
-  count(*),
-  industry
+  su.name as user_name,
+  su.email as user_email,
+  su.username as user_username,
+  spsa.assignee_id as user_id,
+  sps.id as permission_set_id,
+  sps.name as permission_set_name,
+  sps.description as permission_set_description,
+  sps.label as permission_set_label
 from
-  salesforce_account
-group by
-  industry;
-```
-
-### List number of accounts by ownership
-
-```sql
-select
-  count(*),
-  ownership
-from
-  salesforce_account
-group by
-  ownership;
-```
-
-### List accounts with hot rating
-
-```sql
-select
-  id,
-  name,
-  description,
-  annual_revenue,
-  ownership,
-  industry,
-  created_date,
-  rating,
-  website
-from
-  salesforce_account
+  sps,
+  spsa,
+  salesforce_user as su
 where
-  rating = 'Hot'
+  sps.id = spsa.permission_set_id
+  and spsa.assignee_id = su.id;
 ```
