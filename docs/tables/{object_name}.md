@@ -1,6 +1,6 @@
 # Table: {metric_name}
 
-Query data from the object called `{object_name}`. A table is automatically created to represent each Object.
+Query data from the object called `{object_name}`. A table is automatically created to represent each Object in the tables argument in steampipe configuration.
 
 For the connection configuration:
 
@@ -29,6 +29,7 @@ select * from salesforce_custom_app__c
 ```
 
 However, please note that this could be slow depending on how many objects are in your environment.
+**NOTE:** Salesforce custom object and custom columns are suffixed with `__c`
 
 ## Examples
 
