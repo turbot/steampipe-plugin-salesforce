@@ -13,7 +13,7 @@ func SalesforceUser(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *plugi
 		Name:        "salesforce_user",
 		Description: "Represents a user in organization.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName),
+			Hydrate:    listSalesforceObjectsByTable(tableName, dm.salesforceColumns),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

@@ -13,7 +13,7 @@ func SalesforceAccount(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *pl
 		Name:        "salesforce_account",
 		Description: "Represents an individual account, which is an organization or person involved with business (such as customers, competitors, and partners).",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName),
+			Hydrate:    listSalesforceObjectsByTable(tableName, dm.salesforceColumns),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

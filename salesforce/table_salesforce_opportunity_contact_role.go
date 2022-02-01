@@ -13,7 +13,7 @@ func SalesforceOpportunityContactRole(ctx context.Context, dm dynamicMap, p *plu
 		Name:        "salesforce_opportunity_contact_role",
 		Description: "Represents the role that a Contact plays on an Opportunity.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName),
+			Hydrate:    listSalesforceObjectsByTable(tableName, dm.salesforceColumns),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

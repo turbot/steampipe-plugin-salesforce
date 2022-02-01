@@ -13,7 +13,7 @@ func SalesforceOrder(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *plug
 		Name:        "salesforce_order",
 		Description: "Represents an order associated with a contract or an account.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName),
+			Hydrate:    listSalesforceObjectsByTable(tableName, dm.salesforceColumns),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

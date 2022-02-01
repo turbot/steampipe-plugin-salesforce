@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/iancoleman/strcase"
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
@@ -34,11 +35,13 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 }
 
 type dynamicMap struct {
-	cols       []*plugin.Column
-	keyColumns plugin.KeyColumnSlice
+	cols              []*plugin.Column
+	keyColumns        plugin.KeyColumnSlice
+	salesforceColumns map[string]string
 }
 
 func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Table, error) {
+	plugin.Logger(ctx).Info("salesforce.pluginTableDefinitions", "START", time.Now())
 	// If unable to connect to salesforce instance, log warning and abort dynamic table creation
 	client, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
 	if err != nil {
@@ -58,9 +61,9 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		for _, st := range staticTables {
 			go func(staticTable string) {
 				defer wgd.Done()
-				dynamicCols, dynamicKeyColumns := dynamicColumns(ctx, client, staticTable, p)
+				dynamicCols, dynamicKeyColumns, salesforceCols := dynamicColumns(ctx, client, staticTable, p)
 				mapLock.Lock()
-				dynamicColumnsMap[staticTable] = dynamicMap{dynamicCols, dynamicKeyColumns}
+				dynamicColumnsMap[staticTable] = dynamicMap{dynamicCols, dynamicKeyColumns, salesforceCols}
 				defer mapLock.Unlock()
 			}(st)
 		}
@@ -126,6 +129,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		}(sfTable)
 	}
 	wg.Wait()
+	plugin.Logger(ctx).Info("salesforce.pluginTableDefinitions", "END", time.Now())
 	return tables, nil
 }
 
@@ -149,6 +153,7 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 
 	// Top columns
 	cols := []*plugin.Column{}
+	salesforceCols := map[string]string{}
 	// Key columns
 	keyColumns := plugin.KeyColumnSlice{}
 
@@ -189,6 +194,8 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 			Description: fmt.Sprintf("The %s.", properties["label"].(string)),
 			Transform:   transform.FromP(getFieldFromSObjectMap, fieldName),
 		}
+		// Adding column type in the map to help in qual handling
+		salesforceCols[columnFieldName] = fieldType
 
 		// Set column type based on the `soapType` from salesforce schema
 		switch fieldType {
@@ -211,17 +218,14 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 			column.Type = proto.ColumnType_JSON
 		}
 		cols = append(cols, &column)
-
 	}
-
-	// query := fmt.Sprintf("SELECT %s FROM %s", strings.Join(queryColumns, ", "), salesforceTableName)
 
 	Table := plugin.Table{
 		Name:        tableName,
 		Description: fmt.Sprintf("Represents salesforce %s.", salesforceObjectMetadata["name"]),
 		List: &plugin.ListConfig{
 			KeyColumns: keyColumns,
-			Hydrate:    listSalesforceObjectsByTable(salesforceTableName),
+			Hydrate:    listSalesforceObjectsByTable(salesforceTableName, salesforceCols),
 		},
 		Get: &plugin.GetConfig{
 			KeyColumns: plugin.SingleColumn("id"),

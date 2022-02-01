@@ -13,7 +13,7 @@ func SalesforceAsset(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *plug
 		Name:        "salesforce_asset",
 		Description: "Represents an item of commercial value, such as a product sold by your company or a competitor, that a customer has purchased and installed.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName),
+			Hydrate:    listSalesforceObjectsByTable(tableName, dm.salesforceColumns),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

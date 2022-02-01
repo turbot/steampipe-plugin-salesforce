@@ -13,7 +13,7 @@ func SalesforceObjectPermission(ctx context.Context, dm dynamicMap, p *plugin.Pl
 		Name:        "salesforce_object_permission",
 		Description: "Represents the enabled object permissions for the parent PermissionSet.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName),
+			Hydrate:    listSalesforceObjectsByTable(tableName, dm.salesforceColumns),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

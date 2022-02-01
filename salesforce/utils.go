@@ -103,7 +103,7 @@ func decodeQueryResult(ctx context.Context, response interface{}, respObject int
 // buildQueryFromQuals :: generate SOQL based on the contions specified in sql query
 // refrences
 // - https://developer.salesforce.com/docs/atlas.en-us.234.0.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_select_comparisonoperators.htm
-func buildQueryFromQuals(equalQuals plugin.KeyColumnQualMap, tableColumns []*plugin.Column) string {
+func buildQueryFromQuals(equalQuals plugin.KeyColumnQualMap, tableColumns []*plugin.Column, salesforceCols map[string]string) string {
 	filters := []string{}
 
 	for _, filterQualItem := range tableColumns {
@@ -173,18 +173,20 @@ func buildQueryFromQuals(equalQuals plugin.KeyColumnQualMap, tableColumns []*plu
 						case "=":
 							filters = append(filters, fmt.Sprintf("%s %s %f", getSalesforceColumnName(filterQualItem.Name), qual.Operator, value.GetDoubleValue()))
 						}
-						// TODO - Works fine for salesforce dateTime fields but for the date fields
-						// Need a way to distinguish b/w date and dateTime fields
-						// case proto.ColumnType_TIMESTAMP:
-						// 	switch qual.Operator {
-						// 	case "=", ">=", ">", "<=", "<":
-						// 		filters = append(filters, fmt.Sprintf("%s %s %s", getSalesforceColumnName(filterQualItem.Name), qual.Operator, value.GetTimestampValue().AsTime().Format("2006-01-02T15:04:05Z")))
-						// 	}
-
-						// steampipe-plugin-salesforce.plugin: [INFO]  salesforce.listSalesforceObjectsByTable: query="SELECT Name, Industry, SlaExpirationDate__c FROM Account where SlaExpirationDate__c <= 2022-01-18T09:44:02Z"
-						// steampipe-plugin-salesforce.plugin: [INFO]  [simpleforce] request failed, 400
-						// steampipe-plugin-salesforce.plugin: [INFO]  [simpleforce] Failed resp.body:  [{"message":"\nSlaExpirationDate__c FROM Account where SlaExpirationDate__c <= 2022-01-18T09:44:02Z\n  ^\nERROR at Row:1:Column:64\nvalue of filter criterion for field 'SlaExpirationDate__c' must be of type date and should not be enclosed in quotes","errorCode":"INVALID_FIELD"}]
-
+					// Need a way to distinguish b/w date and dateTime fields
+					case proto.ColumnType_TIMESTAMP:
+						// https://developer.salesforce.com/docs/atlas.en-us.234.0.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_select_dateformats.htm
+						if salesforceCols[filterQual.Name] == "date" {
+							switch qual.Operator {
+							case "=", ">=", ">", "<=", "<":
+								filters = append(filters, fmt.Sprintf("%s %s %s", getSalesforceColumnName(filterQualItem.Name), qual.Operator, value.GetTimestampValue().AsTime().Format("2006-01-02")))
+							}
+						} else {
+							switch qual.Operator {
+							case "=", ">=", ">", "<=", "<":
+								filters = append(filters, fmt.Sprintf("%s %s %s", getSalesforceColumnName(filterQualItem.Name), qual.Operator, value.GetTimestampValue().AsTime().Format("2006-01-02T15:04:05Z")))
+							}
+						}
 					}
 				}
 			}
@@ -222,15 +224,16 @@ func mergeTableColumns(ctx context.Context, p *plugin.Plugin, dynamicColumns []*
 }
 
 // dynamicColumns:: Returns list coulms for a salesforce object
-func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceTableName string, p *plugin.Plugin) ([]*plugin.Column, plugin.KeyColumnSlice) {
+func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceTableName string, p *plugin.Plugin) ([]*plugin.Column, plugin.KeyColumnSlice, map[string]string) {
 	sObjectMeta := client.SObject(salesforceTableName).Describe()
 	if sObjectMeta == nil {
 		plugin.Logger(ctx).Error("salesforce.dynamicColumns", fmt.Sprintf("Table %s not present in salesforce", salesforceTableName))
-		return []*plugin.Column{}, plugin.KeyColumnSlice{}
+		return []*plugin.Column{}, plugin.KeyColumnSlice{}, map[string]string{}
 	}
 
 	// Top columns
 	cols := []*plugin.Column{}
+	salesforceCols := map[string]string{}
 	// Key columns
 	keyColumns := plugin.KeyColumnSlice{}
 
@@ -269,6 +272,7 @@ func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceT
 			Description: fmt.Sprintf("The %s.", fields["label"].(string)),
 			Transform:   transform.FromP(getFieldFromSObjectMap, fieldName),
 		}
+		salesforceCols[columnFieldName] = fieldType
 
 		// Set column type based on the `soapType` from salesforce schema
 		switch fieldType {
@@ -293,7 +297,7 @@ func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceT
 		cols = append(cols, &column)
 	}
 
-	return cols, keyColumns
+	return cols, keyColumns, salesforceCols
 }
 
 // isColumnAvailable:: Checks if the column is not present in the existing columns slice

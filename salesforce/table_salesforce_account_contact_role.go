@@ -13,7 +13,7 @@ func SalesforceAccountContactRole(ctx context.Context, dm dynamicMap, p *plugin.
 		Name:        "salesforce_account_contact_role",
 		Description: "Represents the role that a Contact plays on an Account.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName),
+			Hydrate:    listSalesforceObjectsByTable(tableName, dm.salesforceColumns),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

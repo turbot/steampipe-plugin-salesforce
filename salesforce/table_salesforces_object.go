@@ -11,7 +11,7 @@ import (
 
 //// LIST HYDRATE FUNCTION
 
-func listSalesforceObjectsByTable(tableName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+func listSalesforceObjectsByTable(tableName string, salesforceCols map[string]string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 		client, err := connect(ctx, d)
 		if err != nil {
@@ -24,7 +24,7 @@ func listSalesforceObjectsByTable(tableName string) func(ctx context.Context, d 
 		}
 
 		query := generateQuery(d.Table.Columns, tableName)
-		condition := buildQueryFromQuals(d.Quals, d.Table.Columns)
+		condition := buildQueryFromQuals(d.Quals, d.Table.Columns, salesforceCols)
 		plugin.Logger(ctx).Info("salesforce.listSalesforceObjectsByTable", "table_name", d.Table.Name, "query_condition", condition)
 		if condition != "" {
 			query = fmt.Sprintf("%s where %s", query, condition)

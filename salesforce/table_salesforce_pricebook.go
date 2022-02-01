@@ -13,7 +13,7 @@ func SalesforcePricebook(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *
 		Name:        "salesforce_pricebook",
 		Description: "Represents a price book that contains the list of products that your org sells.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName),
+			Hydrate:    listSalesforceObjectsByTable(tableName, dm.salesforceColumns),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

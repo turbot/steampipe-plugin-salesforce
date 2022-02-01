@@ -13,7 +13,7 @@ func SalesforceProduct(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *pl
 		Name:        "salesforce_product",
 		Description: "Represents a product that org sells.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName),
+			Hydrate:    listSalesforceObjectsByTable(tableName, dm.salesforceColumns),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{

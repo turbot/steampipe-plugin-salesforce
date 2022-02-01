@@ -13,7 +13,7 @@ func SalesforceContract(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *p
 		Name:        "salesforce_contract",
 		Description: "Represents a contract (a business agreement) associated with an Account.",
 		List: &plugin.ListConfig{
-			Hydrate:    listSalesforceObjectsByTable(tableName),
+			Hydrate:    listSalesforceObjectsByTable(tableName, dm.salesforceColumns),
 			KeyColumns: dm.keyColumns,
 		},
 		Get: &plugin.GetConfig{
