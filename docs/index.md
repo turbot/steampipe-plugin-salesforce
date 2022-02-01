@@ -110,13 +110,22 @@ connection "salesforce" {
   # Client Id of Salesforce from Connected App"
   # client_id = "YOUR_SALESFORCE_CLIENT_ID"
 
-  # List of salesforce tables to be generated. Salesforce Object API Name should be used here""
-  # tables = ["Case", "Campaign"]
+  # List of salesforce tables to be generated. Salesforce Object API Name (refer https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_list.htm) should be used here."
+  # Currently plugin supports a standard set of Salesforce tables by default in the plugin. If there is a need to query an standard object from, you can add standard object in the tables list. Steampipe will automatically generate respective table for the connection.
+  # tables = ["Case", "Campaign", "CustomApp__c"]
 
   # Version of the salesforce API
   # api_version = "43.0"
 }
 ```
+
+## Custom Fields
+
+Salesforce support addition of the [custom fields](https://help.salesforce.com/s/articleView?id=sf.adding_fields.htm&type=5) to standard objects.
+
+**Note**: If you have set up Salesforce credentials correctly in Steampipe configuration. Steampipe will generate the tables schema with all the custom fields along with standard object fields dynamically.
+
+<!-- https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_list.htm -->
 
 ## Get involved
 

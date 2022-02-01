@@ -1,6 +1,6 @@
 # Table: {object_name}
 
-Query data from the object called `{object_name}`. A table is automatically created to represent each Object in the tables argument in steampipe configuration.
+Query data from the object called `{object_name}`. A table is automatically created to represent each Object in the `tables` argument in steampipe configuration.
 
 For the connection configuration:
 
@@ -11,6 +11,8 @@ connection "salesforce" {
   user     = "abcde@xyz.com"
   password = "dummy@9ATbuu"
   token    = "Y3NPBGO8qRV0RYlGPwldsmxv7"
+  # List of salesforce tables to be generated. Salesforce Object API Name (refer https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_list.htm) should be used here."
+  # Currently plugin supports a standard set of Salesforce tables by default in the plugin. If there is a need to query an standard object from, you can add standard object in the tables list. Steampipe will automatically generate respective table for the connection.
   tables   = ["Case", "Campaign", "CustomApp__c"]
 }
 ```
@@ -68,35 +70,51 @@ List all tables with:
 To get details of a specific object table, inspect it by name:
 
 ```sql
-> .inspect salesforce.salesforce_campaign
-+--------------------------------+--------------------------+------------------------------------------+
-| column                         | type                     | description                              |
-+--------------------------------+--------------------------+------------------------------------------+
-| actual_cost                    | double precision         | The Actual Cost in Campaign.             |
-| amount_all_opportunities       | double precision         | The Value Opportunities in Campaign.     |
-| amount_won_opportunities       | double precision         | The Value Won Opportunities in Campaign. |
-| budgeted_cost                  | double precision         | The Budgeted Cost in Campaign.           |
-| campaign_member_record_type_id | text                     | The Record Type ID.                      |
-| created_by_id                  | text                     | The Created By ID.                       |
-+--------------------------------+--------------------------+------------------------------------------+
+> .inspect salesforce_custom_app__c
++---------------------+--------------------------+--------------------------+
+| column              | type                     | description              |
++---------------------+--------------------------+--------------------------+
+| created_by_id       | text                     | The Created By ID.       |
+| created_date        | timestamp with time zone | The Created Date.        |
+| id                  | text                     | The Record ID.           |
+| is_deleted          | boolean                  | The Deleted.             |
+| last_modified_by_id | text                     | The Last Modified By ID. |
+| last_modified_date  | timestamp with time zone | The Last Modified Date.  |
+| name                | text                     | The Custom APP Name.     |
+| owner_id            | text                     | The Owner ID.            |
+| system_modstamp     | timestamp with time zone | The System Modstamp.     |
++---------------------+--------------------------+--------------------------+
 ```
 
-### Get all the values for salesforce_campaign
+### Get all the values from salesforce_custom_app\_\_c
 
 ```sql
 select
   *
 from
-  salesforce_campaign
+  salesforce_custom_app__c;
 ```
 
-### Get current values for a object with specific id
+### List custom apps added in last 24 hrs
 
 ```sql
 select
-  *
+  id,
+  name,
+  owner_id
 from
-  salesforce_campaign
+  salesforce_custom_app__c
 where
-  id = '7015j0000019GVgAAM'
+  created_date = now() - interval '24 hrs';
+```
+
+### Get details for a custom app with specific id
+
+```sql
+select
+  *
+from
+  salesforce_custom_app__c
+where
+  id = '7015j0000019GVgAAM';
 ```
