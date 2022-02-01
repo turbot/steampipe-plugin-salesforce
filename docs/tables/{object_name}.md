@@ -1,4 +1,4 @@
-# Table: {metric_name}
+# Table: {object_name}
 
 Query data from the object called `{object_name}`. A table is automatically created to represent each Object in the tables argument in steampipe configuration.
 
