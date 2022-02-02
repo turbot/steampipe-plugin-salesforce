@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/iancoleman/strcase"
 	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
@@ -41,7 +40,6 @@ type dynamicMap struct {
 }
 
 func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*plugin.Table, error) {
-	plugin.Logger(ctx).Info("salesforce.pluginTableDefinitions", "START", time.Now())
 	// If unable to connect to salesforce instance, log warning and abort dynamic table creation
 	client, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
 	if err != nil {
@@ -129,7 +127,6 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		}(sfTable)
 	}
 	wg.Wait()
-	plugin.Logger(ctx).Info("salesforce.pluginTableDefinitions", "END", time.Now())
 	return tables, nil
 }
 
