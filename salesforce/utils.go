@@ -163,14 +163,14 @@ func buildQueryFromQuals(equalQuals plugin.KeyColumnQualMap, tableColumns []*plu
 						switch qual.Operator {
 						case "<>":
 							filters = append(filters, fmt.Sprintf("%s != %d", getSalesforceColumnName(filterQualItem.Name), value.GetInt64Value()))
-						case "=":
+						default:
 							filters = append(filters, fmt.Sprintf("%s %s %d", getSalesforceColumnName(filterQualItem.Name), qual.Operator, value.GetInt64Value()))
 						}
 					case proto.ColumnType_DOUBLE:
 						switch qual.Operator {
 						case "<>":
 							filters = append(filters, fmt.Sprintf("%s != %f", getSalesforceColumnName(filterQualItem.Name), value.GetDoubleValue()))
-						case "=":
+						default:
 							filters = append(filters, fmt.Sprintf("%s %s %f", getSalesforceColumnName(filterQualItem.Name), qual.Operator, value.GetDoubleValue()))
 						}
 					// Need a way to distinguish b/w date and dateTime fields
