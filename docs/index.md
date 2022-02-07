@@ -56,37 +56,6 @@ Download and install the latest salesforce plugin:
 steampipe plugin install salesforce
 ```
 
-### Credentials
-
-#### Setup your connected application for `Client Id & Client Secret`:
-
-- [Create your connected application](https://trailhead.salesforce.com/en/content/learn/projects/build-a-connected-app-for-api-integration/create-a-connected-app)
-- When you create a connected app, make sure that you understand how it’s going to be used so you can configure the appropriate settings.
-  - **For example**, if you’re creating a connected app to integrate an external application with your Salesforce API, configure the connected app with OAuth authorization settings.
-
-|                                            | `REQUIRED EDITIONS`                                                                           |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------- |
-| Available in                               | both `Salesforce Classic` (not available in all orgs) and `Lightning Experience`              |
-| Connected applications can be created in   | `Group, Professional, Enterprise, Essentials, Performance, Unlimited, and Developer Editions` |
-| Connected applications can be installed in | `All Editions`                                                                                |
-
-#### Configure basic connected application settings
-
-1. From Setup, enter Apps in the Quick Find box, and select `App Manager.`
-2. Click New `Connected App.`
-3. Enter the connected app’s name, which displays in the App Manager and on its App Launcher tile.
-4. The connected app name must be unique within your org. If the connected app was created in the Spring ‘14 release or later, you can reuse the name of a deleted connected app.
-5. If you have a web page with more information about your app, provide an info URL.
-
-#### Reset Your Security Token
-
-- [Reset your security token](https://help.salesforce.com/articleView?id=user_security_token.htm&type=5)
-- From your personal settings, enter `Reset` in the `Quick Find` box, then select `Reset My Security Token`
-- Click Reset Security Token. The new security token is sent to the email address in your Salesforce personal settings.
-
-  - A new security token is emailed to you when you reset your password. Or you can reset your token separately.
-  - After generating the `ClientId and Security Token` with the above steps. Update the value in `~/steampipe/config/salesforce.spc`
-
 ### Configuration
 
 Installing the latest salesforce plugin will create a config file (`~/.steampipe/config/salesforce.spc`) with a single connection named `salesforce`:
@@ -121,13 +90,33 @@ connection "salesforce" {
 }
 ```
 
+### Credentials
+
+#### Setup your connected application for `Client ID` & `Client Secret`:
+
+- [Create your connected application](https://trailhead.salesforce.com/en/content/learn/projects/build-a-connected-app-for-api-integration/create-a-connected-app)
+- When you create a connected app, make sure that you understand how it’s going to be used so you can configure the appropriate settings.
+  - **For example**, if you’re creating a connected app to integrate an external application with your Salesforce API, configure the connected app with OAuth authorization settings.
+- Note: Connected Apps can only be created in: Group, Professional, Enterprise, Essentials, Performance, Unlimited, and Developer Editions, but installed in all editions.
+
+#### Configure basic connected application settings
+
+1. From Setup, enter Apps in the Quick Find box, and select `App Manager.`
+2. Click New `Connected App.`
+3. Enter the connected app’s name, which displays in the App Manager and on its App Launcher tile.
+4. The connected app name must be unique within your org. If the connected app was created in the Spring ‘14 release or later, you can reuse the name of a deleted connected app.
+5. If you have a web page with more information about your app, provide an info URL.
+
+#### Reset your security token
+
+- [Reset your security token](https://help.salesforce.com/articleView?id=user_security_token.htm&type=5)
+- After generating the `Client ID` and `Security Token` with the above steps. Update the value in `~/steampipe/config/salesforce.spc`
+
 ## Custom Fields
 
 Salesforce support addition of the [custom fields](https://help.salesforce.com/s/articleView?id=sf.adding_fields.htm&type=5) to standard objects.
 
-**Note**: If you have set up Salesforce credentials correctly in Steampipe configuration. Steampipe will generate the tables schema with all the custom fields along with standard object fields dynamically.
-
-<!-- https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_list.htm -->
+If you have set up Salesforce credentials correctly in the Steampipe configuration, Steampipe will generate the tables schema with all the custom fields along with standard object fields dynamically.
 
 ## Get involved
 
