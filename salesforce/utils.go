@@ -27,8 +27,8 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 	}
 
 	config := GetConfig(c)
-	clientID := simpleforce.DefaultClientID
 	apiVersion := simpleforce.DefaultAPIVersion
+	clientID := "steampipe"
 	securityToken := ""
 
 	if config.ClientId != nil {
@@ -63,7 +63,9 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 		return nil, fmt.Errorf("salesforce.connectRaw couldn't get salesforce client. Client setup error.")
 	}
 
-	// login client
+	// LoginPassword signs into salesforce using password. token is optional if trusted IP is configured.
+	// Ref: https://developer.salesforce.com/docs/atlas.en-us.214.0.api_rest.meta/api_rest/intro_understanding_username_password_oauth_flow.htm
+	// Ref: https://developer.salesforce.com/docs/atlas.en-us.214.0.api.meta/api/sforce_api_calls_login.htm
 	err := client.LoginPassword(*config.Username, *config.Password, securityToken)
 	if err != nil {
 		plugin.Logger(ctx).Warn("salesforce.connectRaw", "client login error", err)

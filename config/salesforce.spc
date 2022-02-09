@@ -16,6 +16,7 @@ connection "salesforce" {
   # token     = "YOUR_SALESFORCE_TOKEN"
 
   # Client Id of Connected App from Salesforce
+  # Client id is optional. https://developer.salesforce.com/docs/atlas.en-us.214.0.api.meta/api/sforce_api_calls_login.htm
   # client_id = "YOUR_SALESFORCE_CLIENT_ID"
 
   # List of Salesforce object names to generate additional tables for
