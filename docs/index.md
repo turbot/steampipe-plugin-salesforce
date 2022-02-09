@@ -78,7 +78,7 @@ connection "salesforce" {
   # https://migration.trujay.com/help/how-to-add-an-ip-address-to-whitelist-on-salesforce/
   # token     = "YOUR_SALESFORCE_TOKEN"
 
-  # Salesforce client ID from the connected app
+  # Client Id of Connected App from Salesforce
   # client_id = "YOUR_SALESFORCE_CLIENT_ID"
 
   # List of Salesforce object names to generate additional tables for
