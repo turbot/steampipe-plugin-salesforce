@@ -2,10 +2,10 @@
 organization: Turbot
 category: ["saas"]
 icon_url: "/images/plugins/turbot/salesforce.svg"
-brand_color: "#06ac38"
+brand_color: "#00A1E0"
 display_name: "Salesforce"
 short_name: "salesforce"
-description: "Steampipe plugin to query accounts, users, oppurtinities and more from your Salesforce instance."
+description: "Steampipe plugin to query accounts, opportunities, users and more from your Salesforce instance."
 og_description: "Query Salesforce with SQL! Open source CLI. No DB required."
 og_image: "/images/plugins/turbot/salesforce-social-graphic.png"
 ---
@@ -56,14 +56,6 @@ Download and install the latest salesforce plugin:
 steampipe plugin install salesforce
 ```
 
-### Credentials
-
-- [Create your connected application](https://trailhead.salesforce.com/en/content/learn/projects/build-a-connected-app-for-api-integration/create-a-connected-app)
-
-- Configure basic [connected application settings](https://help.salesforce.com/s/articleView?id=sf.connected_app_create_basics.htm&type=5)
-
-- Reset your [security token](https://help.salesforce.com/articleView?id=user_security_token.htm&type=5)
-
 ### Configuration
 
 Installing the latest salesforce plugin will create a config file (`~/.steampipe/config/salesforce.spc`) with a single connection named `salesforce`:
@@ -72,39 +64,69 @@ Installing the latest salesforce plugin will create a config file (`~/.steampipe
 connection "salesforce" {
   plugin = "salesforce"
 
-  # Your salesforce instance URL, for example, 'https://na01.salesforce.com/'
-  # url       = "https://na01.salesforce.com/"
+  # Salesforce instance URL, e.g., "https://na01.salesforce.com/"
+  # url = "YOUR_SALESFORCE_URL"
 
-  # Username of the Salesforce account
-  # username  = "test@example.com"
+  # Salesforce account name
+  # user = "YOUR_SALESFORCE_USERNAME"
 
-  # Password of the Salesforce account
-  # password  = "Dummy@~Password"
+  # Salesforce account password
+  # password = "YOUR_SALESFORCE_PASSWORD"
 
   # The Salesforce security token is only required If the client's IP address is not added to the organization's list of trusted IPs
   # https://help.salesforce.com/s/articleView?id=sf.security_networkaccess.htm&type=5
   # https://migration.trujay.com/help/how-to-add-an-ip-address-to-whitelist-on-salesforce/
-  # token     = "ABO5C3PNqOP0BHsPGwldmssv1"
+  # token     = "YOUR_SALESFORCE_TOKEN"
 
-  # Client Id of Connected App from Salesforce
+  # Salesforce client ID from the connected app
   # client_id = "YOUR_SALESFORCE_CLIENT_ID"
 
-  # List of salesforce tables to be generated. Salesforce Object API Name (refer https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_list.htm) should be used here."
-  # Currently plugin supports a standard set of Salesforce tables by default in the plugin. If there is a need to query an standard object from, you can add standard object in the objects list. Steampipe will automatically generate respective table for the connection.
-  # objects = ["Case", "Campaign", "CustomApp__c"]
+  # List of Salesforce object names to generate additional tables for
+  # This argument only accepts exact Salesforce standard and custom object names, e.g., AccountBrand, OpportunityStage, CustomApp__c
+  # For a full list of standard object names, please see https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_list.htm)
+  # All custom object names should end in "__c", following Salesforce object naming
+  # tables = ["AccountBrand", "OpportunityStage", "CustomApp__c"]
 
-  # Version of the salesforce API
+  # Salesforce API version to connect to.
   # api_version = "43.0"
 }
 ```
+
+### Credentials
+
+- [Create your connected application](https://trailhead.salesforce.com/en/content/learn/projects/build-a-connected-app-for-api-integration/create-a-connected-app)
+
+- Configure basic [connected application settings](https://help.salesforce.com/s/articleView?id=sf.connected_app_create_basics.htm&type=5)
+
+- Reset your [security token](https://help.salesforce.com/articleView?id=user_security_token.htm&type=5)
+
+### Credentials
+
+#### Setup your connected application for `Client ID` & `Client Secret`:
+
+- [Create your connected application](https://trailhead.salesforce.com/en/content/learn/projects/build-a-connected-app-for-api-integration/create-a-connected-app)
+- When you create a connected app, make sure that you understand how it’s going to be used so you can configure the appropriate settings.
+  - **For example**, if you’re creating a connected app to integrate an external application with your Salesforce API, configure the connected app with OAuth authorization settings.
+- Note: Connected Apps can only be created in: Group, Professional, Enterprise, Essentials, Performance, Unlimited, and Developer Editions, but installed in all editions.
+
+#### Configure basic connected application settings
+
+1. From Setup, enter Apps in the Quick Find box, and select `App Manager.`
+2. Click New `Connected App.`
+3. Enter the connected app’s name, which displays in the App Manager and on its App Launcher tile.
+4. The connected app name must be unique within your org. If the connected app was created in the Spring ‘14 release or later, you can reuse the name of a deleted connected app.
+5. If you have a web page with more information about your app, provide an info URL.
+
+#### Reset your security token
+
+- [Reset your security token](https://help.salesforce.com/articleView?id=user_security_token.htm&type=5)
+- After generating the `Client ID` and `Security Token` with the above steps. Update the value in `~/steampipe/config/salesforce.spc`
 
 ## Custom Fields
 
 Salesforce support addition of the [custom fields](https://help.salesforce.com/s/articleView?id=sf.adding_fields.htm&type=5) to standard objects.
 
-**Note**: If you have set up Salesforce credentials correctly in Steampipe configuration. Steampipe will generate the tables schema with all the custom fields along with standard object fields dynamically.
-
-<!-- https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_list.htm -->
+If you have set up Salesforce credentials correctly in the Steampipe configuration, Steampipe will generate the tables schema with all the custom fields along with standard object fields dynamically.
 
 ## Get involved
 
