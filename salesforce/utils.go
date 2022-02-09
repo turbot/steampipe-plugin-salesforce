@@ -52,7 +52,7 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 	// The Salesforce security token is only required If the client's IP address is not added to the organization's list of trusted IPs
 	// https://help.salesforce.com/s/articleView?id=sf.security_networkaccess.htm&type=5
 	// https://migration.trujay.com/help/how-to-add-an-ip-address-to-whitelist-on-salesforce/
-	if config.Token == nil {
+	if config.Token != nil {
 		securityToken = *config.Token
 	}
 

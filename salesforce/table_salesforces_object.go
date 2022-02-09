@@ -25,9 +25,9 @@ func listSalesforceObjectsByTable(tableName string, salesforceCols map[string]st
 
 		query := generateQuery(d.Table.Columns, tableName)
 		condition := buildQueryFromQuals(d.Quals, d.Table.Columns, salesforceCols)
-		plugin.Logger(ctx).Info("salesforce.listSalesforceObjectsByTable", "table_name", d.Table.Name, "query_condition", condition)
 		if condition != "" {
 			query = fmt.Sprintf("%s where %s", query, condition)
+			plugin.Logger(ctx).Debug("salesforce.listSalesforceObjectsByTable", "table_name", d.Table.Name, "query_condition", condition)
 		}
 
 		for {
