@@ -29,6 +29,7 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 	config := GetConfig(c)
 	clientID := simpleforce.DefaultClientID
 	apiVersion := simpleforce.DefaultAPIVersion
+	securityToken := ""
 
 	if config.ClientId != nil {
 		clientID = *config.ClientId
@@ -38,19 +39,21 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 		apiVersion = *config.APIVersion
 	}
 
+	if config.Username == nil {
+		plugin.Logger(ctx).Warn("salesforce.connectRaw", "'username' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
+		return nil, nil
+	}
+
 	if config.Password == nil {
 		plugin.Logger(ctx).Warn("salesforce.connectRaw", "'password' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
 		return nil, nil
 	}
 
+	// The Salesforce security token is only required If the client's IP address is not added to the organization's list of trusted IPs
+	// https://help.salesforce.com/s/articleView?id=sf.security_networkaccess.htm&type=5
+	// https://migration.trujay.com/help/how-to-add-an-ip-address-to-whitelist-on-salesforce/
 	if config.Token == nil {
-		plugin.Logger(ctx).Warn("salesforce.connectRaw", "'token' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
-		return nil, nil
-	}
-
-	if config.User == nil {
-		plugin.Logger(ctx).Warn("salesforce.connectRaw", "'user' must be set in the connection configuration. Edit your connection configuration file and then restart Steampipe")
-		return nil, nil
+		securityToken = *config.Token
 	}
 
 	// setup client
@@ -61,7 +64,7 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 	}
 
 	// login client
-	err := client.LoginPassword(*config.User, *config.Password, *config.Token)
+	err := client.LoginPassword(*config.Username, *config.Password, securityToken)
 	if err != nil {
 		plugin.Logger(ctx).Warn("salesforce.connectRaw", "client login error", err)
 		return nil, fmt.Errorf("client login error %v", err)

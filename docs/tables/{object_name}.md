@@ -1,8 +1,8 @@
 # Table: {object_name}
 
-Query data from the object called `{object_name}`. A table is automatically created to represent each Object in the `tables` argument in steampipe configuration.
+Query data from the object called `salesforce_{object_name}`, e.g., `salesforce_campaign`, `salesforce_custom_app__c`. A table is automatically created to represent each object in the `objects` argument.
 
-For the connection configuration:
+For instance, if the the connection configuration is:
 
 ```hcl
 connection "salesforce" {
@@ -13,7 +13,7 @@ connection "salesforce" {
   token    = "Y3NPBGO8qRV0RYlGPwldsmxv7"
   # List of salesforce tables to be generated. Salesforce Object API Name (refer https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_list.htm) should be used here."
   # Currently plugin supports a standard set of Salesforce tables by default in the plugin. If there is a need to query an standard object from, you can add standard object in the tables list. Steampipe will automatically generate respective table for the connection.
-  tables   = ["Case", "Campaign", "CustomApp__c"]
+  objects   = ["Case", "Campaign", "CustomApp__c"]
 }
 ```
 
@@ -31,7 +31,7 @@ select * from salesforce_custom_app__c
 ```
 
 However, please note that this could be slow depending on how many objects are in your environment.
-**NOTE:** Salesforce custom object and custom columns are suffixed with `__c`
+**NOTE:** Salesforce custom objects and fields are always suffixed with `__c`
 
 ## Examples
 
@@ -46,7 +46,7 @@ connection "salesforce" {
   user     = "abcde@xyz.com"
   password = "dummy@9ATbuu"
   token    = "Y3NPBGO8qRV0RYlGPwldsmxv7"
-  tables   = ["Case", "Campaign", "CustomApp__c"]
+  objects   = ["Case", "Campaign", "CustomApp__c"]
 }
 ```
 
@@ -108,7 +108,7 @@ where
   created_date = now() - interval '24 hrs';
 ```
 
-### Get details for a custom app with specific id
+### Get details for a custom app by ID
 
 ```sql
 select

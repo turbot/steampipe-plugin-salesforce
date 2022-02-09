@@ -58,34 +58,11 @@ steampipe plugin install salesforce
 
 ### Credentials
 
-#### Setup your connected application for `Client Id & Client Secret`:
-
 - [Create your connected application](https://trailhead.salesforce.com/en/content/learn/projects/build-a-connected-app-for-api-integration/create-a-connected-app)
-- When you create a connected app, make sure that you understand how it’s going to be used so you can configure the appropriate settings.
-  - **For example**, if you’re creating a connected app to integrate an external application with your Salesforce API, configure the connected app with OAuth authorization settings.
 
-|                                            | `REQUIRED EDITIONS`                                                                           |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------- |
-| Available in                               | both `Salesforce Classic` (not available in all orgs) and `Lightning Experience`              |
-| Connected applications can be created in   | `Group, Professional, Enterprise, Essentials, Performance, Unlimited, and Developer Editions` |
-| Connected applications can be installed in | `All Editions`                                                                                |
+- Configure basic [connected application settings](https://help.salesforce.com/s/articleView?id=sf.connected_app_create_basics.htm&type=5)
 
-#### Configure basic connected application settings
-
-1. From Setup, enter Apps in the Quick Find box, and select `App Manager.`
-2. Click New `Connected App.`
-3. Enter the connected app’s name, which displays in the App Manager and on its App Launcher tile.
-4. The connected app name must be unique within your org. If the connected app was created in the Spring ‘14 release or later, you can reuse the name of a deleted connected app.
-5. If you have a web page with more information about your app, provide an info URL.
-
-#### Reset Your Security Token
-
-- [Reset your security token](https://help.salesforce.com/articleView?id=user_security_token.htm&type=5)
-- From your personal settings, enter `Reset` in the `Quick Find` box, then select `Reset My Security Token`
-- Click Reset Security Token. The new security token is sent to the email address in your Salesforce personal settings.
-
-  - A new security token is emailed to you when you reset your password. Or you can reset your token separately.
-  - After generating the `ClientId and Security Token` with the above steps. Update the value in `~/steampipe/config/salesforce.spc`
+- Reset your [security token](https://help.salesforce.com/articleView?id=user_security_token.htm&type=5)
 
 ### Configuration
 
@@ -96,23 +73,25 @@ connection "salesforce" {
   plugin = "salesforce"
 
   # Your salesforce instance URL, for example, 'https://na01.salesforce.com/'
-  # url       = "YOUR_SALESFORCE_URL"
+  # url       = "https://na01.salesforce.com/"
 
   # Username of the Salesforce account
-  # user      = "YOUR_SALESFORCE_USERNAME"
+  # username  = "test@example.com"
 
   # Password of the Salesforce account
-  # password  = "YOUR_SALESFORCE_PASSWORD"
+  # password  = "Dummy@~Password"
 
-  # Security token, could be omitted if Trusted IP is configured
-  # token     = "YOUR_SALESFORCE_TOKEN"
+  # The Salesforce security token is only required If the client's IP address is not added to the organization's list of trusted IPs
+  # https://help.salesforce.com/s/articleView?id=sf.security_networkaccess.htm&type=5
+  # https://migration.trujay.com/help/how-to-add-an-ip-address-to-whitelist-on-salesforce/
+  # token     = "ABO5C3PNqOP0BHsPGwldmssv1"
 
-  # Client Id of Salesforce from Connected App"
+  # Client Id of Connected App from Salesforce
   # client_id = "YOUR_SALESFORCE_CLIENT_ID"
 
   # List of salesforce tables to be generated. Salesforce Object API Name (refer https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_list.htm) should be used here."
-  # Currently plugin supports a standard set of Salesforce tables by default in the plugin. If there is a need to query an standard object from, you can add standard object in the tables list. Steampipe will automatically generate respective table for the connection.
-  # tables = ["Case", "Campaign", "CustomApp__c"]
+  # Currently plugin supports a standard set of Salesforce tables by default in the plugin. If there is a need to query an standard object from, you can add standard object in the objects list. Steampipe will automatically generate respective table for the connection.
+  # objects = ["Case", "Campaign", "CustomApp__c"]
 
   # Version of the salesforce API
   # api_version = "43.0"

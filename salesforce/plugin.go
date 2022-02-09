@@ -91,8 +91,8 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	var substitution = ``
 	salesforceTables := []string{}
 	config := GetConfig(p.Connection)
-	if config.Tables != nil && len(*config.Tables) > 0 {
-		for _, tableName := range *config.Tables {
+	if config.Objects != nil && len(*config.Objects) > 0 {
+		for _, tableName := range *config.Objects {
 			pluginTableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(tableName, substitution))
 			if _, ok := tables[pluginTableName]; !ok {
 				salesforceTables = append(salesforceTables, tableName)
