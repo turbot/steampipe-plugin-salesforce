@@ -137,11 +137,11 @@ For instance, if my connection configuration is:
 connection "salesforce" {
   plugin    = "salesforce"
   url       = "https://my-dev-env.my.salesforce.com"
-  user      = "user@example.com"
+  username  = "user@example.com"
   password  = "MyPassword"
   token     = "MyToken"
   client_id = "MyClientID"
-  tables    = ["CustomApp__c", "OtherCustomApp__c"]
+  objects   = ["CustomApp__c", "OtherCustomApp__c"]
 }
 ```
 

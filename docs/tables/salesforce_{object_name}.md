@@ -8,7 +8,7 @@ For instance, if the connection configuration is:
 connection "salesforce" {
   plugin    = "salesforce"
   url       = "https://my-dev-env.my.salesforce.com"
-  user      = "user@example.com"
+  username  = "user@example.com"
   password  = "MyPassword"
   token     = "MyToken"
   client_id = "MyClientID"
@@ -31,7 +31,7 @@ select id, owner_id, is_deleted from salesforce_custom_app__c
 
 Please note that plugin initialization time will increase depending on the number of objects included in the `objects` argument.
 
-**Note:** Salesforce custom object API names are always suffixed with `__c`, which is reflected in the table names as well.
+**Note:** Salesforce custom object and field names are always suffixed with `__c`, which is reflected in the table and column names.
 
 ## Examples
 
@@ -43,7 +43,7 @@ Assuming your connection configuration is:
 connection "salesforce" {
   plugin    = "salesforce"
   url       = "https://my-dev-env.my.salesforce.com"
-  user      = "user@example.com"
+  username  = "user@example.com"
   password  = "MyPassword"
   token     = "MyToken"
   client_id = "MyClientID"
