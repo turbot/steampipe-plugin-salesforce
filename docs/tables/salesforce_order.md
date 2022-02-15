@@ -19,7 +19,7 @@ from
   salesforce_order;
 ```
 
-### List number of order by status
+### List number of orders by status
 
 ```sql
 select

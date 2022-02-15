@@ -18,7 +18,7 @@ from
   salesforce_opportunity_contact_role;
 ```
 
-### List primary opportunity contact role
+### List primary opportunity contact roles
 
 ```sql
 select
