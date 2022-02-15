@@ -207,10 +207,13 @@ func buildQueryFromQuals(equalQuals plugin.KeyColumnQualMap, tableColumns []*plu
 }
 
 func getSalesforceColumnName(name string) string {
-	columnName := strcase.ToCamel(name)
-	// Salesforce custom fields are suffixed with '__c' after the custom field name.
-	if strings.HasSuffix(columnName, "C") {
-		columnName = columnName[0:len(columnName)-1] + "__c"
+	var columnName string
+	// Salesforce custom fields are suffixed with '__c' and are not converted to
+	// snake case in the table schema, so use the column name as is
+	if strings.HasSuffix(name, "__c") {
+		columnName = name
+	} else {
+		columnName = strcase.ToCamel(name)
 	}
 	return columnName
 }
@@ -270,11 +273,21 @@ func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceT
 		soapType := strings.Split((fields["soapType"]).(string), ":")
 		fieldType := soapType[len(soapType)-1]
 
-		// Coloumn dynamic generation
-		columnFieldName := strcase.ToSnake(fieldName)
+		// Column dynamic generation
+		// Don't convert to snake case since field names can have underscores in
+		// them, so it's impossible to convert from snake case back to camel case
+		// to match the original field name. Also, if we convert to snake case,
+		// custom fields like "TestField" and "Test_Field" will result in duplicates
+		var columnFieldName string
+		if strings.HasSuffix(fieldName, "__c") {
+			columnFieldName = strings.ToLower(fieldName)
+		} else {
+			columnFieldName = strcase.ToSnake(fieldName)
+		}
+
 		column := plugin.Column{
 			Name:        columnFieldName,
-			Description: fmt.Sprintf("The %s.", fields["label"].(string)),
+			Description: fmt.Sprintf("%s.", fields["label"].(string)),
 			Transform:   transform.FromP(getFieldFromSObjectMap, fieldName),
 		}
 		salesforceCols[columnFieldName] = fieldType

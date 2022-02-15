@@ -52,7 +52,8 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	dynamicColumnsMap := map[string]dynamicMap{}
 	var mapLock sync.Mutex
 
-	// If salesorce client was obtained, don't generate dynamic columns
+	// If Salesforce client was obtained, don't generate dynamic columns for
+	// defined static tables
 	if client != nil {
 		var wgd sync.WaitGroup
 		wgd.Add(len(staticTables))
@@ -161,7 +162,6 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 	}
 
 	salesforceObjectFields := []map[string]interface{}{}
-	// var queryColumns []string
 	err = json.Unmarshal(salesforceObjectMetadataAsByte, &salesforceObjectFields)
 	if err != nil {
 		plugin.Logger(ctx).Error("salesforce.generateDynamicTables", "json unmarshal error", err)
@@ -177,15 +177,24 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 			continue
 		}
 
-		// queryColumns = append(queryColumns, fieldName)
 		if properties["soapType"] == nil {
 			continue
 		}
 		soapType := strings.Split((properties["soapType"]).(string), ":")
 		fieldType := soapType[len(soapType)-1]
 
-		// Coloumn dynamic generation
-		columnFieldName := strcase.ToSnake(fieldName)
+		// Column dynamic generation
+		// Don't convert to snake case since field names can have underscores in
+		// them, so it's impossible to convert from snake case back to camel case
+		// to match the original field name. Also, if we convert to snake case,
+		// custom fields like "TestField" and "Test_Field" will result in duplicates
+		var columnFieldName string
+		if strings.HasSuffix(fieldName, "__c") {
+			columnFieldName = strings.ToLower(fieldName)
+		} else {
+			columnFieldName = strcase.ToSnake(fieldName)
+		}
+
 		column := plugin.Column{
 			Name:        columnFieldName,
 			Description: fmt.Sprintf("%s.", properties["label"].(string)),
