@@ -23,12 +23,9 @@ Run a query:
 
 ```sql
 select
-  id,
   name,
   amount,
-  close_date,
-  fiscal_quarter,
-  fiscal_year
+  close_date
 from
   salesforce_opportunity
 where

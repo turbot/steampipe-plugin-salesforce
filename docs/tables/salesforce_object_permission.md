@@ -19,7 +19,7 @@ order by
   sobject_type;
 ```
 
-### List permission set with "Transfer Leads" permission, on "Lead" object
+### List permission sets with "Transfer Leads" permission on "Lead" object
 
 ```sql
 select

@@ -20,12 +20,9 @@ List won opportunities:
 
 ```sql
 select
-  id,
   name,
   amount,
-  close_date,
-  fiscal_quarter,
-  fiscal_year
+  close_date
 from
   salesforce_opportunity
 where
@@ -33,13 +30,13 @@ where
 ```
 
 ```
-+--------------------+-------------------------------------+--------+---------------------------+----------------+-------------+
-| id                 | name                                | amount | close_date                | fiscal_quarter | fiscal_year |
-+--------------------+-------------------------------------+--------+---------------------------+----------------+-------------+
-| 0065j00000Oi1SpAAJ | GenePoint Standby Generator         | 85000  | 2021-10-23T05:30:00+05:30 | 1              | 2015        |
-| 0065j00000Oi1SzAAJ | GenePoint SLA                       | 30000  | 2021-12-16T05:30:00+05:30 | 2              | 2015        |
-| 0065j00000Oi1SoAAJ | Express Logistics Standby Generator | 220000 | 2021-09-15T05:30:00+05:30 | 1              | 2015        |
-+--------------------+-------------------------------------+--------+---------------------------+----------------+-------------+
++-------------------------------------+--------+---------------------------+
+| name                                | amount | close_date                |
++-------------------------------------+--------+---------------------------+
+| GenePoint Standby Generator         | 85000  | 2021-10-23T05:30:00+05:30 |
+| GenePoint SLA                       | 30000  | 2021-12-16T05:30:00+05:30 |
+| Express Logistics Standby Generator | 220000 | 2021-09-15T05:30:00+05:30 |
++-------------------------------------+------------------------------------+
 ```
 
 ## Documentation
@@ -65,30 +62,28 @@ connection "salesforce" {
   plugin = "salesforce"
 
   # Salesforce instance URL, e.g., "https://na01.salesforce.com/"
-  # url = "YOUR_SALESFORCE_URL"
+  # url = "https://na01.salesforce.com/"
 
   # Salesforce account name
-  # user = "YOUR_SALESFORCE_USERNAME"
+  # username = "user@example.com"
 
   # Salesforce account password
-  # password = "YOUR_SALESFORCE_PASSWORD"
+  # password = "Dummy@~Password"
 
   # The Salesforce security token is only required If the client's IP address is not added to the organization's list of trusted IPs
   # https://help.salesforce.com/s/articleView?id=sf.security_networkaccess.htm&type=5
-  # https://migration.trujay.com/help/how-to-add-an-ip-address-to-whitelist-on-salesforce/
-  # token     = "YOUR_SALESFORCE_TOKEN"
+  # token = "ABO5C3PNqOP0BHsPFakeToken"
 
-  # Client Id of Connected App from Salesforce
-  # Client id is optional. https://developer.salesforce.com/docs/atlas.en-us.214.0.api.meta/api/sforce_api_calls_login.htm
-  # client_id = "YOUR_SALESFORCE_CLIENT_ID"
+  # Salesforce client ID of the connected app
+  # client_id = "3MVG99E3Ry5mh4z_FakeID"
 
   # List of Salesforce object names to generate additional tables for
   # This argument only accepts exact Salesforce standard and custom object names, e.g., AccountBrand, OpportunityStage, CustomApp__c
   # For a full list of standard object names, please see https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_list.htm)
-  # All custom object names should end in "__c", following Salesforce object naming
+  # All custom object names should end in "__c", following Salesforce object naming standards
   # objects = ["AccountBrand", "OpportunityStage", "CustomApp__c"]
 
-  # Salesforce API version to connect to.
+  # Salesforce API version to connect to
   # api_version = "43.0"
 }
 ```
@@ -96,38 +91,102 @@ connection "salesforce" {
 ### Credentials
 
 - [Create your connected application](https://trailhead.salesforce.com/en/content/learn/projects/build-a-connected-app-for-api-integration/create-a-connected-app)
-
 - Configure basic [connected application settings](https://help.salesforce.com/s/articleView?id=sf.connected_app_create_basics.htm&type=5)
-
-- Reset your [security token](https://help.salesforce.com/articleView?id=user_security_token.htm&type=5)
-
-### Credentials
-
-#### Setup your connected application for `Client ID` & `Client Secret`:
-
-- [Create your connected application](https://trailhead.salesforce.com/en/content/learn/projects/build-a-connected-app-for-api-integration/create-a-connected-app)
-- When you create a connected app, make sure that you understand how it’s going to be used so you can configure the appropriate settings.
-  - **For example**, if you’re creating a connected app to integrate an external application with your Salesforce API, configure the connected app with OAuth authorization settings.
-- Note: Connected Apps can only be created in: Group, Professional, Enterprise, Essentials, Performance, Unlimited, and Developer Editions, but installed in all editions.
-
-#### Configure basic connected application settings
-
-1. From Setup, enter Apps in the Quick Find box, and select `App Manager.`
-2. Click New `Connected App.`
-3. Enter the connected app’s name, which displays in the App Manager and on its App Launcher tile.
-4. The connected app name must be unique within your org. If the connected app was created in the Spring ‘14 release or later, you can reuse the name of a deleted connected app.
-5. If you have a web page with more information about your app, provide an info URL.
-
-#### Reset your security token
-
-- [Reset your security token](https://help.salesforce.com/articleView?id=user_security_token.htm&type=5)
-- After generating the `Client ID` and `Security Token` with the above steps. Update the value in `~/steampipe/config/salesforce.spc`
+- Reset your [security token](https://help.salesforce.com/articleView?id=user_security_token.htm&type=5), which is required if you are connecting from an IP address outside your company's trusted IP range
 
 ## Custom Fields
 
-Salesforce support addition of the [custom fields](https://help.salesforce.com/s/articleView?id=sf.adding_fields.htm&type=5) to standard objects.
+Salesforce supports the addition of [custom fields](https://help.salesforce.com/s/articleView?id=sf.adding_fields.htm&type=5) to standard objects.
 
 If you have set up Salesforce credentials correctly in the Steampipe configuration, Steampipe will generate the tables schema with all the custom fields along with standard object fields dynamically.
+
+For instance, if the `Account` object in my Salesforce account has a custom field with the label `Priority` and the API name `Priority__c`, the table schema will be generated as:
+
+```sh
+.inspect salesforce_account
++-----------------------+--------------------------+-------------------------------------------------------------+
+| column         | type | description                                                                            |
++-----------------------+---------------------------+------------------------------------------------------------+
+| account_number | text | The Account Number.                                                                    |
+| account_source | text | The source of the account record. For example, Advertisement, Data.com, or Trade Show. |
+| priority__c    | text | The account's priority.                                                                |
++----------------+------+----------------------------------------------------------------------------------------+
+```
+
+The custom field `priority__c` column can then be queried like other columns:
+
+```sql
+select
+  account_number,
+  priority__c
+from
+  salesforce_account;
+```
+
+**Note:** Salesforce custom field names are always suffixed with `__c`, which is reflected in the column names as well.
+
+## Custom Objects
+
+Salesforce also supports creating [custom objects](https://help.salesforce.com/s/articleView?id=sf.dev_objectcreate_task_lex.htm&type=5) to track and store data that's unique to your organization.
+
+Steampipe will create table schemas for all custom objects set in the `objects` argument.
+
+For instance, if my connection configuration is:
+
+```hcl
+connection "salesforce" {
+  plugin    = "salesforce"
+  url       = "https://my-dev-env.my.salesforce.com"
+  user      = "user@example.com"
+  password  = "MyPassword"
+  token     = "MyToken"
+  client_id = "MyClientID"
+  tables    = ["CustomApp__c", "OtherCustomApp__c"]
+}
+```
+
+Steampile will automatically create two tables, `salesforce_custom_app__c` and `salesforce_other_custom_app__c`, which can then be inspected and queried like other tables:
+
+```sh
+.inspect salesforce
++---------------------------------+---------------------------------------------------------+
+| table                           | description                                             |
++---------------------------------+---------------------------------------------------------+
+| salesforce_account_contact_role | Represents the role that a Contact plays on an Account. |
+| salesforce_custom_app__c        | Represents Salesforce object CustomApp__c.              |
+| salesforce_other_custom_app__c  | Represents Salesforce object OtherCustomApp__c.         |
++---------------------------------+---------------------------------------------------------+
+```
+
+To get details of a specific custom object table, inspect it by name:
+
+```sql
+.inspect salesforce_custom_app__c
++---------------------+--------------------------+-------------------------+
+| column              | type                     | description             |
++---------------------+--------------------------+-------------------------+
+| created_by_id       | text                     | ID of app creator.      |
+| created_date        | timestamp with time zone | Created date.           |
+| id                  | text                     | App record ID.          |
+| is_deleted          | boolean                  | True if app is deleted. |
+| last_modified_by_id | text                     | ID of last modifier.    |
+| last_modified_date  | timestamp with time zone | Last modified date.     |
+| name                | text                     | App name.               |
+| owner_id            | text                     | Owner ID.               |
+| system_modstamp     | timestamp with time zone | System Modstamp.        |
++---------------------+--------------------------+-------------------------+
+```
+
+This table can also be queried like other tables:
+
+```sql
+select
+  *
+from
+  salesforce_custom_app__c;
+```
+
+**Note:** Salesforce custom object names are always suffixed with `__c`, which is reflected in the table names as well.
 
 ## Get involved
 

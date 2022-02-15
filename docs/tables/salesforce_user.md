@@ -17,7 +17,7 @@ from
   salesforce_user;
 ```
 
-### List Active users
+### List active users
 
 ```sql
 select
@@ -32,7 +32,7 @@ where
   is_active;
 ```
 
-### List Standard users
+### List standard users
 
 ```sql
 select
@@ -47,7 +47,7 @@ where
   user_type = 'Standard';
 ```
 
-### List user enabled as forecast manager
+### List user designated as forecast managers
 
 ```sql
 select

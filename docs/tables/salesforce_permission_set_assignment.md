@@ -1,6 +1,6 @@
 # Table: salesforce_permission_set_assignment
 
-Represents the association between a `salesforce_user` and `salesforce_permission_set_assignment`.
+Represents the association between a user and permission set.
 
 ## Examples
 

@@ -3,8 +3,7 @@
 Represents a set of permissions that's used to grant more access to one or more users without changing their profile or reassigning profiles.
 PermissionSet has a read-only child relationship with PermissionSetGroup. Permission set contains the aggregated permissions for the group.
 
-**Note**:
-This table has one field for each permission with pattern `Permissions_PermissionName` like `permissions_edit_task`. If true, users assigned to this permission set have the named permission. The number of fields varies depending on the permissions for the organization and license type.
+**Note**: This table has one field for each permission with the pattern `permissions_permission_name`, e.g., `permissions_edit_task`. If true, users assigned to this permission set have the named permission. The number of fields varies depending on the permissions for the organization and license type.
 
 ## Examples
 
@@ -22,7 +21,7 @@ from
   salesforce_permission_set
 ```
 
-### List non custom permission sets
+### List non-custom permission sets
 
 ```sql
 select
@@ -38,7 +37,7 @@ where
   not is_custom;
 ```
 
-### List all permission sets that contain the "Modify All Data" permission
+### List permission sets that contain the "Modify All Data" permission
 
 ```sql
 select

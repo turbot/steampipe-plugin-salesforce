@@ -20,7 +20,7 @@ from
   salesforce_contract;
 ```
 
-### List contract signed in last six months
+### List contracts signed in the last six months
 
 ```sql
 select

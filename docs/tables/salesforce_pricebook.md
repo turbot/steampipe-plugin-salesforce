@@ -18,7 +18,7 @@ from
   salesforce_pricebook;
 ```
 
-### Get standard price book for the org
+### List standard price books
 
 ```sql
 select
@@ -34,7 +34,7 @@ where
   is_standard;
 ```
 
-### List only active price book
+### List active price books
 
 ```sql
 select

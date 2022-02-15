@@ -59,7 +59,7 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 	// setup client
 	client := simpleforce.NewClient(*config.URL, clientID, apiVersion)
 	if client == nil {
-		plugin.Logger(ctx).Warn("salesforce.connectRaw", "couldn't get salesforce client. Client setup error.")
+		plugin.Logger(ctx).Error("salesforce.connectRaw", "couldn't get salesforce client. Client setup error.")
 		return nil, fmt.Errorf("salesforce.connectRaw couldn't get salesforce client. Client setup error.")
 	}
 
@@ -68,7 +68,7 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 	// Ref: https://developer.salesforce.com/docs/atlas.en-us.214.0.api.meta/api/sforce_api_calls_login.htm
 	err := client.LoginPassword(*config.Username, *config.Password, securityToken)
 	if err != nil {
-		plugin.Logger(ctx).Warn("salesforce.connectRaw", "client login error", err)
+		plugin.Logger(ctx).Error("salesforce.connectRaw", "client login error", err)
 		return nil, fmt.Errorf("client login error %v", err)
 	}
 

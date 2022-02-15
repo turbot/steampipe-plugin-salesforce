@@ -44,7 +44,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	client, err := connectRaw(ctx, p.ConnectionManager, p.Connection)
 	if err != nil {
 		// do not abort the plugin as static table needs to be generated
-		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+		plugin.Logger(ctx).Warn("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
 	}
 
 	staticTables := []string{"Account", "AccountContactRole", "Asset", "Contact", "Contract", "Lead", "Opportunity", "OpportunityContactRole", "Order", "Pricebook2", "Product2", "User", "PermissionSet", "PermissionSetAssignment", "ObjectPermissions"}
@@ -101,7 +101,7 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	}
 
 	if client == nil {
-		plugin.Logger(ctx).Error("salesforce.pluginTableDefinitions", "client_not_found: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
+		plugin.Logger(ctx).Warn("salesforce.pluginTableDefinitions", "client_not_found: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
 		return tables, nil
 	}
 
@@ -188,7 +188,7 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 		columnFieldName := strcase.ToSnake(fieldName)
 		column := plugin.Column{
 			Name:        columnFieldName,
-			Description: fmt.Sprintf("The %s.", properties["label"].(string)),
+			Description: fmt.Sprintf("%s.", properties["label"].(string)),
 			Transform:   transform.FromP(getFieldFromSObjectMap, fieldName),
 		}
 		// Adding column type in the map to help in qual handling
@@ -219,7 +219,7 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 
 	Table := plugin.Table{
 		Name:        tableName,
-		Description: fmt.Sprintf("Represents salesforce %s.", salesforceObjectMetadata["name"]),
+		Description: fmt.Sprintf("Represents Salesforce object %s.", salesforceObjectMetadata["name"]),
 		List: &plugin.ListConfig{
 			KeyColumns: keyColumns,
 			Hydrate:    listSalesforceObjectsByTable(salesforceTableName, salesforceCols),
