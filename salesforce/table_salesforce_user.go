@@ -3,8 +3,8 @@ package salesforce
 import (
 	"context"
 
-	"github.com/turbot/steampipe-plugin-sdk/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
 )
 
 func SalesforceUser(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *plugin.Table {
