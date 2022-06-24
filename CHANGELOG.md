@@ -1,3 +1,9 @@
+## v0.2.0 [2022-06-24]
+
+_Enhancements_
+
+- Recompiled plugin with [steampipe-plugin-sdk v3.3.0](https://github.com/turbot/steampipe-plugin-sdk/blob/main/CHANGELOG.md#v330--2022-6-22). ([#9](https://github.com/turbot/steampipe-plugin-salesforce/pull/9))
+
 ## v0.1.0 [2022-04-28]
 
 _Enhancements_
