@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/iancoleman/strcase v0.2.0
 	github.com/simpleforce/simpleforce v0.0.0-20211207104336-af9d9a281fea
-	github.com/turbot/steampipe-plugin-sdk/v3 v3.3.0
+	github.com/turbot/steampipe-plugin-sdk/v3 v3.3.1
 )
 
 require (
