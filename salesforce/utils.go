@@ -75,7 +75,9 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 	}
 
 	// Save to cache
-	cm.Cache.Set(cacheKey, client)
+	if cm != nil {
+		cm.Cache.Set(cacheKey, client)
+	}
 
 	return client, nil
 }
