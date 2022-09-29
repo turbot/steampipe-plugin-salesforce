@@ -9,14 +9,13 @@ import (
 	"sync"
 
 	"github.com/iancoleman/strcase"
+	"github.com/simpleforce/simpleforce"
 	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
 )
 
 const pluginName = "steampipe-plugin-salesforce"
-
-var d *plugin.QueryData
 
 type contextKey string
 
@@ -44,7 +43,7 @@ type dynamicMap struct {
 func pluginTableDefinitions(ctx context.Context, connection *plugin.Connection) (map[string]*plugin.Table, error) {
 	// If unable to connect to salesforce instance, log warning and abort dynamic table creation
 
-	client, err := connectRaw(ctx, nil, d.Connection)
+	client, err := connectRaw(ctx, nil, connection)
 	if err != nil {
 		// do not abort the plugin as static table needs to be generated
 		plugin.Logger(ctx).Warn("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
@@ -94,7 +93,7 @@ func pluginTableDefinitions(ctx context.Context, connection *plugin.Connection) 
 	var re = regexp.MustCompile(`\d+`)
 	var substitution = ``
 	salesforceTables := []string{}
-	config := GetConfig(d.Connection)
+	config := GetConfig(connection)
 	if config.Objects != nil && len(*config.Objects) > 0 {
 		for _, tableName := range *config.Objects {
 			pluginTableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(tableName, substitution))
@@ -123,7 +122,7 @@ func pluginTableDefinitions(ctx context.Context, connection *plugin.Connection) 
 			plugin.Logger(ctx).Debug("salesforce.pluginTableDefinitions", "object_name", name, "table_name", tableName)
 			ctx = context.WithValue(ctx, contextKey("PluginTableName"), tableName)
 			ctx = context.WithValue(ctx, contextKey("SalesforceTableName"), name)
-			table := generateDynamicTables(ctx, d.Table.Plugin)
+			table := generateDynamicTables(ctx, client)
 			// Ignore if the requested Salesforce object is not present.
 			if table != nil {
 				tables[tableName] = table
@@ -134,14 +133,7 @@ func pluginTableDefinitions(ctx context.Context, connection *plugin.Connection) 
 	return tables, nil
 }
 
-func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table {
-
-	client, err := connectRaw(ctx, d.ConnectionManager, d.Connection)
-	if err != nil {
-		plugin.Logger(ctx).Error("salesforce.generateDynamicTables", "connection_error", err)
-		return nil
-	}
-
+func generateDynamicTables(ctx context.Context, client *simpleforce.Client) *plugin.Table {
 	// Get the query for the metric (required)
 	salesforceTableName := ctx.Value(contextKey("SalesforceTableName")).(string)
 	tableName := ctx.Value(contextKey("PluginTableName")).(string)
