@@ -7,7 +7,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
 )
 
-func SalesforcePermissionSetAssignment(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *plugin.Table {
+func SalesforcePermissionSetAssignment(ctx context.Context, dm dynamicMap) *plugin.Table {
 	tableName := "PermissionSetAssignment"
 	return &plugin.Table{
 		Name:        "salesforce_permission_set_assignment",
@@ -20,7 +20,7 @@ func SalesforcePermissionSetAssignment(ctx context.Context, dm dynamicMap, p *pl
 			Hydrate:    getSalesforceObjectbyID(tableName),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
-		Columns: mergeTableColumns(ctx, p, dm.cols, []*plugin.Column{
+		Columns: mergeTableColumns(ctx, dm.cols, []*plugin.Column{
 			{Name: "assignee_id", Type: proto.ColumnType_STRING, Description: "ID of the User to assign the permission set specified in PermissionSetId."},
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "The Permission Set Assignment ID."},
 			{Name: "permission_set_group_id", Type: proto.ColumnType_STRING, Description: "If associated with a permission set group, this is the ID of that group."},

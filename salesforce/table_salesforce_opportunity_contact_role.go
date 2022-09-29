@@ -7,7 +7,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
 )
 
-func SalesforceOpportunityContactRole(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *plugin.Table {
+func SalesforceOpportunityContactRole(ctx context.Context, dm dynamicMap) *plugin.Table {
 	tableName := "OpportunityContactRole"
 	return &plugin.Table{
 		Name:        "salesforce_opportunity_contact_role",
@@ -20,7 +20,7 @@ func SalesforceOpportunityContactRole(ctx context.Context, dm dynamicMap, p *plu
 			Hydrate:    getSalesforceObjectbyID(tableName),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
-		Columns: mergeTableColumns(ctx, p, dm.cols, []*plugin.Column{
+		Columns: mergeTableColumns(ctx, dm.cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the opportunity contact role in Salesforce."},
 			{Name: "contact_id", Type: proto.ColumnType_STRING, Description: "ID of an associated Contact."},

@@ -7,7 +7,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
 )
 
-func SalesforceProduct(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *plugin.Table {
+func SalesforceProduct(ctx context.Context, dm dynamicMap) *plugin.Table {
 	tableName := "Product2"
 	return &plugin.Table{
 		Name:        "salesforce_product",
@@ -20,7 +20,7 @@ func SalesforceProduct(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *pl
 			Hydrate:    getSalesforceObjectbyID(tableName),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
-		Columns: mergeTableColumns(ctx, p, dm.cols, []*plugin.Column{
+		Columns: mergeTableColumns(ctx, dm.cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the product in Salesforce."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The product's name."},

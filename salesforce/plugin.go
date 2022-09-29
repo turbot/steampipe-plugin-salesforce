@@ -44,7 +44,7 @@ type dynamicMap struct {
 func pluginTableDefinitions(ctx context.Context, connection *plugin.Connection) (map[string]*plugin.Table, error) {
 	// If unable to connect to salesforce instance, log warning and abort dynamic table creation
 
-	client, err := connectRaw(ctx, d.ConnectionManager, d.Connection)
+	client, err := connectRaw(ctx, nil, d.Connection)
 	if err != nil {
 		// do not abort the plugin as static table needs to be generated
 		plugin.Logger(ctx).Warn("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
@@ -63,7 +63,7 @@ func pluginTableDefinitions(ctx context.Context, connection *plugin.Connection) 
 		for _, st := range staticTables {
 			go func(staticTable string) {
 				defer wgd.Done()
-				dynamicCols, dynamicKeyColumns, salesforceCols := dynamicColumns(ctx, client, staticTable, d.Table.Plugin)
+				dynamicCols, dynamicKeyColumns, salesforceCols := dynamicColumns(ctx, client, staticTable)
 				mapLock.Lock()
 				dynamicColumnsMap[staticTable] = dynamicMap{dynamicCols, dynamicKeyColumns, salesforceCols}
 				defer mapLock.Unlock()
@@ -74,21 +74,21 @@ func pluginTableDefinitions(ctx context.Context, connection *plugin.Connection) 
 
 	// Initialize tables with static tables with static and dynamic columns(if credentials are set)
 	tables := map[string]*plugin.Table{
-		"salesforce_account":                   SalesforceAccount(ctx, dynamicColumnsMap["Account"], d.Table.Plugin),
-		"salesforce_account_contact_role":      SalesforceAccountContactRole(ctx, dynamicColumnsMap["AccountContactRole"], d.Table.Plugin),
-		"salesforce_asset":                     SalesforceAsset(ctx, dynamicColumnsMap["Asset"], d.Table.Plugin),
-		"salesforce_contact":                   SalesforceContact(ctx, dynamicColumnsMap["Contact"], d.Table.Plugin),
-		"salesforce_contract":                  SalesforceContract(ctx, dynamicColumnsMap["Contract"], d.Table.Plugin),
-		"salesforce_lead":                      SalesforceLead(ctx, dynamicColumnsMap["Lead"], d.Table.Plugin),
-		"salesforce_object_permission":         SalesforceObjectPermission(ctx, dynamicColumnsMap["ObjectPermissions"], d.Table.Plugin),
-		"salesforce_opportunity":               SalesforceOpportunity(ctx, dynamicColumnsMap["Opportunity"], d.Table.Plugin),
-		"salesforce_opportunity_contact_role":  SalesforceOpportunityContactRole(ctx, dynamicColumnsMap["OpportunityContactRole"], d.Table.Plugin),
-		"salesforce_order":                     SalesforceOrder(ctx, dynamicColumnsMap["Order"], d.Table.Plugin),
-		"salesforce_permission_set":            SalesforcePermissionSet(ctx, dynamicColumnsMap["PermissionSet"], d.Table.Plugin),
-		"salesforce_permission_set_assignment": SalesforcePermissionSetAssignment(ctx, dynamicColumnsMap["PermissionSetAssignment"], d.Table.Plugin),
-		"salesforce_pricebook":                 SalesforcePricebook(ctx, dynamicColumnsMap["Pricebook2"], d.Table.Plugin),
-		"salesforce_product":                   SalesforceProduct(ctx, dynamicColumnsMap["Product2"], d.Table.Plugin),
-		"salesforce_user":                      SalesforceUser(ctx, dynamicColumnsMap["User"], d.Table.Plugin),
+		"salesforce_account":                   SalesforceAccount(ctx, dynamicColumnsMap["Account"]),
+		"salesforce_account_contact_role":      SalesforceAccountContactRole(ctx, dynamicColumnsMap["AccountContactRole"]),
+		"salesforce_asset":                     SalesforceAsset(ctx, dynamicColumnsMap["Asset"]),
+		"salesforce_contact":                   SalesforceContact(ctx, dynamicColumnsMap["Contact"]),
+		"salesforce_contract":                  SalesforceContract(ctx, dynamicColumnsMap["Contract"]),
+		"salesforce_lead":                      SalesforceLead(ctx, dynamicColumnsMap["Lead"]),
+		"salesforce_object_permission":         SalesforceObjectPermission(ctx, dynamicColumnsMap["ObjectPermissions"]),
+		"salesforce_opportunity":               SalesforceOpportunity(ctx, dynamicColumnsMap["Opportunity"]),
+		"salesforce_opportunity_contact_role":  SalesforceOpportunityContactRole(ctx, dynamicColumnsMap["OpportunityContactRole"]),
+		"salesforce_order":                     SalesforceOrder(ctx, dynamicColumnsMap["Order"]),
+		"salesforce_permission_set":            SalesforcePermissionSet(ctx, dynamicColumnsMap["PermissionSet"]),
+		"salesforce_permission_set_assignment": SalesforcePermissionSetAssignment(ctx, dynamicColumnsMap["PermissionSetAssignment"]),
+		"salesforce_pricebook":                 SalesforcePricebook(ctx, dynamicColumnsMap["Pricebook2"]),
+		"salesforce_product":                   SalesforceProduct(ctx, dynamicColumnsMap["Product2"]),
+		"salesforce_user":                      SalesforceUser(ctx, dynamicColumnsMap["User"]),
 	}
 
 	var re = regexp.MustCompile(`\d+`)

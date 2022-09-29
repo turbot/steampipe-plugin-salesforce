@@ -22,8 +22,10 @@ func connect(ctx context.Context, d *plugin.QueryData) (*simpleforce.Client, err
 func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connection) (*simpleforce.Client, error) {
 	// Load connection from cache, which preserves throttling protection etc
 	cacheKey := "simpleforce"
-	if cachedData, ok := cm.Cache.Get(cacheKey); ok {
-		return cachedData.(*simpleforce.Client), nil
+	if cm != nil {
+		if cachedData, ok := cm.Cache.Get(cacheKey); ok {
+			return cachedData.(*simpleforce.Client), nil
+		}
 	}
 
 	config := GetConfig(c)
@@ -219,7 +221,7 @@ func getSalesforceColumnName(name string) string {
 }
 
 // append the dynamic columns with static columns for the table
-func mergeTableColumns(ctx context.Context, p *plugin.Plugin, dynamicColumns []*plugin.Column, staticColumns []*plugin.Column) []*plugin.Column {
+func mergeTableColumns(ctx context.Context, dynamicColumns []*plugin.Column, staticColumns []*plugin.Column) []*plugin.Column {
 	var columns []*plugin.Column
 	columns = append(columns, staticColumns...)
 	for _, col := range dynamicColumns {
@@ -232,7 +234,7 @@ func mergeTableColumns(ctx context.Context, p *plugin.Plugin, dynamicColumns []*
 }
 
 // dynamicColumns:: Returns list coulms for a salesforce object
-func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceTableName string, p *plugin.Plugin) ([]*plugin.Column, plugin.KeyColumnSlice, map[string]string) {
+func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceTableName string) ([]*plugin.Column, plugin.KeyColumnSlice, map[string]string) {
 	sObjectMeta := client.SObject(salesforceTableName).Describe()
 	if sObjectMeta == nil {
 		plugin.Logger(ctx).Error("salesforce.dynamicColumns", fmt.Sprintf("Table %s not present in salesforce", salesforceTableName))
