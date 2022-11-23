@@ -10,9 +10,9 @@ import (
 
 	"github.com/iancoleman/strcase"
 	"github.com/simpleforce/simpleforce"
-	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 const pluginName = "steampipe-plugin-salesforce"
@@ -40,10 +40,10 @@ type dynamicMap struct {
 	salesforceColumns map[string]string
 }
 
-func pluginTableDefinitions(ctx context.Context, connection *plugin.Connection) (map[string]*plugin.Table, error) {
+func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[string]*plugin.Table, error) {
 	// If unable to connect to salesforce instance, log warning and abort dynamic table creation
 
-	client, err := connectRaw(ctx, nil, connection)
+	client, err := connectRaw(ctx, td.ConectionCache, td.Connection)
 	if err != nil {
 		// do not abort the plugin as static table needs to be generated
 		plugin.Logger(ctx).Warn("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
@@ -93,7 +93,7 @@ func pluginTableDefinitions(ctx context.Context, connection *plugin.Connection) 
 	var re = regexp.MustCompile(`\d+`)
 	var substitution = ``
 	salesforceTables := []string{}
-	config := GetConfig(connection)
+	config := GetConfig(td.Connection)
 	if config.Objects != nil && len(*config.Objects) > 0 {
 		for _, tableName := range *config.Objects {
 			pluginTableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(tableName, substitution))

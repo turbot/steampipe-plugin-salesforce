@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 //// LIST HYDRATE FUNCTION
@@ -46,11 +46,6 @@ func listSalesforceObjectsByTable(tableName string, salesforceCols map[string]st
 
 			for _, account := range *AccountList {
 				d.StreamListItem(ctx, account)
-				// Check if context has been cancelled or if the limit has been hit (if specified)
-				// if there is a limit, it will return the number of rows required to reach this limit
-				if d.QueryStatus.RowsRemaining(ctx) == 0 {
-					return nil, nil
-				}
 			}
 
 			// Paging
@@ -70,7 +65,7 @@ func listSalesforceObjectsByTable(tableName string, salesforceCols map[string]st
 func getSalesforceObjectbyID(tableName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 		plugin.Logger(ctx).Info("salesforce.getSalesforceObjectbyID", "Table_Name", d.Table.Name)
-		id := d.KeyColumnQualString("id")
+		id := d.EqualsQualString("id")
 		if strings.TrimSpace(id) == "" {
 			return nil, nil
 		}

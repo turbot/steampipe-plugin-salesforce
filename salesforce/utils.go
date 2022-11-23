@@ -8,22 +8,22 @@ import (
 
 	"github.com/iancoleman/strcase"
 	"github.com/simpleforce/simpleforce"
-	"github.com/turbot/steampipe-plugin-sdk/v4/connection"
-	"github.com/turbot/steampipe-plugin-sdk/v4/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin"
-	"github.com/turbot/steampipe-plugin-sdk/v4/plugin/transform"
+	"github.com/turbot/steampipe-plugin-sdk/v5/connection"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
 func connect(ctx context.Context, d *plugin.QueryData) (*simpleforce.Client, error) {
-	return connectRaw(ctx, d.ConnectionManager, d.Connection)
+	return connectRaw(ctx, d.ConnectionCache, d.Connection)
 }
 
 // connect:: returns salesforce client after authentication
-func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connection) (*simpleforce.Client, error) {
+func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.Connection) (*simpleforce.Client, error) {
 	// Load connection from cache, which preserves throttling protection etc
 	cacheKey := "simpleforce"
-	if cm != nil {
-		if cachedData, ok := cm.Cache.Get(cacheKey); ok {
+	if cc != nil {
+		if cachedData, ok := cc.Get(ctx, cacheKey); ok {
 			return cachedData.(*simpleforce.Client), nil
 		}
 	}
@@ -75,8 +75,8 @@ func connectRaw(ctx context.Context, cm *connection.Manager, c *plugin.Connectio
 	}
 
 	// Save to cache
-	if cm != nil {
-		cm.Cache.Set(cacheKey, client)
+	if cc != nil {
+		cc.Set(ctx, cacheKey, client)
 	}
 
 	return client, nil
