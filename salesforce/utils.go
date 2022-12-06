@@ -76,7 +76,9 @@ func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.C
 
 	// Save to cache
 	if cc != nil {
-		cc.Set(ctx, cacheKey, client)
+		if cachedData, ok := cc.Set(ctx, cacheKey, client); ok {
+			return cachedData.(*simpleforce.Client), nil
+		}
 	}
 
 	return client, nil
