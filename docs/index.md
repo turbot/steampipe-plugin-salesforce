@@ -160,7 +160,7 @@ Steampile will automatically create two tables, `salesforce_custom_app__c` and `
 
 To get details of a specific custom object table, inspect it by name:
 
-```sql
+```sh
 .inspect salesforce_custom_app__c
 +---------------------+--------------------------+-------------------------+
 | column              | type                     | description             |

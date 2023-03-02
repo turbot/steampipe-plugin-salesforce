@@ -18,7 +18,7 @@ connection "salesforce" {
 
 This plugin will automatically create tables called `salesforce_case`, `salesforce_campaign` and `salesforce_custom_app__c`:
 
-```
+```sh
 select id, owner_id, is_deleted from salesforce_custom_app__c
 +--------------------+--------------------+------------+
 | id                 | owner_id           | is_deleted |
@@ -53,7 +53,7 @@ connection "salesforce" {
 
 List all tables with:
 
-```sql
+```sh
 .inspect salesforce
 +---------------------------------+---------------------------------------------------------+
 | table                           | description                                             |
@@ -67,7 +67,7 @@ List all tables with:
 
 To get details of a specific object table, inspect it by name:
 
-```sql
+```sh
 .inspect salesforce_custom_app__c
 +---------------------+--------------------------+-------------------------+
 | column              | type                     | description             |
