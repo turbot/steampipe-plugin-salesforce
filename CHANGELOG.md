@@ -1,3 +1,9 @@
+## v0.2.1 [2023-03-02]
+
+_Bug fixes_
+
+- Fixed formatting for various examples in index and table docs.
+
 ## v0.2.0 [2022-06-24]
 
 _Enhancements_
