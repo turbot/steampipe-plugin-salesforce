@@ -43,7 +43,7 @@ type dynamicMap struct {
 func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[string]*plugin.Table, error) {
 	// If unable to connect to salesforce instance, log warning and abort dynamic table creation
 
-	client, err := connectRaw(ctx, td.ConectionCache, td.Connection)
+	client, err := connectRaw(ctx, td.ConnectionCache, td.Connection)
 	if err != nil {
 		// do not abort the plugin as static table needs to be generated
 		plugin.Logger(ctx).Warn("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
