@@ -1,3 +1,10 @@
+## v0.3.0 [2023-03-23]
+ 
+_Dependencies_
+
+- Recompiled plugin with [steampipe-plugin-sdk v5.3.0](https://github.com/turbot/steampipe-plugin-sdk/blob/main/CHANGELOG.md#v530-2023-03-16) which includes fixes for query cache pending item mechanism and aggregator connections not working for dynamic tables. ([#12](https://github.com/turbot/steampipe-plugin-salesforce/pull/12))
+- Recompiled plugin with Go version `1.19`. ([#12](https://github.com/turbot/steampipe-plugin-salesforce/pull/12))
+
 ## v0.2.1 [2023-03-02]
 
 _Bug fixes_
