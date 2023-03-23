@@ -3,11 +3,11 @@ package salesforce
 import (
 	"context"
 
-	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
-func SalesforceObjectPermission(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *plugin.Table {
+func SalesforceObjectPermission(ctx context.Context, dm dynamicMap) *plugin.Table {
 	tableName := "ObjectPermissions"
 	return &plugin.Table{
 		Name:        "salesforce_object_permission",
@@ -20,7 +20,7 @@ func SalesforceObjectPermission(ctx context.Context, dm dynamicMap, p *plugin.Pl
 			Hydrate:    getSalesforceObjectbyID(tableName),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
-		Columns: mergeTableColumns(ctx, p, dm.cols, []*plugin.Column{
+		Columns: mergeTableColumns(ctx, dm.cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "The ObjectPermissions ID."},
 			{Name: "parent_id", Type: proto.ColumnType_STRING, Description: "The Id of this object's parent PermissionSet."},

@@ -3,11 +3,11 @@ package salesforce
 import (
 	"context"
 
-	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
-func SalesforceOrder(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *plugin.Table {
+func SalesforceOrder(ctx context.Context, dm dynamicMap) *plugin.Table {
 	tableName := "Order"
 	return &plugin.Table{
 		Name:        "salesforce_order",
@@ -20,7 +20,7 @@ func SalesforceOrder(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *plug
 			Hydrate:    getSalesforceObjectbyID(tableName),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
-		Columns: mergeTableColumns(ctx, p, dm.cols, []*plugin.Column{
+		Columns: mergeTableColumns(ctx, dm.cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the order in Salesforce."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "Title for the order that distinguishes it from other orders."},

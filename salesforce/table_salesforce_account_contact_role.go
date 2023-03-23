@@ -3,11 +3,11 @@ package salesforce
 import (
 	"context"
 
-	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
-	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
-func SalesforceAccountContactRole(ctx context.Context, dm dynamicMap, p *plugin.Plugin) *plugin.Table {
+func SalesforceAccountContactRole(ctx context.Context, dm dynamicMap) *plugin.Table {
 	tableName := "AccountContactRole"
 	return &plugin.Table{
 		Name:        "salesforce_account_contact_role",
@@ -20,7 +20,7 @@ func SalesforceAccountContactRole(ctx context.Context, dm dynamicMap, p *plugin.
 			Hydrate:    getSalesforceObjectbyID(tableName),
 			KeyColumns: plugin.SingleColumn("id"),
 		},
-		Columns: mergeTableColumns(ctx, p, dm.cols, []*plugin.Column{
+		Columns: mergeTableColumns(ctx, dm.cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the account contact role in Salesforce."},
 			{Name: "account_id", Type: proto.ColumnType_STRING, Description: "ID of the Account."},
