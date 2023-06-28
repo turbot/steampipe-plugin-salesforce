@@ -6,18 +6,22 @@ import (
 )
 
 type salesforceConfig struct {
-	URL        *string   `cty:"url"`
-	Username   *string   `cty:"username"`
-	Password   *string   `cty:"password"`
-	Token      *string   `cty:"token"`
-	ClientId   *string   `cty:"client_id"`
-	APIVersion *string   `cty:"api_version"`
-	Objects    *[]string `cty:"objects"`
+	URL                          *string   `cty:"url"`
+	Username                     *string   `cty:"username"`
+	Password                     *string   `cty:"password"`
+	Token                        *string   `cty:"token"`
+	ClientId                     *string   `cty:"client_id"`
+	APIVersion                   *string   `cty:"api_version"`
+	Objects                      *[]string `cty:"objects"`
+	DynamicTableAndPropertyNames *bool     `cty:"dynamic_table_and_property_names"`
 }
 
 var ConfigSchema = map[string]*schema.Attribute{
 	"url": {
 		Type: schema.TypeString,
+	},
+	"dynamic_table_and_property_names": {
+		Type: schema.TypeBool,
 	},
 	"username": {
 		Type: schema.TypeString,

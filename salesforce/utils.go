@@ -238,8 +238,28 @@ func mergeTableColumns(ctx context.Context, dynamicColumns []*plugin.Column, sta
 	return columns
 }
 
+func mergeTableAccountColumns(ctx context.Context, config salesforceConfig, dynamicColumns []*plugin.Column, staticColumns []*plugin.Column) []*plugin.Column {
+	var columns []*plugin.Column
+
+	// when DynamicTableAndPropertyNames is set to true, do not add the static columns
+	if config.DynamicTableAndPropertyNames != nil && *config.DynamicTableAndPropertyNames {
+		columns = append(columns, dynamicColumns...)
+		return columns
+	}
+
+	columns = append(columns, staticColumns...)
+	for _, col := range dynamicColumns {
+		if isColumnAvailable(col.Name, staticColumns) {
+			continue
+		}
+		columns = append(columns, col)
+	}
+
+	return columns
+}
+
 // dynamicColumns:: Returns list coulms for a salesforce object
-func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceTableName string) ([]*plugin.Column, plugin.KeyColumnSlice, map[string]string) {
+func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceTableName string, config salesforceConfig) ([]*plugin.Column, plugin.KeyColumnSlice, map[string]string) {
 	sObjectMeta := client.SObject(salesforceTableName).Describe()
 	if sObjectMeta == nil {
 		plugin.Logger(ctx).Error("salesforce.dynamicColumns", fmt.Sprintf("Table %s not present in salesforce", salesforceTableName))
@@ -285,8 +305,9 @@ func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceT
 		// them, so it's impossible to convert from snake case back to camel case
 		// to match the original field name. Also, if we convert to snake case,
 		// custom fields like "TestField" and "Test_Field" will result in duplicates
+		// check if DynamicTableAndPropertyNames is true
 		var columnFieldName string
-		if strings.HasSuffix(fieldName, "__c") {
+		if strings.HasSuffix(fieldName, "__c") || (config.DynamicTableAndPropertyNames != nil && *config.DynamicTableAndPropertyNames) {
 			columnFieldName = strings.ToLower(fieldName)
 		} else {
 			columnFieldName = strcase.ToSnake(fieldName)
@@ -321,7 +342,6 @@ func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceT
 		}
 		cols = append(cols, &column)
 	}
-
 	return cols, keyColumns, salesforceCols
 }
 
