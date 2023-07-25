@@ -225,24 +225,11 @@ func getSalesforceColumnName(name string) string {
 	return columnName
 }
 
-// append the dynamic columns with static columns for the table
-func mergeTableColumns(ctx context.Context, dynamicColumns []*plugin.Column, staticColumns []*plugin.Column) []*plugin.Column {
-	var columns []*plugin.Column
-	columns = append(columns, staticColumns...)
-	for _, col := range dynamicColumns {
-		if isColumnAvailable(col.Name, staticColumns) {
-			continue
-		}
-		columns = append(columns, col)
-	}
-	return columns
-}
-
-func mergeTableAccountColumns(ctx context.Context, config salesforceConfig, dynamicColumns []*plugin.Column, staticColumns []*plugin.Column) []*plugin.Column {
+func mergeTableColumns(ctx context.Context, config salesforceConfig, dynamicColumns []*plugin.Column, staticColumns []*plugin.Column) []*plugin.Column {
 	var columns []*plugin.Column
 
-	// when DynamicTableAndPropertyNames is set to true, do not add the static columns
-	if config.DynamicTableAndPropertyNames != nil && *config.DynamicTableAndPropertyNames {
+	// when NameScheme is set to SOQL, do not add the static columns
+	if config.NameScheme != nil && *config.NameScheme == "SOQL" && len(dynamicColumns) > 0 {
 		columns = append(columns, dynamicColumns...)
 		return columns
 	}
@@ -307,7 +294,11 @@ func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceT
 		// custom fields like "TestField" and "Test_Field" will result in duplicates
 		// check if DynamicTableAndPropertyNames is true
 		var columnFieldName string
-		if strings.HasSuffix(fieldName, "__c") || (config.DynamicTableAndPropertyNames != nil && *config.DynamicTableAndPropertyNames) {
+
+		// keep the field name as it is if NameScheme is set to SOQL
+		if config.NameScheme != nil && *config.NameScheme == "SOQL" {
+			columnFieldName = fieldName
+		} else if strings.HasSuffix(fieldName, "__c") {
 			columnFieldName = strings.ToLower(fieldName)
 		} else {
 			columnFieldName = strcase.ToSnake(fieldName)

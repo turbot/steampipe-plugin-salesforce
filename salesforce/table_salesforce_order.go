@@ -7,7 +7,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
-func SalesforceOrder(ctx context.Context, dm dynamicMap) *plugin.Table {
+func SalesforceOrder(ctx context.Context, dm dynamicMap, config salesforceConfig) *plugin.Table {
 	tableName := "Order"
 	return &plugin.Table{
 		Name:        "salesforce_order",
@@ -18,9 +18,9 @@ func SalesforceOrder(ctx context.Context, dm dynamicMap) *plugin.Table {
 		},
 		Get: &plugin.GetConfig{
 			Hydrate:    getSalesforceObjectbyID(tableName),
-			KeyColumns: plugin.SingleColumn("id"),
+			KeyColumns: plugin.SingleColumn(checkNameScheme(config, dm.cols)),
 		},
-		Columns: mergeTableColumns(ctx, dm.cols, []*plugin.Column{
+		Columns: mergeTableColumns(ctx, config, dm.cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the order in Salesforce."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "Title for the order that distinguishes it from other orders."},
