@@ -73,7 +73,7 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 	}
 
 	// Initialize tables with static tables with static and dynamic columns(if credentials are set)
-	tables := map[string]*plugin.Table{}
+	var tables map[string]*plugin.Table
 
 	// check the NamingConvention parameter value in config
 	if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
