@@ -5,29 +5,29 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/schema"
 )
 
-type NameSchemeEnum string
+type NamingConventionEnum string
 
 const (
-	PostgreSQL NameSchemeEnum = "PostgreSQL"
-	SOQL       NameSchemeEnum = "SOQL"
+	API_NATIVE NamingConventionEnum = "api_native"
+	SNAKE_CASE NamingConventionEnum = "snake_case"
 )
 
 type salesforceConfig struct {
-	URL        *string         `cty:"url"`
-	Username   *string         `cty:"username"`
-	Password   *string         `cty:"password"`
-	Token      *string         `cty:"token"`
-	ClientId   *string         `cty:"client_id"`
-	APIVersion *string         `cty:"api_version"`
-	Objects    *[]string       `cty:"objects"`
-	NameScheme *NameSchemeEnum `cty:"name_scheme"`
+	URL              *string               `cty:"url"`
+	Username         *string               `cty:"username"`
+	Password         *string               `cty:"password"`
+	Token            *string               `cty:"token"`
+	ClientId         *string               `cty:"client_id"`
+	APIVersion       *string               `cty:"api_version"`
+	Objects          *[]string             `cty:"objects"`
+	NamingConvention *NamingConventionEnum `cty:"naming_convention"`
 }
 
 var ConfigSchema = map[string]*schema.Attribute{
 	"url": {
 		Type: schema.TypeString,
 	},
-	"name_scheme": {
+	"naming_convention": {
 		Type: schema.TypeString,
 	},
 	"username": {

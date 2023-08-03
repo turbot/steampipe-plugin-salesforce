@@ -112,7 +112,7 @@ func decodeQueryResult(ctx context.Context, response interface{}, respObject int
 	return nil
 }
 
-// buildQueryFromQuals :: generate SOQL based on the contions specified in sql query
+// buildQueryFromQuals :: generate api_native based on the contions specified in sql query
 // refrences
 // - https://developer.salesforce.com/docs/atlas.en-us.234.0.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_select_comparisonoperators.htm
 func buildQueryFromQuals(equalQuals plugin.KeyColumnQualMap, tableColumns []*plugin.Column, salesforceCols map[string]string) string {
@@ -225,11 +225,11 @@ func getSalesforceColumnName(name string) string {
 	return columnName
 }
 
-func mergeTableColumns(ctx context.Context, config salesforceConfig, dynamicColumns []*plugin.Column, staticColumns []*plugin.Column) []*plugin.Column {
+func mergeTableColumns(_ context.Context, config salesforceConfig, dynamicColumns []*plugin.Column, staticColumns []*plugin.Column) []*plugin.Column {
 	var columns []*plugin.Column
 
-	// when NameScheme is set to SOQL, do not add the static columns
-	if config.NameScheme != nil && *config.NameScheme == "SOQL" && len(dynamicColumns) > 0 {
+	// when NamingConvention is set to api_native, do not add the static columns
+	if config.NamingConvention != nil && *config.NamingConvention == "api_native" && len(dynamicColumns) > 0 {
 		columns = append(columns, dynamicColumns...)
 		return columns
 	}
@@ -295,8 +295,8 @@ func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceT
 		// check if DynamicTableAndPropertyNames is true
 		var columnFieldName string
 
-		// keep the field name as it is if NameScheme is set to SOQL
-		if config.NameScheme != nil && *config.NameScheme == "SOQL" {
+		// keep the field name as it is if NamingConvention is set to api_native
+		if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
 			columnFieldName = fieldName
 		} else if strings.HasSuffix(fieldName, "__c") {
 			columnFieldName = strings.ToLower(fieldName)

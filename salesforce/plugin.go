@@ -75,8 +75,8 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 	// Initialize tables with static tables with static and dynamic columns(if credentials are set)
 	tables := map[string]*plugin.Table{}
 
-	// check the NameScheme parameter value in config
-	if config.NameScheme != nil && *config.NameScheme == "SOQL" {
+	// check the NamingConvention parameter value in config
+	if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
 		tables = map[string]*plugin.Table{
 			"Account":                 SalesforceAccount(ctx, dynamicColumnsMap["Account"], config),
 			"AccountContactRole":      SalesforceAccountContactRole(ctx, dynamicColumnsMap["AccountContactRole"], config),
@@ -120,7 +120,7 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 	if config.Objects != nil && len(*config.Objects) > 0 {
 		for _, tableName := range *config.Objects {
 			var pluginTableName string
-			if config.NameScheme != nil && *config.NameScheme == "SOQL" {
+			if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
 				pluginTableName = strcase.ToSnake(re.ReplaceAllString(tableName, substitution))
 			} else {
 				pluginTableName = "salesforce_" + strcase.ToSnake(re.ReplaceAllString(tableName, substitution))
@@ -140,7 +140,7 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 	wg.Add(len(salesforceTables))
 	for _, sfTable := range salesforceTables {
 		var tableName string
-		if config.NameScheme != nil && *config.NameScheme == "SOQL" {
+		if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
 			tableName = sfTable
 		} else {
 			tableName = "salesforce_" + strcase.ToSnake(re.ReplaceAllString(sfTable, substitution))
@@ -151,7 +151,7 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 		}
 		go func(name string) {
 			defer wg.Done()
-			if config.NameScheme != nil && *config.NameScheme == "SOQL" {
+			if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
 				tableName = name
 			} else {
 				tableName = "salesforce_" + strcase.ToSnake(re.ReplaceAllString(name, substitution))
@@ -222,8 +222,8 @@ func generateDynamicTables(ctx context.Context, client *simpleforce.Client, conf
 		// custom fields like "TestField" and "Test_Field" will result in duplicates
 		var columnFieldName string
 
-		// keep the field name as it is if NameScheme is set to SOQL
-		if config.NameScheme != nil && *config.NameScheme == "SOQL" {
+		// keep the field name as it is if NamingConvention is set to api_native
+		if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
 			columnFieldName = fieldName
 		} else if strings.HasSuffix(fieldName, "__c") {
 			columnFieldName = strings.ToLower(fieldName)
@@ -278,10 +278,10 @@ func generateDynamicTables(ctx context.Context, client *simpleforce.Client, conf
 	return &Table
 }
 
-// set GetConfig parameter based on NameScheme value
+// set GetConfig parameter based on NamingConvention value
 // if the object is unavailable then there will be no dynamic columns, so GetConfig parameter should be id to avoid failure of static table creation
 func checkNameScheme(config salesforceConfig, dynamicColumns []*plugin.Column) string {
-	if config.NameScheme != nil && *config.NameScheme == "SOQL" && len(dynamicColumns) > 0 {
+	if config.NamingConvention != nil && *config.NamingConvention == "api_native" && len(dynamicColumns) > 0 {
 		return "Id"
 	}
 	return "id"

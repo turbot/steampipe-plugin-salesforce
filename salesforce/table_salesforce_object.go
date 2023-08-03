@@ -67,7 +67,7 @@ func getSalesforceObjectbyID(tableName string) func(ctx context.Context, d *plug
 		plugin.Logger(ctx).Info("salesforce.getSalesforceObjectbyID", "Table_Name", d.Table.Name)
 		config := GetConfig(d.Connection)
 		var id string
-		if config.NameScheme != nil && *config.NameScheme == "SOQL" {
+		if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
 			id = d.EqualsQualString("Id")
 		} else {
 			id = d.EqualsQualString("id")
