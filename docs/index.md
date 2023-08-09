@@ -45,6 +45,58 @@ where
 
 ## Get started
 
+### Naming Convention
+
+The naming_convention configuration option allows you to control the naming format for tables and columns in the plugin. This option influences how table and column names are formatted when querying Salesforce data through Steampipe. There are two supported values for the naming_convention option:
+
+- api_native :
+  If you set naming_convention to api_native, the plugin will use the native format for table names, meaning there will be no salesforce_ prefix, and the table and column names will remain as they are in Salesforce.
+
+Here's an example query using api_native naming convention in the config file:
+
+```
+select
+  "Id",
+  "WhoCount",
+  "WhatCount",
+  "Subject",
+  "IsAllDayEvent"
+from
+  "Event";
+```
+
+```
++---------------------+----------+-------------+---------+---------------+
+| ID                  | WhoCount |  WhatCount  | Subject | IsAllDayEvent |
++----------------------------------------------+-------------------------+
+| 00U2t0000000Mw3dEAD | 0        |  0          | test    | false         |
++---------------------+----------+-----------------------+---------------+
+```
+
+- snake_case :
+  If you do not specify a value for naming_convention or set it to snake_case, the plugin will use snake case for table and column names, and table names will have a salesforce_ prefix.
+
+Here's an example query using snake_case naming convention in the config file:
+
+```
+select
+  id,
+  who_count,
+  what_count,
+  subject,
+  is_all_day_event
+from
+  salesforce_event;
+```
+
+```
++---------------------+-----------+------------+---------+------------------+
+| id                  | who_count | what_count | subject | is_all_day_event |
++----------------------------------------------+----------------------------+
+| 00U2t0000000Mw3dEAD | 0         |  0         | test    | false            |
++---------------------+-----------+------------+---------+------------------+
+```
+
 ### Install
 
 Download and install the latest salesforce plugin:
