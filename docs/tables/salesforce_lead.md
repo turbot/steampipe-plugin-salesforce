@@ -2,6 +2,8 @@
 
 Represents a prospect or lead.
 
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_lead#list_cold_rated_leads).
+
 ## Examples
 
 ### Basic info
@@ -43,4 +45,67 @@ from
   salesforce_lead
 group by
   status;
+```
+
+## API Native Examples
+
+### Basic info (with API Native naming convention)
+
+```sql
+select
+  "ID",
+  "name",
+  "Industry",
+  "IsConverted",
+  "Rating",
+  "Status",
+  "Website"
+from
+  "Lead";
+```
+
+### List number of leads by industry type (with API Native naming convention)
+
+```sql
+select
+  count(*),
+  "Industry"
+from
+  "Lead"
+group by
+  "Industry";
+```
+
+### List cold rated leads
+
+```sql
+select
+  "ID",
+  "name",
+  "Industry",
+  "IsConverted",
+  "Rating",
+  "Status",
+  "Website"
+from
+  "Lead"
+where
+  "Rating" = 'Cold';
+```
+
+### List qualified leads
+
+```sql
+select
+  "ID",
+  "name",
+  "Industry",
+  "IsConverted",
+  "Rating",
+  "Status",
+  "Website"
+from
+  "Lead"
+where
+  "Status" = 'Qualified';
 ```

@@ -2,9 +2,7 @@
 
 Represents the role that a Contact plays on an Account.
 
-If the naming_convention parameter is set to api_native in the config file, then the table and column names will match what’s in Salesforce. For instance, the query `select id, account_id from salesforce_account_contact_role` would become `select "ID", "AccountID" from "AccountContactRole"`.
-
-Additional examples can be found [below](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account_contact_role#show_approver_account_contact_roles).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account_contact_role#show_approver_account_contact_roles).
 
 ## Examples
 
@@ -33,6 +31,34 @@ from
   salesforce_account_contact_role
 where
   is_primary;
+```
+
+## API Native Examples
+
+### Basic info (with API Native naming convention)
+
+```sql
+select
+  "ID",
+  "AccountID",
+  "ContactID",
+  "IsPrimary"
+from
+  "AccountContactRole";
+```
+
+### List primary account contact role (with API Native naming convention)
+
+```sql
+select
+  "ID",
+  "AccountID",
+  "ContactID",
+  "IsPrimary"
+from
+  "AccountContactRole"
+where
+  "IsPrimary";
 ```
 
 ### Show approver account contact roles

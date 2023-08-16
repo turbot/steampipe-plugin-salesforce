@@ -2,6 +2,8 @@
 
 Represents a contract (a business agreement) associated with an Account.
 
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_contract#show_draft_contracts).
+
 ## Examples
 
 ### Basic info
@@ -48,4 +50,67 @@ from
   salesforce_contract
 group by
   status;
+```
+
+## API Native Examples
+
+### Basic info (with API Native naming convention)
+
+```sql
+select
+  "ID",
+  "AccountID",
+  "ContractNumber",
+  "ContractTerm",
+  "EndDate",
+  "StartDate",
+  "Status"
+from
+  "Contract";
+```
+
+### List number of contracts by status (with API Native naming convention)
+
+```sql
+select
+  count(*),
+  "Status"
+from
+  "Contract"
+group by
+  "Status";
+```
+
+### Show draft contracts
+
+```sql
+select
+  "ID",
+  "AccountID",
+  "ContractNumber",
+  "ContractTerm",
+  "EndDate",
+  "StartDate",
+  "Status"
+from
+  "Contract"
+where
+  "Status" = 'Draft';
+```
+
+### Show deleted contracts
+
+```sql
+select
+  "ID",
+  "AccountID",
+  "ContractNumber",
+  "ContractTerm",
+  "EndDate",
+  "StartDate",
+  "Status"
+from
+  "Contract"
+where
+  "IsDeleted";
 ```

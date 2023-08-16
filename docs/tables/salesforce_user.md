@@ -2,6 +2,10 @@
 
 Represents a user in salesforce organization.
 
+If the naming_convention parameter is set to api_native in the config file, then the table and column names will match what’s in Salesforce. For instance, the query `select username, alias from salesforce_user` would become `select "Username", "Alias" from "User"`.
+
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_user#list_guest_users).
+
 ## Examples
 
 ### Basic info
@@ -59,4 +63,64 @@ from
   salesforce_user
 where
   forecast_enabled;
+```
+
+## API Native Examples
+
+### Basic info (with API Native naming convention)
+
+```sql
+select
+  "Username",
+  "Alias",
+  "UserType",
+  "IsActive",
+  "LastLoginDate"
+from
+  "User";
+```
+
+### List active users (with API Native naming convention)
+
+```sql
+select
+  "Username",
+  "Alias",
+  "UserType",
+  "IsActive",
+  "LastLoginDate"
+from
+  "User"
+where
+  "IsActive";
+```
+
+### List guest users
+
+```sql
+select
+  "Username",
+  "Alias",
+  "UserType",
+  "IsActive",
+  "LastLoginDate"
+from
+  "User"
+where
+  "UserType" = 'Guest';
+```
+
+### List users who logged-in in last 30 days
+
+```sql
+select
+  "Username",
+  "Alias",
+  "UserType",
+  "IsActive",
+  "LastLoginDate"
+from
+  "User"
+where
+  "LastLoginDate" <= now() - interval '30' day;
 ```
