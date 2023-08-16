@@ -49,6 +49,8 @@ group by
 
 ## API Native Examples
 
+If the `naming_convention` config argument is set to `api_native`, the table and column names will match Salesforce naming conventions.
+
 ### Basic info (with API Native naming convention)
 
 ```sql
