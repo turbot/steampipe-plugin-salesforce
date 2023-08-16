@@ -1,4 +1,4 @@
-# Table: salesforce\_{object_name}
+# Table: salesforce_{object_name}
 
 Query data from the object called `salesforce_{object_name}`, e.g., `salesforce_campaign`, `salesforce_custom_app__c`. A table is automatically created to represent each object in the `objects` argument.
 
