@@ -224,7 +224,7 @@ from
 
 ### Snake Case
 
-If you do not specify a value for `naming_convention` or set it to `snake_case`, the plugin will use snake case for table and column names, and table names will have a `salesforce*` prefix.
+If you do not specify a value for `naming_convention` or set it to `snake_case`, the plugin will use snake case for table and column names, and table names will have a `salesforce_` prefix.
 
 For example:
 
