@@ -2,7 +2,7 @@
 
 Represents an individual account, which is an organization or person involved with business (such as customers, competitors, and partners).
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#show_details_about_the_turbot_account).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
 
 ## Examples
 

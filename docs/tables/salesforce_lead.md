@@ -2,7 +2,7 @@
 
 Represents a prospect or lead.
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_lead#list_cold_rated_leads).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_lead#api_native_examples).
 
 ## Examples
 

@@ -2,7 +2,7 @@
 
 Represents a contract (a business agreement) associated with an Account.
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_contract#show_draft_contracts).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_contract#api_native_examples).
 
 ## Examples
 

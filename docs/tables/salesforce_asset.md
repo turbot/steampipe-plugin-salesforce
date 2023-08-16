@@ -2,7 +2,7 @@
 
 Represents an item of commercial value, such as a product sold by your company or a competitor, that a customer has purchased and installed.
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_asset#list_shipped_assets).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_asset#api_native_examples).
 
 ## Examples
 

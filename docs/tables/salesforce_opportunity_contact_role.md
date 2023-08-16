@@ -2,7 +2,7 @@
 
 Represents the role that a Contact plays on an Opportunity.
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_opportunity_contact_role#show_opportunity_contact_roles_created_in_last_30_days).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_opportunity_contact_role#api_native_examples).
 
 ## Examples
 

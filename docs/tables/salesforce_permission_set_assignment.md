@@ -2,7 +2,7 @@
 
 Represents the association between a user and permission set.
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_permission_set_assignment#list_assignments_which_are_not_associated_with_any_permission_set_groups).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_permission_set_assignment#api_native_examples).
 
 ## Examples
 

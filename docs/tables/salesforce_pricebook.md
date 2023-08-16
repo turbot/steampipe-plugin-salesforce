@@ -4,7 +4,7 @@ Represents a price book that contains the list of products that your org sells.
 
 If the naming_convention parameter is set to api_native in the config file, then the table and column names will match what’s in Salesforce. For instance, the query `select name, is_active from salesforce_pricebook` would become `select "Name", "IsActive" from "Pricebook2"`.
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_pricebook#show_archived_price_books).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_pricebook#api_native_examples).
 
 ## Examples
 

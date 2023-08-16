@@ -5,7 +5,7 @@ PermissionSet has a read-only child relationship with PermissionSetGroup. Permis
 
 **Note**: This table has one field for each permission with the pattern `permissions_permission_name`, e.g., `permissions_edit_task`. If true, users assigned to this permission set have the named permission. The number of fields varies depending on the permissions for the organization and license type.
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_permission_set#show_permission_sets_created_in_last_30_days).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_permission_set#api_native_examples).
 
 ## Examples
 

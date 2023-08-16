@@ -2,7 +2,7 @@
 
 Represents an opportunity, which is a sale or pending deal.
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_opportunity#list_closed_opportunities).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_opportunity#api_native_examples).
 
 ## Examples
 

@@ -2,7 +2,7 @@
 
 Represents an order associated with a contract or an account.
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_order#list_draft_orders).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_order#api_native_examples).
 
 ## Examples
 

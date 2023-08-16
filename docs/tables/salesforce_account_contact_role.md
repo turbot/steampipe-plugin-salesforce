@@ -2,7 +2,7 @@
 
 Represents the role that a Contact plays on an Account.
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account_contact_role#show_approver_account_contact_roles).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account_contact_role#api_native_examples).
 
 ## Examples
 

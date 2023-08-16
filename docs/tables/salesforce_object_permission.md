@@ -2,7 +2,7 @@
 
 Represents the enabled object permissions for the parent PermissionSet.
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_object_permission#show_delete_permissions).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_object_permission#api_native_examples).
 
 ## Examples
 

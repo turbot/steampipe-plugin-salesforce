@@ -2,7 +2,7 @@
 
 Represents a contact, which is a person associated with an account.
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_contact#list_deleted_contacts).
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_contact#api_native_examples).
 
 ## Examples
 
