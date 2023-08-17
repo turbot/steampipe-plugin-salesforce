@@ -49,7 +49,7 @@ If the `naming_convention` config argument is set to `api_native`, the table and
 ```sql
 select
   "ID",
-  "name",
+  "Name",
   "Family",
   "IsActive",
   "StockKeepingUnit"
@@ -62,7 +62,7 @@ from
 ```sql
 select
   "ID",
-  "name",
+  "Name",
   "Family",
   "IsActive",
   "StockKeepingUnit"
@@ -77,7 +77,7 @@ where
 ```sql
 select
   "ID",
-  "name",
+  "Name",
   "Family",
   "IsActive",
   "StockKeepingUnit"
@@ -92,7 +92,7 @@ where
 ```sql
 select
   "ID",
-  "name",
+  "Name",
   "Family",
   "IsActive",
   "StockKeepingUnit"
