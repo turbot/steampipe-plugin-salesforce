@@ -195,32 +195,7 @@ from
 
 ## Naming Convention
 
-The `naming_convention` configuration argument allows you to control the naming format for tables and columns in the plugin. Below are the supported values:
-
-### API Native
-
-If `naming_convention` is set to `api_native`, the plugin will use the Salesforce naming conventions. Table and column names will have mixed case and table names will not start with `salesforce_`.
-
-For example:
-
-```sql
-select
-  "Id",
-  "WhoCount",
-  "WhatCount",
-  "Subject",
-  "IsAllDayEvent"
-from
-  "Event";
-```
-
-```
-+---------------------+----------+-------------+---------+---------------+
-| ID                  | WhoCount |  WhatCount  | Subject | IsAllDayEvent |
-+----------------------------------------------+-------------------------+
-| 00U2t0000000Mw3dEAD | 0        |  0          | test    | false         |
-+---------------------+----------+-----------------------+---------------+
-```
+The `naming_convention` configuration argument allows you to control the naming format for tables and columns in the plugin.
 
 ### Snake Case
 
@@ -245,6 +220,31 @@ from
 +----------------------------------------------+----------------------------+
 | 00U2t0000000Mw3dEAD | 0         |  0         | test    | false            |
 +---------------------+-----------+------------+---------+------------------+
+```
+
+### API Native
+
+If `naming_convention` is set to `api_native`, the plugin will use Salesforce naming conventions. Table and column names will have mixed case and table names will not start with `salesforce_`.
+
+For example:
+
+```sql
+select
+  "Id",
+  "WhoCount",
+  "WhatCount",
+  "Subject",
+  "IsAllDayEvent"
+from
+  "Event";
+```
+
+```
++---------------------+----------+-------------+---------+---------------+
+| ID                  | WhoCount |  WhatCount  | Subject | IsAllDayEvent |
++----------------------------------------------+-------------------------+
+| 00U2t0000000Mw3dEAD | 0        |  0          | test    | false         |
++---------------------+----------+-----------------------+---------------+
 ```
 
 ## Get involved
