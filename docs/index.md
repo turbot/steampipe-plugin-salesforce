@@ -193,6 +193,60 @@ from
 
 **Note:** Salesforce custom object names are always suffixed with `__c`, which is reflected in the table names as well.
 
+## Naming Convention
+
+The `naming_convention` configuration argument allows you to control the naming format for tables and columns in the plugin.
+
+### Snake Case
+
+If you do not specify a value for `naming_convention` or set it to `snake_case`, the plugin will use snake case for table and column names, and table names will have a `salesforce_` prefix.
+
+For example:
+
+```sql
+select
+  id,
+  who_count,
+  what_count,
+  subject,
+  is_all_day_event
+from
+  salesforce_event;
+```
+
+```
++---------------------+-----------+------------+---------+------------------+
+| id                  | who_count | what_count | subject | is_all_day_event |
++----------------------------------------------+----------------------------+
+| 00U2t0000000Mw3dEAD | 0         |  0         | test    | false            |
++---------------------+-----------+------------+---------+------------------+
+```
+
+### API Native
+
+If `naming_convention` is set to `api_native`, the plugin will use Salesforce naming conventions. Table and column names will have mixed case and table names will not start with `salesforce_`.
+
+For example:
+
+```sql
+select
+  "Id",
+  "WhoCount",
+  "WhatCount",
+  "Subject",
+  "IsAllDayEvent"
+from
+  "Event";
+```
+
+```
++---------------------+----------+-------------+---------+---------------+
+| ID                  | WhoCount |  WhatCount  | Subject | IsAllDayEvent |
++----------------------------------------------+-------------------------+
+| 00U2t0000000Mw3dEAD | 0        |  0          | test    | false         |
++---------------------+----------+-----------------------+---------------+
+```
+
 ## Get involved
 
 - Open source: https://github.com/turbot/steampipe-plugin-salesforce
