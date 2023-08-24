@@ -79,12 +79,17 @@ connection "salesforce" {
 
   # List of Salesforce object names to generate additional tables for
   # This argument only accepts exact Salesforce standard and custom object names, e.g., AccountBrand, OpportunityStage, CustomApp__c
-  # For a full list of standard object names, please see https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_list.htm)
+  # For a full list of standard object names, please see https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_list.htm
   # All custom object names should end in "__c", following Salesforce object naming standards
   # objects = ["AccountBrand", "OpportunityStage", "CustomApp__c"]
 
   # Salesforce API version to connect to
   # api_version = "43.0"
+
+  # The naming_convention allows users to control the naming format for tables and columns in the plugin. Below are the supported values:
+  # api_native - If set to this value, the plugin will use the native format for table names, meaning there will be no "salesforce_" prefix, and the table and column names will remain as they are in Salesforce.
+  # snake_case (default) - If the user does not specify any value, the plugin will use snake case for table and column names and table names will have a "salesforce_" prefix.
+  # naming_convention = "snake_case"
 }
 ```
 
@@ -187,6 +192,60 @@ from
 ```
 
 **Note:** Salesforce custom object names are always suffixed with `__c`, which is reflected in the table names as well.
+
+## Naming Convention
+
+The `naming_convention` configuration argument allows you to control the naming format for tables and columns in the plugin.
+
+### Snake Case
+
+If you do not specify a value for `naming_convention` or set it to `snake_case`, the plugin will use snake case for table and column names, and table names will have a `salesforce_` prefix.
+
+For example:
+
+```sql
+select
+  id,
+  who_count,
+  what_count,
+  subject,
+  is_all_day_event
+from
+  salesforce_event;
+```
+
+```
++---------------------+-----------+------------+---------+------------------+
+| id                  | who_count | what_count | subject | is_all_day_event |
++----------------------------------------------+----------------------------+
+| 00U2t0000000Mw3dEAD | 0         |  0         | test    | false            |
++---------------------+-----------+------------+---------+------------------+
+```
+
+### API Native
+
+If `naming_convention` is set to `api_native`, the plugin will use Salesforce naming conventions. Table and column names will have mixed case and table names will not start with `salesforce_`.
+
+For example:
+
+```sql
+select
+  "Id",
+  "WhoCount",
+  "WhatCount",
+  "Subject",
+  "IsAllDayEvent"
+from
+  "Event";
+```
+
+```
++---------------------+----------+-------------+---------+---------------+
+| ID                  | WhoCount |  WhatCount  | Subject | IsAllDayEvent |
++----------------------------------------------+-------------------------+
+| 00U2t0000000Mw3dEAD | 0        |  0          | test    | false         |
++---------------------+----------+-----------------------+---------------+
+```
 
 ## Get involved
 

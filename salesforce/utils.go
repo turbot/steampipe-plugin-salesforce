@@ -112,7 +112,7 @@ func decodeQueryResult(ctx context.Context, response interface{}, respObject int
 	return nil
 }
 
-// buildQueryFromQuals :: generate SOQL based on the contions specified in sql query
+// buildQueryFromQuals :: generate api_native based on the contions specified in sql query
 // refrences
 // - https://developer.salesforce.com/docs/atlas.en-us.234.0.soql_sosl.meta/soql_sosl/sforce_api_calls_soql_select_comparisonoperators.htm
 func buildQueryFromQuals(equalQuals plugin.KeyColumnQualMap, tableColumns []*plugin.Column, salesforceCols map[string]string) string {
@@ -225,9 +225,15 @@ func getSalesforceColumnName(name string) string {
 	return columnName
 }
 
-// append the dynamic columns with static columns for the table
-func mergeTableColumns(ctx context.Context, dynamicColumns []*plugin.Column, staticColumns []*plugin.Column) []*plugin.Column {
+func mergeTableColumns(_ context.Context, config salesforceConfig, dynamicColumns []*plugin.Column, staticColumns []*plugin.Column) []*plugin.Column {
 	var columns []*plugin.Column
+
+	// when NamingConvention is set to api_native, do not add the static columns
+	if config.NamingConvention != nil && *config.NamingConvention == "api_native" && len(dynamicColumns) > 0 {
+		columns = append(columns, dynamicColumns...)
+		return columns
+	}
+
 	columns = append(columns, staticColumns...)
 	for _, col := range dynamicColumns {
 		if isColumnAvailable(col.Name, staticColumns) {
@@ -235,11 +241,12 @@ func mergeTableColumns(ctx context.Context, dynamicColumns []*plugin.Column, sta
 		}
 		columns = append(columns, col)
 	}
+
 	return columns
 }
 
 // dynamicColumns:: Returns list coulms for a salesforce object
-func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceTableName string) ([]*plugin.Column, plugin.KeyColumnSlice, map[string]string) {
+func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceTableName string, config salesforceConfig) ([]*plugin.Column, plugin.KeyColumnSlice, map[string]string) {
 	sObjectMeta := client.SObject(salesforceTableName).Describe()
 	if sObjectMeta == nil {
 		plugin.Logger(ctx).Error("salesforce.dynamicColumns", fmt.Sprintf("Table %s not present in salesforce", salesforceTableName))
@@ -285,8 +292,13 @@ func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceT
 		// them, so it's impossible to convert from snake case back to camel case
 		// to match the original field name. Also, if we convert to snake case,
 		// custom fields like "TestField" and "Test_Field" will result in duplicates
+		// check if DynamicTableAndPropertyNames is true
 		var columnFieldName string
-		if strings.HasSuffix(fieldName, "__c") {
+
+		// keep the field name as it is if NamingConvention is set to api_native
+		if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
+			columnFieldName = fieldName
+		} else if strings.HasSuffix(fieldName, "__c") {
 			columnFieldName = strings.ToLower(fieldName)
 		} else {
 			columnFieldName = strcase.ToSnake(fieldName)
@@ -321,7 +333,6 @@ func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceT
 		}
 		cols = append(cols, &column)
 	}
-
 	return cols, keyColumns, salesforceCols
 }
 

@@ -53,6 +53,7 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 
 	dynamicColumnsMap := map[string]dynamicMap{}
 	var mapLock sync.Mutex
+	config := GetConfig(td.Connection)
 
 	// If Salesforce client was obtained, don't generate dynamic columns for
 	// defined static tables
@@ -62,7 +63,7 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 		for _, st := range staticTables {
 			go func(staticTable string) {
 				defer wgd.Done()
-				dynamicCols, dynamicKeyColumns, salesforceCols := dynamicColumns(ctx, client, staticTable)
+				dynamicCols, dynamicKeyColumns, salesforceCols := dynamicColumns(ctx, client, staticTable, config)
 				mapLock.Lock()
 				dynamicColumnsMap[staticTable] = dynamicMap{dynamicCols, dynamicKeyColumns, salesforceCols}
 				defer mapLock.Unlock()
@@ -72,31 +73,58 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 	}
 
 	// Initialize tables with static tables with static and dynamic columns(if credentials are set)
-	tables := map[string]*plugin.Table{
-		"salesforce_account":                   SalesforceAccount(ctx, dynamicColumnsMap["Account"]),
-		"salesforce_account_contact_role":      SalesforceAccountContactRole(ctx, dynamicColumnsMap["AccountContactRole"]),
-		"salesforce_asset":                     SalesforceAsset(ctx, dynamicColumnsMap["Asset"]),
-		"salesforce_contact":                   SalesforceContact(ctx, dynamicColumnsMap["Contact"]),
-		"salesforce_contract":                  SalesforceContract(ctx, dynamicColumnsMap["Contract"]),
-		"salesforce_lead":                      SalesforceLead(ctx, dynamicColumnsMap["Lead"]),
-		"salesforce_object_permission":         SalesforceObjectPermission(ctx, dynamicColumnsMap["ObjectPermissions"]),
-		"salesforce_opportunity":               SalesforceOpportunity(ctx, dynamicColumnsMap["Opportunity"]),
-		"salesforce_opportunity_contact_role":  SalesforceOpportunityContactRole(ctx, dynamicColumnsMap["OpportunityContactRole"]),
-		"salesforce_order":                     SalesforceOrder(ctx, dynamicColumnsMap["Order"]),
-		"salesforce_permission_set":            SalesforcePermissionSet(ctx, dynamicColumnsMap["PermissionSet"]),
-		"salesforce_permission_set_assignment": SalesforcePermissionSetAssignment(ctx, dynamicColumnsMap["PermissionSetAssignment"]),
-		"salesforce_pricebook":                 SalesforcePricebook(ctx, dynamicColumnsMap["Pricebook2"]),
-		"salesforce_product":                   SalesforceProduct(ctx, dynamicColumnsMap["Product2"]),
-		"salesforce_user":                      SalesforceUser(ctx, dynamicColumnsMap["User"]),
+	var tables map[string]*plugin.Table
+
+	// check the NamingConvention parameter value in config
+	if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
+		tables = map[string]*plugin.Table{
+			"Account":                 SalesforceAccount(ctx, dynamicColumnsMap["Account"], config),
+			"AccountContactRole":      SalesforceAccountContactRole(ctx, dynamicColumnsMap["AccountContactRole"], config),
+			"Asset":                   SalesforceAsset(ctx, dynamicColumnsMap["Asset"], config),
+			"Contact":                 SalesforceContact(ctx, dynamicColumnsMap["Contact"], config),
+			"Contract":                SalesforceContract(ctx, dynamicColumnsMap["Contract"], config),
+			"Lead":                    SalesforceLead(ctx, dynamicColumnsMap["Lead"], config),
+			"ObjectPermissions":       SalesforceObjectPermission(ctx, dynamicColumnsMap["ObjectPermissions"], config),
+			"Opportunity":             SalesforceOpportunity(ctx, dynamicColumnsMap["Opportunity"], config),
+			"OpportunityContactRole":  SalesforceOpportunityContactRole(ctx, dynamicColumnsMap["OpportunityContactRole"], config),
+			"Order":                   SalesforceOrder(ctx, dynamicColumnsMap["Order"], config),
+			"PermissionSet":           SalesforcePermissionSet(ctx, dynamicColumnsMap["PermissionSet"], config),
+			"PermissionSetAssignment": SalesforcePermissionSetAssignment(ctx, dynamicColumnsMap["PermissionSetAssignment"], config),
+			"Pricebook2":              SalesforcePricebook(ctx, dynamicColumnsMap["Pricebook2"], config),
+			"Product2":                SalesforceProduct(ctx, dynamicColumnsMap["Product2"], config),
+			"User":                    SalesforceUser(ctx, dynamicColumnsMap["User"], config),
+		}
+	} else {
+		tables = map[string]*plugin.Table{
+			"salesforce_account":                   SalesforceAccount(ctx, dynamicColumnsMap["Account"], config),
+			"salesforce_account_contact_role":      SalesforceAccountContactRole(ctx, dynamicColumnsMap["AccountContactRole"], config),
+			"salesforce_asset":                     SalesforceAsset(ctx, dynamicColumnsMap["Asset"], config),
+			"salesforce_contact":                   SalesforceContact(ctx, dynamicColumnsMap["Contact"], config),
+			"salesforce_contract":                  SalesforceContract(ctx, dynamicColumnsMap["Contract"], config),
+			"salesforce_lead":                      SalesforceLead(ctx, dynamicColumnsMap["Lead"], config),
+			"salesforce_object_permission":         SalesforceObjectPermission(ctx, dynamicColumnsMap["ObjectPermissions"], config),
+			"salesforce_opportunity":               SalesforceOpportunity(ctx, dynamicColumnsMap["Opportunity"], config),
+			"salesforce_opportunity_contact_role":  SalesforceOpportunityContactRole(ctx, dynamicColumnsMap["OpportunityContactRole"], config),
+			"salesforce_order":                     SalesforceOrder(ctx, dynamicColumnsMap["Order"], config),
+			"salesforce_permission_set":            SalesforcePermissionSet(ctx, dynamicColumnsMap["PermissionSet"], config),
+			"salesforce_permission_set_assignment": SalesforcePermissionSetAssignment(ctx, dynamicColumnsMap["PermissionSetAssignment"], config),
+			"salesforce_pricebook":                 SalesforcePricebook(ctx, dynamicColumnsMap["Pricebook2"], config),
+			"salesforce_product":                   SalesforceProduct(ctx, dynamicColumnsMap["Product2"], config),
+			"salesforce_user":                      SalesforceUser(ctx, dynamicColumnsMap["User"], config),
+		}
 	}
 
 	var re = regexp.MustCompile(`\d+`)
 	var substitution = ``
 	salesforceTables := []string{}
-	config := GetConfig(td.Connection)
 	if config.Objects != nil && len(*config.Objects) > 0 {
 		for _, tableName := range *config.Objects {
-			pluginTableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(tableName, substitution))
+			var pluginTableName string
+			if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
+				pluginTableName = strcase.ToSnake(re.ReplaceAllString(tableName, substitution))
+			} else {
+				pluginTableName = "salesforce_" + strcase.ToSnake(re.ReplaceAllString(tableName, substitution))
+			}
 			if _, ok := tables[pluginTableName]; !ok {
 				salesforceTables = append(salesforceTables, tableName)
 			}
@@ -111,18 +139,27 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 	var wg sync.WaitGroup
 	wg.Add(len(salesforceTables))
 	for _, sfTable := range salesforceTables {
-		tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(sfTable, substitution))
+		var tableName string
+		if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
+			tableName = sfTable
+		} else {
+			tableName = "salesforce_" + strcase.ToSnake(re.ReplaceAllString(sfTable, substitution))
+		}
 		if tables[tableName] != nil {
 			wg.Done()
 			continue
 		}
 		go func(name string) {
 			defer wg.Done()
-			tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(name, substitution))
+			if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
+				tableName = name
+			} else {
+				tableName = "salesforce_" + strcase.ToSnake(re.ReplaceAllString(name, substitution))
+			}
 			plugin.Logger(ctx).Debug("salesforce.pluginTableDefinitions", "object_name", name, "table_name", tableName)
 			ctx = context.WithValue(ctx, contextKey("PluginTableName"), tableName)
 			ctx = context.WithValue(ctx, contextKey("SalesforceTableName"), name)
-			table := generateDynamicTables(ctx, client)
+			table := generateDynamicTables(ctx, client, config)
 			// Ignore if the requested Salesforce object is not present.
 			if table != nil {
 				tables[tableName] = table
@@ -133,7 +170,7 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 	return tables, nil
 }
 
-func generateDynamicTables(ctx context.Context, client *simpleforce.Client) *plugin.Table {
+func generateDynamicTables(ctx context.Context, client *simpleforce.Client, config salesforceConfig) *plugin.Table {
 	// Get the query for the metric (required)
 	salesforceTableName := ctx.Value(contextKey("SalesforceTableName")).(string)
 	tableName := ctx.Value(contextKey("PluginTableName")).(string)
@@ -184,7 +221,11 @@ func generateDynamicTables(ctx context.Context, client *simpleforce.Client) *plu
 		// to match the original field name. Also, if we convert to snake case,
 		// custom fields like "TestField" and "Test_Field" will result in duplicates
 		var columnFieldName string
-		if strings.HasSuffix(fieldName, "__c") {
+
+		// keep the field name as it is if NamingConvention is set to api_native
+		if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
+			columnFieldName = fieldName
+		} else if strings.HasSuffix(fieldName, "__c") {
 			columnFieldName = strings.ToLower(fieldName)
 		} else {
 			columnFieldName = strcase.ToSnake(fieldName)
@@ -229,11 +270,19 @@ func generateDynamicTables(ctx context.Context, client *simpleforce.Client) *plu
 			Hydrate:    listSalesforceObjectsByTable(salesforceTableName, salesforceCols),
 		},
 		Get: &plugin.GetConfig{
-			KeyColumns: plugin.SingleColumn("id"),
+			KeyColumns: plugin.SingleColumn(checkNameScheme(config, cols)),
 			Hydrate:    getSalesforceObjectbyID(salesforceTableName),
 		},
 		Columns: cols,
 	}
-
 	return &Table
+}
+
+// set GetConfig parameter based on NamingConvention value
+// if the object is unavailable then there will be no dynamic columns, so GetConfig parameter should be id to avoid failure of static table creation
+func checkNameScheme(config salesforceConfig, dynamicColumns []*plugin.Column) string {
+	if config.NamingConvention != nil && *config.NamingConvention == "api_native" && len(dynamicColumns) > 0 {
+		return "Id"
+	}
+	return "id"
 }

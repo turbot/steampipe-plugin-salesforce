@@ -7,7 +7,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
-func SalesforcePricebook(ctx context.Context, dm dynamicMap) *plugin.Table {
+func SalesforcePricebook(ctx context.Context, dm dynamicMap, config salesforceConfig) *plugin.Table {
 	tableName := "Pricebook2"
 	return &plugin.Table{
 		Name:        "salesforce_pricebook",
@@ -18,9 +18,9 @@ func SalesforcePricebook(ctx context.Context, dm dynamicMap) *plugin.Table {
 		},
 		Get: &plugin.GetConfig{
 			Hydrate:    getSalesforceObjectbyID(tableName),
-			KeyColumns: plugin.SingleColumn("id"),
+			KeyColumns: plugin.SingleColumn(checkNameScheme(config, dm.cols)),
 		},
-		Columns: mergeTableColumns(ctx, dm.cols, []*plugin.Column{
+		Columns: mergeTableColumns(ctx, config, dm.cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the product in pricebook."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "The Price Book Name."},

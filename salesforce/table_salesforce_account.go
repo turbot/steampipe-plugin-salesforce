@@ -7,7 +7,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
-func SalesforceAccount(ctx context.Context, dm dynamicMap) *plugin.Table {
+func SalesforceAccount(ctx context.Context, dm dynamicMap, config salesforceConfig) *plugin.Table {
 	tableName := "Account"
 	return &plugin.Table{
 		Name:        "salesforce_account",
@@ -18,9 +18,9 @@ func SalesforceAccount(ctx context.Context, dm dynamicMap) *plugin.Table {
 		},
 		Get: &plugin.GetConfig{
 			Hydrate:    getSalesforceObjectbyID(tableName),
-			KeyColumns: plugin.SingleColumn("id"),
+			KeyColumns: plugin.SingleColumn(checkNameScheme(config, dm.cols)),
 		},
-		Columns: mergeTableColumns(ctx, dm.cols, []*plugin.Column{
+		Columns: mergeTableColumns(ctx, config, dm.cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the account in Salesforce."},
 			{Name: "name", Type: proto.ColumnType_STRING, Description: "Name of the account."},

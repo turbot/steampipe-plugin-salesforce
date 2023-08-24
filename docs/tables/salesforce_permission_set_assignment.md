@@ -2,6 +2,8 @@
 
 Represents the association between a user and permission set.
 
+If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_permission_set_assignment#api_native_examples).
+
 ## Examples
 
 ### Basic info
@@ -52,4 +54,34 @@ from
 where
   sps.id = spsa.permission_set_id
   and spsa.assignee_id = su.id;
+```
+
+## API Native Examples
+
+If the `naming_convention` config argument is set to `api_native`, the table and column names will match Salesforce naming conventions.
+
+### Basic info (with API Native naming convention)
+
+```sql
+select
+  "ID",
+  "AssigneeID",
+  "PermissionSetGroupID",
+  "PermissionSetID"
+from
+  "PermissionSetAssignment";
+```
+
+### List assignments which are not associated with any permission set groups
+
+```sql
+select
+  "ID",
+  "AssigneeID",
+  "PermissionSetGroupID",
+  "PermissionSetID"
+from
+  "PermissionSetAssignment"
+where
+  "PermissionSetGroupID" is null;
 ```

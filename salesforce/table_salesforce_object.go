@@ -65,7 +65,13 @@ func listSalesforceObjectsByTable(tableName string, salesforceCols map[string]st
 func getSalesforceObjectbyID(tableName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 	return func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
 		plugin.Logger(ctx).Info("salesforce.getSalesforceObjectbyID", "Table_Name", d.Table.Name)
-		id := d.EqualsQualString("id")
+		config := GetConfig(d.Connection)
+		var id string
+		if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
+			id = d.EqualsQualString("Id")
+		} else {
+			id = d.EqualsQualString("id")
+		}
 		if strings.TrimSpace(id) == "" {
 			return nil, nil
 		}

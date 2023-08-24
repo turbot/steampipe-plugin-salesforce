@@ -7,7 +7,7 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 )
 
-func SalesforceContract(ctx context.Context, dm dynamicMap) *plugin.Table {
+func SalesforceContract(ctx context.Context, dm dynamicMap, config salesforceConfig) *plugin.Table {
 	tableName := "Contract"
 	return &plugin.Table{
 		Name:        "salesforce_contract",
@@ -18,9 +18,9 @@ func SalesforceContract(ctx context.Context, dm dynamicMap) *plugin.Table {
 		},
 		Get: &plugin.GetConfig{
 			Hydrate:    getSalesforceObjectbyID(tableName),
-			KeyColumns: plugin.SingleColumn("id"),
+			KeyColumns: plugin.SingleColumn(checkNameScheme(config, dm.cols)),
 		},
-		Columns: mergeTableColumns(ctx, dm.cols, []*plugin.Column{
+		Columns: mergeTableColumns(ctx, config, dm.cols, []*plugin.Column{
 			// Top columns
 			{Name: "id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the contract in Salesforce."},
 			{Name: "account_id", Type: proto.ColumnType_STRING, Description: "ID of the Account associated with this contract."},
