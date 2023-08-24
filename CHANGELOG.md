@@ -1,3 +1,9 @@
+## v0.5.0 [2023-08-24]
+
+_What's new?_
+
+- Added a new config argument `naming_convention` to support `api_native` or `snake_case` table and column names. Please check the [Configuration](https://hub.steampipe.io/plugins/turbot/salesforce#configuration) section for more information on how to use the new config argument. ([#24](https://github.com/turbot/steampipe-plugin-salesforce/pull/24))
+
 ## v0.4.0 [2023-06-20]
 
 _Dependencies_
