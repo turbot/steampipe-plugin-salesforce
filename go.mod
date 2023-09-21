@@ -3,7 +3,7 @@ module github.com/turbot/steampipe-plugin-salesforce
 go 1.19
 
 require (
-	github.com/iancoleman/strcase v0.2.0
+	github.com/iancoleman/strcase v0.3.0
 	github.com/simpleforce/simpleforce v0.0.0-20211207104336-af9d9a281fea
 	github.com/turbot/steampipe-plugin-sdk/v5 v5.5.1
 )
