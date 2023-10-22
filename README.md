@@ -1,6 +1,20 @@
-![image](https://hub.steampipe.io/images/plugins/turbot/salesforce-social-graphic.png)
+# Salesforce Plugin for Steampipe - A streamlined way to query Salesforce via ODBC via this Steampipe plugin. 
 
-# Salesforce Plugin for Steampipe
+This fork is a (working) experiment and thus should not be relied on for production environments. 
+Summary of changes:
+- disables conversion of field API names to snake_case  (eg. CreatedDate to created_date)
+- lower-cases all field API names for simplicity (and convenience) when writing sql queries
+- reduced the 'static tables' intitialized down to a single mostly unused object in Salesforce 'Pricebook2' (ignores all the salesforce_ schemas that come out of the box with this plugin) thus allowing for dynamically mapped object schemas
+
+Forked from https://github.com/turbot/steampipe-plugin-salesforce on March 22, 2023.
+
+Built for linux with libraries embeded using...
+
+'''shell
+go build -o -arch=amd64 -os=linux ~/.steampipe/plugins/hub.steampipe.io/plugins/turbot/salesforce@latest/steampipe-plugin-salesforce.plugin *.go
+'''
+
+---8<--- remainder of original Readme.md is below this line ----
 
 Use SQL to query infrastructure accounts, users, oppurtinities and more from your Salesforce instance.
 

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/iancoleman/strcase"
 	"github.com/simpleforce/simpleforce"
 	"github.com/turbot/steampipe-plugin-sdk/v3/connection"
 	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
@@ -207,14 +206,17 @@ func buildQueryFromQuals(equalQuals plugin.KeyColumnQualMap, tableColumns []*plu
 }
 
 func getSalesforceColumnName(name string) string {
-	var columnName string
+	// var columnName string // -dkfix
 	// Salesforce custom fields are suffixed with '__c' and are not converted to
 	// snake case in the table schema, so use the column name as is
-	if strings.HasSuffix(name, "__c") {
-		columnName = name
-	} else {
-		columnName = strcase.ToCamel(name)
-	}
+
+	// -dkfix
+	// if strings.HasSuffix(name, "__c") {
+	// 	columnName = name
+	// } else {
+	// 	columnName = strcase.ToCamel(name)
+	// }
+	var columnName = strings.ToLower(name)
 	return columnName
 }
 
@@ -278,12 +280,15 @@ func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceT
 		// them, so it's impossible to convert from snake case back to camel case
 		// to match the original field name. Also, if we convert to snake case,
 		// custom fields like "TestField" and "Test_Field" will result in duplicates
-		var columnFieldName string
-		if strings.HasSuffix(fieldName, "__c") {
-			columnFieldName = strings.ToLower(fieldName)
-		} else {
-			columnFieldName = strcase.ToSnake(fieldName)
-		}
+
+		// var columnFieldName string // -dkfix
+		var columnFieldName = strings.ToLower(fieldName)
+		// -dkfix
+		// if strings.HasSuffix(fieldName, "__c") {
+		// 	columnFieldName = strings.ToLower(fieldName)
+		// } else {
+		// 	columnFieldName = strcase.ToSnake(fieldName)
+		// }
 
 		column := plugin.Column{
 			Name:        columnFieldName,

@@ -8,7 +8,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/iancoleman/strcase"
 	"github.com/turbot/steampipe-plugin-sdk/v3/grpc/proto"
 	"github.com/turbot/steampipe-plugin-sdk/v3/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v3/plugin/transform"
@@ -47,8 +46,9 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		plugin.Logger(ctx).Warn("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
 	}
 
-	staticTables := []string{"Account", "AccountContactRole", "Asset", "Contact", "Contract", "Lead", "Opportunity", "OpportunityContactRole", "Order", "Pricebook2", "Product2", "User", "PermissionSet", "PermissionSetAssignment", "ObjectPermissions"}
-
+	// dkfix
+	// staticTables := []string{"Account", "AccountContactRole", "Asset", "Contact", "Contract", "Lead", "Opportunity", "OpportunityContactRole", "Order", "Pricebook2", "Product2", "User", "PermissionSet", "PermissionSetAssignment", "ObjectPermissions"}
+	staticTables := []string{"Pricebook2"}
 	dynamicColumnsMap := map[string]dynamicMap{}
 	var mapLock sync.Mutex
 
@@ -68,24 +68,28 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 		}
 		wgd.Wait()
 	}
-
+	// -dkfix
 	// Initialize tables with static tables with static and dynamic columns(if credentials are set)
+	// tables := map[string]*plugin.Table{
+	// 	"salesforce_account":                   SalesforceAccount(ctx, dynamicColumnsMap["Account"], p),
+	// 	"salesforce_account_contact_role":      SalesforceAccountContactRole(ctx, dynamicColumnsMap["AccountContactRole"], p),
+	// 	"salesforce_asset":                     SalesforceAsset(ctx, dynamicColumnsMap["Asset"], p),
+	// 	"salesforce_contact":                   SalesforceContact(ctx, dynamicColumnsMap["Contact"], p),
+	// 	"salesforce_contract":                  SalesforceContract(ctx, dynamicColumnsMap["Contract"], p),
+	// 	"salesforce_lead":                      SalesforceLead(ctx, dynamicColumnsMap["Lead"], p),
+	// 	"salesforce_object_permission":         SalesforceObjectPermission(ctx, dynamicColumnsMap["ObjectPermissions"], p),
+	// 	"salesforce_opportunity":               SalesforceOpportunity(ctx, dynamicColumnsMap["Opportunity"], p),
+	// 	"salesforce_opportunity_contact_role":  SalesforceOpportunityContactRole(ctx, dynamicColumnsMap["OpportunityContactRole"], p),
+	// 	"salesforce_order":                     SalesforceOrder(ctx, dynamicColumnsMap["Order"], p),
+	// 	"salesforce_permission_set":            SalesforcePermissionSet(ctx, dynamicColumnsMap["PermissionSet"], p),
+	// 	"salesforce_permission_set_assignment": SalesforcePermissionSetAssignment(ctx, dynamicColumnsMap["PermissionSetAssignment"], p),
+	// 	"salesforce_pricebook":                 SalesforcePricebook(ctx, dynamicColumnsMap["Pricebook2"], p),
+	// 	"salesforce_product":                   SalesforceProduct(ctx, dynamicColumnsMap["Product2"], p),
+	// 	"salesforce_user":                      SalesforceUser(ctx, dynamicColumnsMap["User"], p),
+	// }
+
 	tables := map[string]*plugin.Table{
-		"salesforce_account":                   SalesforceAccount(ctx, dynamicColumnsMap["Account"], p),
-		"salesforce_account_contact_role":      SalesforceAccountContactRole(ctx, dynamicColumnsMap["AccountContactRole"], p),
-		"salesforce_asset":                     SalesforceAsset(ctx, dynamicColumnsMap["Asset"], p),
-		"salesforce_contact":                   SalesforceContact(ctx, dynamicColumnsMap["Contact"], p),
-		"salesforce_contract":                  SalesforceContract(ctx, dynamicColumnsMap["Contract"], p),
-		"salesforce_lead":                      SalesforceLead(ctx, dynamicColumnsMap["Lead"], p),
-		"salesforce_object_permission":         SalesforceObjectPermission(ctx, dynamicColumnsMap["ObjectPermissions"], p),
-		"salesforce_opportunity":               SalesforceOpportunity(ctx, dynamicColumnsMap["Opportunity"], p),
-		"salesforce_opportunity_contact_role":  SalesforceOpportunityContactRole(ctx, dynamicColumnsMap["OpportunityContactRole"], p),
-		"salesforce_order":                     SalesforceOrder(ctx, dynamicColumnsMap["Order"], p),
-		"salesforce_permission_set":            SalesforcePermissionSet(ctx, dynamicColumnsMap["PermissionSet"], p),
-		"salesforce_permission_set_assignment": SalesforcePermissionSetAssignment(ctx, dynamicColumnsMap["PermissionSetAssignment"], p),
-		"salesforce_pricebook":                 SalesforcePricebook(ctx, dynamicColumnsMap["Pricebook2"], p),
-		"salesforce_product":                   SalesforceProduct(ctx, dynamicColumnsMap["Product2"], p),
-		"salesforce_user":                      SalesforceUser(ctx, dynamicColumnsMap["User"], p),
+		//"salesforce_pricebook": SalesforcePricebook(ctx, dynamicColumnsMap["Pricebook2"], p),	// +dkfix
 	}
 
 	var re = regexp.MustCompile(`\d+`)
@@ -94,7 +98,9 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	config := GetConfig(p.Connection)
 	if config.Objects != nil && len(*config.Objects) > 0 {
 		for _, tableName := range *config.Objects {
-			pluginTableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(tableName, substitution))
+			// pluginTableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(tableName, substitution)) // -dkfix
+			// pluginTableName := tableName // +dkfix
+			pluginTableName := strings.ToLower(tableName) // +dkfix
 			if _, ok := tables[pluginTableName]; !ok {
 				salesforceTables = append(salesforceTables, tableName)
 			}
@@ -109,14 +115,16 @@ func pluginTableDefinitions(ctx context.Context, p *plugin.Plugin) (map[string]*
 	var wg sync.WaitGroup
 	wg.Add(len(salesforceTables))
 	for _, sfTable := range salesforceTables {
-		tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(sfTable, substitution))
+		// tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(sfTable, substitution)) // -dkfix
+		tableName := strings.ToLower(re.ReplaceAllString(sfTable, substitution)) // +dkfix
 		if tables[tableName] != nil {
 			wg.Done()
 			continue
 		}
 		go func(name string) {
 			defer wg.Done()
-			tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(name, substitution))
+			// tableName := "salesforce_" + strcase.ToSnake(re.ReplaceAllString(name, substitution)) // -dkfix
+			tableName := strings.ToLower(name) // +dkfix
 			plugin.Logger(ctx).Debug("salesforce.pluginTableDefinitions", "object_name", name, "table_name", tableName)
 			ctx = context.WithValue(ctx, contextKey("PluginTableName"), tableName)
 			ctx = context.WithValue(ctx, contextKey("SalesforceTableName"), name)
@@ -188,12 +196,16 @@ func generateDynamicTables(ctx context.Context, p *plugin.Plugin) *plugin.Table 
 		// them, so it's impossible to convert from snake case back to camel case
 		// to match the original field name. Also, if we convert to snake case,
 		// custom fields like "TestField" and "Test_Field" will result in duplicates
-		var columnFieldName string
-		if strings.HasSuffix(fieldName, "__c") {
-			columnFieldName = strings.ToLower(fieldName)
-		} else {
-			columnFieldName = strcase.ToSnake(fieldName)
-		}
+		// dk fix - removing snake case conversion
+
+		// var columnFieldName string
+		// if strings.HasSuffix(fieldName, "__c") {
+		// 	columnFieldName = strings.ToLower(fieldName)
+		// } else {
+		// 	columnFieldName = strcase.ToSnake(fieldName)
+		// }
+
+		var columnFieldName = strings.ToLower(fieldName) // dkfix-mod
 
 		column := plugin.Column{
 			Name:        columnFieldName,
