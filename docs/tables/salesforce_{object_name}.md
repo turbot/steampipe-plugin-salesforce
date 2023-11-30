@@ -1,37 +1,15 @@
-# Table: salesforce_{object_name}
+---
+title: "Steampipe Table: salesforce_{object_name} - Query Salesforce {object_name} using SQL"
+description: "Allows users to query {object_name} in Salesforce, providing insights into Salesforce objects and their related data."
+---
 
-Query data from the object called `salesforce_{object_name}`, e.g., `salesforce_campaign`, `salesforce_custom_app__c`. A table is automatically created to represent each object in the `objects` argument.
+# Table: salesforce_{object_name} - Query Salesforce {object_name} using SQL
 
-For instance, if the connection configuration is:
+Salesforce is a customer relationship management solution that offers applications for small, midsize, and enterprise organizations, with a focus on sales and support. The Salesforce platform allows users to manage all interactions with their customers and prospects, including marketing automation, sales and customer service, analytics, and application development. {object_name} in Salesforce represents a specific type of object that can be created, manipulated, and deleted.
 
-```hcl
-connection "salesforce" {
-  plugin    = "salesforce"
-  url       = "https://my-dev-env.my.salesforce.com"
-  username  = "user@example.com"
-  password  = "MyPassword"
-  token     = "MyToken"
-  client_id = "MyClientID"
-  objects   = ["Case", "Campaign", "CustomApp__c"]
-}
-```
+## Table Usage Guide
 
-This plugin will automatically create tables called `salesforce_case`, `salesforce_campaign` and `salesforce_custom_app__c`:
-
-```sh
-select id, owner_id, is_deleted from salesforce_custom_app__c
-+--------------------+--------------------+------------+
-| id                 | owner_id           | is_deleted |
-+--------------------+--------------------+------------+
-| a005j000006vluAAAQ | 0055j000003GU6IAAW | false      |
-| a005j000006vluBAAQ | 0055j000003GU6IAAW | false      |
-| a005j000006vluFAAQ | 0055j000003GU6IAAW | false      |
-+--------------------+--------------------+------------+
-```
-
-Please note that plugin initialization time will increase depending on the number of objects included in the `objects` argument.
-
-**Note:** Salesforce custom object and field names are always suffixed with `__c`, which is reflected in the table and column names.
+The `salesforce_{object_name}` table provides insights into {object_name} within Salesforce. As a Salesforce administrator or developer, you can explore specific details through this table, including object properties, relationships, and associated metadata. Use it to uncover information about {object_name}, such as their properties, relationships with other objects, and the manipulation of these objects.
 
 ## Examples
 
@@ -85,6 +63,7 @@ To get details of a specific object table, inspect it by name:
 ```
 
 ### Get all values from salesforce_custom_app\_\_c
+Explore all the custom applications in your Salesforce environment to gain insights into their configurations and usage. This can be particularly useful for auditing purposes or when planning system upgrades or changes.
 
 ```sql
 select
@@ -94,6 +73,7 @@ from
 ```
 
 ### List custom apps added in the last 24 hours
+Explore which custom apps have been added recently. This is useful for maintaining an up-to-date inventory and tracking the evolution of your application landscape.
 
 ```sql
 select
@@ -107,6 +87,7 @@ where
 ```
 
 ### Get details for a custom app by ID
+Determine the details of a specific custom application in your Salesforce environment by using its unique identifier. This can be useful for obtaining a comprehensive view of an application's settings or status.
 
 ```sql
 select
@@ -183,6 +164,7 @@ To get details of a specific object table, inspect it by name:
 ```
 
 ### List custom apps added in the last 24 hours (with API Native naming convention)
+Discover the custom applications added within the past day. This can be useful for monitoring recent additions and their owners for management or security purposes.
 
 ```sql
 select

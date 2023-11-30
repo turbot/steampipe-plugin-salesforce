@@ -1,14 +1,20 @@
-# Table: salesforce_product
+---
+title: "Steampipe Table: salesforce_product - Query Salesforce Products using SQL"
+description: "Allows users to query Products in Salesforce, providing detailed information about each product, including its standard and custom fields."
+---
 
-Represents a product that org sells.
+# Table: salesforce_product - Query Salesforce Products using SQL
 
-If the naming_convention parameter is set to api_native in the config file, then the table and column names will match what’s in Salesforce. For instance, the query `select id, name from salesforce_product` would become `select "ID", "Name" from "Product2"`.
+Salesforce Products are used to represent the items you sell. They can be goods, services, or digital content that are part of your business model. Products are typically associated with Opportunities or Quotes in Salesforce.
 
-If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_product#api_native_examples).
+## Table Usage Guide
+
+The `salesforce_product` table provides insights into Products within Salesforce. As a Sales or Business Analyst, explore product-specific details through this table, including standard and custom fields. Utilize it to uncover information about products, such as their associated Opportunities or Quotes, and the verification of custom fields.
 
 ## Examples
 
 ### Basic info
+Explore which products in your Salesforce inventory are active and who created them. This information can be useful for auditing purposes and to understand the distribution of product responsibilities within your team.
 
 ```sql
 select
@@ -24,6 +30,7 @@ from
 ```
 
 ### List inactive products
+Discover the segments that consist of inactive products in your Salesforce database. This can help you identify which products are not currently in use, allowing you to make informed decisions about inventory management and product offerings.
 
 ```sql
 select
@@ -45,6 +52,7 @@ where
 If the `naming_convention` config argument is set to `api_native`, the table and column names will match Salesforce naming conventions.
 
 ### Basic info (with API Native naming convention)
+Explore which products are active and in stock by assessing key attributes such as product ID, name, and family. This can help in managing inventory and understanding product performance.
 
 ```sql
 select
@@ -58,6 +66,7 @@ from
 ```
 
 ### List inactive products (with API Native naming convention)
+Discover the segments that contain inactive products in the inventory to better manage stock and potentially discontinue or replenish certain items.
 
 ```sql
 select
@@ -73,6 +82,7 @@ where
 ```
 
 ### Show archived products
+Explore which products have been archived in your inventory, allowing you to keep track of items no longer actively sold or in circulation.
 
 ```sql
 select
@@ -88,6 +98,7 @@ where
 ```
 
 ### Show deleted products
+Uncover the details of products that have been removed from your inventory. This is useful for tracking product lifecycle and managing stock levels effectively.
 
 ```sql
 select
