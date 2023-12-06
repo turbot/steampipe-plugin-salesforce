@@ -11,6 +11,10 @@ A Salesforce Pricebook is a list of products and their prices available in Sales
 
 The `salesforce_pricebook` table provides insights into Pricebooks within Salesforce. As a sales manager or a business analyst, explore pricebook-specific details through this table, including related products, standard prices, and associated metadata. Utilize it to uncover information about pricing strategies, such as those specific to different business units or customers, and the verification of pricing policies.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+- If the naming_convention parameter is set to api_native in the config file, then the table and column names will match what’s in Salesforce. For instance, the query `select name, is_active from salesforce_pricebook` would become `select "Name", "IsActive" from "Pricebook2"`.
+
 ## Examples
 
 ### Basic info

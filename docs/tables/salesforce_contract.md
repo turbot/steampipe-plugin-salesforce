@@ -11,6 +11,9 @@ Salesforce Contracts are a record of the agreements between your company and the
 
 The `salesforce_contract` table provides insights into contracts within Salesforce. As a Salesforce administrator, you can explore contract-specific details through this table, including the contract's status, its start and end dates, and the associated account. Use it to uncover information about contracts, such as those that are nearing their end dates, or to verify the details of a specific contract.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

@@ -11,6 +11,9 @@ Salesforce Opportunity is a component of Salesforce Sales Cloud that allows busi
 
 The `salesforce_opportunity` table provides insights into Opportunities within Salesforce Sales Cloud. As a sales manager or data analyst, explore opportunity-specific details through this table, including deal value, expected close date, and associated account details. Utilize it to uncover information about sales performance, such as deals in the pipeline, the value of potential revenue, and the progress of deals through sales stages.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

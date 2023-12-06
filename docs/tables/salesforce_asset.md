@@ -11,6 +11,9 @@ Salesforce Assets are items that a company has sold, such as products or service
 
 The `salesforce_asset` table enables users to gain insights into the assets associated with specific accounts in Salesforce. As a sales or customer service professional, you can utilize this table to track detailed information about sold products or services, including their purchase dates, values, and statuses. This information can be beneficial in understanding customer trends, managing warranties, and improving overall customer service.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

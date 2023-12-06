@@ -11,6 +11,9 @@ Salesforce Leads are a key resource in Salesforce, a customer relationship manag
 
 The `salesforce_lead` table provides insights into Leads within Salesforce. As a sales manager or marketing professional, explore Lead-specific details through this table, including personal information, source, status, and associated company details. Utilize it to track and analyze potential sales opportunities, understand customer behavior, and plan targeted marketing strategies.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

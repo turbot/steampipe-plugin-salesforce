@@ -11,6 +11,9 @@ A Salesforce Permission Set Assignment is a functionality within Salesforce that
 
 The `salesforce_permission_set_assignment` table provides insights into Permission Set Assignments within Salesforce. As a Salesforce administrator, explore assignment-specific details through this table, including user permissions and access settings. Utilize it to uncover information about assignments, such as those with specific permissions, the relationships between users and their assigned permissions, and the verification of access policies.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

@@ -11,6 +11,10 @@ Salesforce Products are used to represent the items you sell. They can be goods,
 
 The `salesforce_product` table provides insights into Products within Salesforce. As a Sales or Business Analyst, explore product-specific details through this table, including standard and custom fields. Utilize it to uncover information about products, such as their associated Opportunities or Quotes, and the verification of custom fields.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+- If the naming_convention parameter is set to api_native in the config file, then the table and column names will match what’s in Salesforce. For instance, the query `select id, name from salesforce_product` would become `select "ID", "Name" from "Product2"`.
+
 ## Examples
 
 ### Basic info

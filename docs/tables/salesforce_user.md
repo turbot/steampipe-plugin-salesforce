@@ -11,6 +11,10 @@ Salesforce Users are the individuals who have log in access to the Salesforce or
 
 The `salesforce_user` table provides insights into individual users within Salesforce. As a Salesforce administrator or auditor, explore user-specific details through this table, including their profile, role, and status. Utilize it to uncover information about users, such as their level of access, the roles they are assigned, and their activity status.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+- If the naming_convention parameter is set to api_native in the config file, then the table and column names will match what’s in Salesforce. For instance, the query `select username, alias from salesforce_user` would become `select "Username", "Alias" from "User"`.
+
 ## Examples
 
 ### Basic info

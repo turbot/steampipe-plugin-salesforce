@@ -11,6 +11,9 @@ Salesforce Accounts are companies or individuals that are involved in a business
 
 The `salesforce_account` table provides insights into Salesforce Accounts. As a Sales or CRM Manager, explore account-specific details through this table, including name, address, and phone numbers. Utilize it to uncover information about accounts, such as those with recent activities, the relationships between accounts, and the verification of account details.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

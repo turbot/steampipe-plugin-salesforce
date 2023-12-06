@@ -11,6 +11,9 @@ Salesforce Object Permissions is a feature within Salesforce that allows you to 
 
 The `salesforce_object_permission` table provides insights into the permissions that users have on Salesforce objects. As a Salesforce administrator, explore permission-specific details through this table, including the Salesforce object that the permission applies to, the type of permission, and the user or profile that the permission is associated with. Utilize it to uncover information about permissions, such as those that allow users to view, create, edit, or delete Salesforce objects.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

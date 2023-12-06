@@ -11,6 +11,9 @@ Salesforce Contacts is a feature within Salesforce CRM that allows businesses to
 
 The `salesforce_contact` table provides insights into Contacts within Salesforce CRM. As a sales representative or a customer relationship manager, explore contact-specific details through this table, including name, email, phone number, and associated account information. Utilize it to uncover information about contacts, such as those who are associated with specific accounts, the activities related to them, and their communication details.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

@@ -11,6 +11,9 @@ Salesforce Account Contact Role is a feature within Salesforce that allows users
 
 The `salesforce_account_contact_role` table offers insights into the roles of contacts within Salesforce accounts. As a Salesforce administrator or sales representative, you can use this table to understand the responsibilities and hierarchy of contacts within an account. This can help you manage customer relationships more effectively, identify key contacts, and understand the dynamics within an account.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

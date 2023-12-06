@@ -11,6 +11,9 @@ Salesforce Orders is a feature within Salesforce that allows businesses to manag
 
 The `salesforce_order` table provides insights into Order data within Salesforce. As a Sales or Customer Service representative, explore order-specific details through this table, including order number, status, account details, and associated metadata. Utilize it to uncover information about orders, such as those pending, completed, or associated with specific accounts, aiding in efficient order management and customer service.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

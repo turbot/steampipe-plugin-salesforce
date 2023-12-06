@@ -11,6 +11,10 @@ Salesforce Permission Sets are a flexible and granular means of assigning permis
 
 The `salesforce_permission_set` table provides insights into Salesforce Permission Sets within a Salesforce organization. As a Salesforce administrator, explore permission set-specific details through this table, including assigned permissions, access settings, and associated metadata. Utilize it to uncover information about permission sets, such as those with specific user access, the permissions associated with each set, and the verification of access settings.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+- This table has one field for each permission with the pattern `permissions_permission_name`, e.g., `permissions_edit_task`. If true, users assigned to this permission set have the named permission. The number of fields varies depending on the permissions for the organization and license type.
+
 ## Examples
 
 ### Basic info

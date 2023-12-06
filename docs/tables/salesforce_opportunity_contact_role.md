@@ -11,6 +11,9 @@ Opportunity Contact Role in Salesforce is a junction object that links Contacts 
 
 The `salesforce_opportunity_contact_role` table provides insights into the roles that contacts play in specific opportunities within Salesforce. As a sales manager or business analyst, you can explore details about these roles through this table, including the contact's involvement in the opportunity, their influence level, and other associated metadata. Utilize it to uncover information about the relationships between contacts and opportunities, such as who are the main decision makers or influencers in a particular deal.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info
