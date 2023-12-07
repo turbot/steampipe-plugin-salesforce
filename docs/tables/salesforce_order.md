@@ -19,7 +19,20 @@ The `salesforce_order` table provides insights into Order data within Salesforce
 ### Basic info
 Explore the sales orders in Salesforce to analyze their status and total amount. This can be useful for assessing the overall sales performance and identifying any unusual order patterns.
 
-```sql
+```sql+postgres
+select
+  id,
+  name,
+  account_id,
+  order_number,
+  status,
+  total_amount,
+  type
+from
+  salesforce_order;
+```
+
+```sql+sqlite
 select
   id,
   name,
@@ -35,7 +48,17 @@ from
 ### List number of orders by status
 Determine the distribution of order statuses to gain insights into business performance. This can help identify areas that require attention, such as unfulfilled orders or returns.
 
-```sql
+```sql+postgres
+select
+  count(*),
+  status
+from
+  salesforce_order
+group by
+  status;
+```
+
+```sql+sqlite
 select
   count(*),
   status
@@ -52,7 +75,20 @@ If the `naming_convention` config argument is set to `api_native`, the table and
 ### Basic info (with API Native naming convention)
 Explore which orders have a specific status or type to gain insights into overall sales performance and identify potential areas for improvement.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "AccountID",
+  "OrderNumber",
+  "Status",
+  "TotalAmount",
+  "Type"
+from
+  "Order";
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",
@@ -68,7 +104,17 @@ from
 ### List number of orders by status (with API Native naming convention)
 Analyze the distribution of order statuses to better understand your business operations and customer behavior patterns.
 
-```sql
+```sql+postgres
+select
+  count(*),
+  "Status"
+from
+  "Order"
+group by
+  "Status";
+```
+
+```sql+sqlite
 select
   count(*),
   "Status"
@@ -81,7 +127,22 @@ group by
 ### List draft orders
 Explore which orders are still in the draft stage to understand their status and manage them effectively. This is useful for tracking uncompleted transactions and identifying potential areas for follow-up or cancellation.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "AccountID",
+  "OrderNumber",
+  "Status",
+  "TotalAmount",
+  "Type"
+from
+  "Order"
+where
+  "Status" = 'Draft';
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",
@@ -99,7 +160,22 @@ where
 ### List deleted orders
 Explore which orders have been deleted to maintain accurate records and ensure proper account management. This aids in tracking potential errors or fraudulent activities.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "AccountID",
+  "OrderNumber",
+  "Status",
+  "TotalAmount",
+  "Type"
+from
+  "Order"
+where
+  "IsDeleted";
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",

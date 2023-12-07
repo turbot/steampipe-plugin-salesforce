@@ -20,7 +20,19 @@ The `salesforce_pricebook` table provides insights into Pricebooks within Salesf
 ### Basic info
 Analyze the settings to understand the status and creation details of price books in Salesforce. This is useful in assessing the active price books and their creators, which can help in sales strategy planning and management.
 
-```sql
+```sql+postgres
+select
+  name,
+  is_active,
+  is_standard,
+  created_by_id,
+  created_date,
+  description
+from
+  salesforce_pricebook;
+```
+
+```sql+sqlite
 select
   name,
   is_active,
@@ -35,7 +47,21 @@ from
 ### List standard price books
 Explore the active standard price books in your Salesforce account. This can help you understand which price books have been created and are currently in use, offering insights into your pricing strategies and structures.
 
-```sql
+```sql+postgres
+select
+  name,
+  is_active,
+  is_standard,
+  created_by_id,
+  created_date,
+  description
+from
+  salesforce_pricebook
+where
+  is_standard;
+```
+
+```sql+sqlite
 select
   name,
   is_active,
@@ -52,7 +78,21 @@ where
 ### List active price books
 Determine the active price books in your Salesforce data. This can help you understand which pricing structures are currently in use, aiding in revenue management and strategic planning.
 
-```sql
+```sql+postgres
+select
+  name,
+  is_active,
+  is_standard,
+  created_by_id,
+  created_date,
+  description
+from
+  salesforce_pricebook
+where
+  is_active;
+```
+
+```sql+sqlite
 select
   name,
   is_active,
@@ -73,7 +113,19 @@ If the `naming_convention` config argument is set to `api_native`, the table and
 ### Basic info (with API Native naming convention)
 Explore the active and standard status of different price books in your database, along with their creation details and descriptions. This can help understand the variety and usage of different price books in your system.
 
-```sql
+```sql+postgres
+select
+  "Name",
+  "IsActive",
+  "IsStandard",
+  "CreatedById",
+  "CreatedDate",
+  "Description"
+from
+  "Pricebook2";
+```
+
+```sql+sqlite
 select
   "Name",
   "IsActive",
@@ -88,7 +140,7 @@ from
 ### List standard price books (with API Native naming convention)
 Explore which standard price books are currently active and when they were created to understand their usage and relevance. Similarly, review the archived price books to determine which ones are no longer in use and when they were archived, providing insights into the company's pricing history and potential strategies.
 
-```sql
+```sql+postgres
 select
   "Name",
   "IsActive",
@@ -102,9 +154,37 @@ where
   "IsStandard";
 ```
 
+```sql+sqlite
+select
+  "Name",
+  "IsActive",
+  "IsStandard",
+  "CreatedById",
+  "CreatedDate",
+  "Description"
+from
+  "Pricebook2"
+where
+  "IsStandard" = 1;
+```
+
 ## Show archived price books
 
-```sql
+```sql+postgres
+select
+  "Name",
+  "IsActive",
+  "IsStandard",
+  "CreatedById",
+  "CreatedDate",
+  "Description"
+from
+  "Pricebook2"
+where
+  "IsArchived";
+```
+
+```sql+sqlite
 select
   "Name",
   "IsActive",
@@ -121,7 +201,21 @@ where
 ### Show deleted price books
 Discover the segments that have been marked as deleted in your pricing system. This information can be used to track changes, assess the impact of deletions, and potentially recover lost data.
 
-```sql
+```sql+postgres
+select
+  "Name",
+  "IsActive",
+  "IsStandard",
+  "CreatedById",
+  "CreatedDate",
+  "Description"
+from
+  "Pricebook2"
+where
+  "IsDeleted";
+```
+
+```sql+sqlite
 select
   "Name",
   "IsActive",

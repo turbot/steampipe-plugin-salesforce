@@ -65,7 +65,14 @@ To get details of a specific object table, inspect it by name:
 ### Get all values from salesforce_custom_app\_\_c
 Explore all the custom applications in your Salesforce environment to gain insights into their configurations and usage. This can be particularly useful for auditing purposes or when planning system upgrades or changes.
 
-```sql
+```sql+postgres
+select
+  *
+from
+  salesforce_custom_app__c;
+```
+
+```sql+sqlite
 select
   *
 from
@@ -75,7 +82,7 @@ from
 ### List custom apps added in the last 24 hours
 Explore which custom apps have been added recently. This is useful for maintaining an up-to-date inventory and tracking the evolution of your application landscape.
 
-```sql
+```sql+postgres
 select
   id,
   name,
@@ -86,10 +93,30 @@ where
   created_date = now() - interval '24 hrs';
 ```
 
+```sql+sqlite
+select
+  id,
+  name,
+  owner_id
+from
+  salesforce_custom_app__c
+where
+  created_date = datetime('now', '-24 hours');
+```
+
 ### Get details for a custom app by ID
 Determine the details of a specific custom application in your Salesforce environment by using its unique identifier. This can be useful for obtaining a comprehensive view of an application's settings or status.
 
-```sql
+```sql+postgres
+select
+  *
+from
+  salesforce_custom_app__c
+where
+  id = '7015j0000019GVgAAM';
+```
+
+```sql+sqlite
 select
   *
 from
@@ -166,7 +193,7 @@ To get details of a specific object table, inspect it by name:
 ### List custom apps added in the last 24 hours (with API Native naming convention)
 Discover the custom applications added within the past day. This can be useful for monitoring recent additions and their owners for management or security purposes.
 
-```sql
+```sql+postgres
 select
   "ID",
   "Name",
@@ -175,4 +202,15 @@ from
   "CustomApp__c"
 where
   "CreatedDate" = now() - interval '24 hrs';
+```
+
+```sql+sqlite
+select
+  "ID",
+  "Name",
+  "OwnerID"
+from
+  "CustomApp__c"
+where
+  "CreatedDate" = datetime('now', '-24 hours');
 ```

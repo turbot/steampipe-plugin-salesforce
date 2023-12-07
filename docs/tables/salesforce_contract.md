@@ -19,7 +19,21 @@ The `salesforce_contract` table provides insights into contracts within Salesfor
 ### Basic info
 Gain insights into your company's contractual agreements, including the duration and status, to better manage your business relationships and plan for future engagements. This will assist in understanding the overall contract lifecycle within your organization.
 
-```sql
+```sql+postgres
+select
+  id,
+  account_id,
+  contract_number,
+  contract_term,
+  end_date,
+  start_date,
+  company_signed_date,
+  status
+from
+  salesforce_contract;
+```
+
+```sql+sqlite
 select
   id,
   account_id,
@@ -36,7 +50,7 @@ from
 ### List contracts signed in the last six months
 Discover the contracts that have been signed in the past six months to understand the recent business dealings and their status. This can be useful in assessing the volume and nature of recent contractual agreements.
 
-```sql
+```sql+postgres
 select
   id,
   account_id,
@@ -52,10 +66,36 @@ where
   company_signed_date >= (current_date - interval '6' month);
 ```
 
+```sql+sqlite
+select
+  id,
+  account_id,
+  contract_number,
+  contract_term,
+  end_date,
+  start_date,
+  company_signed_date,
+  status
+from
+  salesforce_contract
+where
+  company_signed_date >= date('now','-6 month');
+```
+
 ### List number of contracts by status
 This query allows you to analyze the distribution of contracts within your Salesforce data according to their status. It aids in assessing the overall contract management efficiency and identifying areas that might need attention or improvement.
 
-```sql
+```sql+postgres
+select
+  count(*),
+  status
+from
+  salesforce_contract
+group by
+  status;
+```
+
+```sql+sqlite
 select
   count(*),
   status
@@ -72,7 +112,20 @@ If the `naming_convention` config argument is set to `api_native`, the table and
 ### Basic info (with API Native naming convention)
 Discover the segments that pertain to specific contract details such as term length and status. This can help in understanding the distribution and status of different contracts within an account.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "AccountID",
+  "ContractNumber",
+  "ContractTerm",
+  "EndDate",
+  "StartDate",
+  "Status"
+from
+  "Contract";
+```
+
+```sql+sqlite
 select
   "ID",
   "AccountID",
@@ -88,7 +141,17 @@ from
 ### List number of contracts by status (with API Native naming convention)
 Determine the distribution of contracts based on their status to understand the operational dynamics of your business. This can help you identify areas that may require attention or improvement.
 
-```sql
+```sql+postgres
+select
+  count(*),
+  "Status"
+from
+  "Contract"
+group by
+  "Status";
+```
+
+```sql+sqlite
 select
   count(*),
   "Status"
@@ -101,7 +164,22 @@ group by
 ### Show draft contracts
 Explore which contracts are still in draft status to understand potential upcoming agreements and their terms. This could help in planning resources or assessing future commitments.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "AccountID",
+  "ContractNumber",
+  "ContractTerm",
+  "EndDate",
+  "StartDate",
+  "Status"
+from
+  "Contract"
+where
+  "Status" = 'Draft';
+```
+
+```sql+sqlite
 select
   "ID",
   "AccountID",
@@ -119,7 +197,22 @@ where
 ### Show deleted contracts
 Discover the contracts that have been deleted to understand any potential impact on business operations or account management. This can be useful in identifying gaps in service or potential revenue loss.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "AccountID",
+  "ContractNumber",
+  "ContractTerm",
+  "EndDate",
+  "StartDate",
+  "Status"
+from
+  "Contract"
+where
+  "IsDeleted";
+```
+
+```sql+sqlite
 select
   "ID",
   "AccountID",

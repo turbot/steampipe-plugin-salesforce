@@ -20,7 +20,18 @@ The `salesforce_user` table provides insights into individual users within Sales
 ### Basic info
 Discover the segments of users in your Salesforce platform, gaining insights into their activity status and last login date. This can be beneficial for assessing user engagement and identifying inactive users.
 
-```sql
+```sql+postgres
+select
+  username,
+  alias,
+  user_type,
+  is_active,
+  last_login_date
+from
+  salesforce_user;
+```
+
+```sql+sqlite
 select
   username,
   alias,
@@ -34,7 +45,20 @@ from
 ### List active users
 Explore which users are currently active in your Salesforce environment. This is useful for understanding user engagement and identifying any potential inactive accounts.
 
-```sql
+```sql+postgres
+select
+  username,
+  alias,
+  user_type,
+  is_active,
+  last_login_date
+from
+  salesforce_user
+where
+  is_active;
+```
+
+```sql+sqlite
 select
   username,
   alias,
@@ -50,7 +74,20 @@ where
 ### List standard users
 Explore which standard users are active within your Salesforce platform. This query is particularly useful in understanding user activity and identifying any inactive accounts that may need attention.
 
-```sql
+```sql+postgres
+select
+  username,
+  alias,
+  user_type,
+  is_active,
+  last_login_date
+from
+  salesforce_user
+where
+  user_type = 'Standard';
+```
+
+```sql+sqlite
 select
   username,
   alias,
@@ -66,7 +103,7 @@ where
 ### List user designated as forecast managers
 Gain insights into your Salesforce users who have been enabled to manage forecasts. This allows you to better understand who in your team has the authority to manipulate and oversee forecasting data.
 
-```sql
+```sql+postgres
 select
   id,
   username,
@@ -78,6 +115,18 @@ where
   forecast_enabled;
 ```
 
+```sql+sqlite
+select
+  id,
+  username,
+  user_type,
+  forecast_enabled
+from
+  salesforce_user
+where
+  forecast_enabled = 1;
+```
+
 ## API Native Examples
 
 If the `naming_convention` config argument is set to `api_native`, the table and column names will match Salesforce naming conventions.
@@ -85,7 +134,18 @@ If the `naming_convention` config argument is set to `api_native`, the table and
 ### Basic info (with API Native naming convention)
 Explore which users are active and when they last logged in to effectively manage user access and understand usage patterns. This is useful for maintaining security, optimizing user experience, and making data-driven decisions.
 
-```sql
+```sql+postgres
+select
+  "Username",
+  "Alias",
+  "UserType",
+  "IsActive",
+  "LastLoginDate"
+from
+  "User";
+```
+
+```sql+sqlite
 select
   "Username",
   "Alias",
@@ -99,7 +159,7 @@ from
 ### List active users (with API Native naming convention)
 Explore which users are currently active and when they last logged in, helping to monitor user activity and understand usage patterns.
 
-```sql
+```sql+postgres
 select
   "Username",
   "Alias",
@@ -112,10 +172,36 @@ where
   "IsActive";
 ```
 
+```sql+sqlite
+select
+  "Username",
+  "Alias",
+  "UserType",
+  "IsActive",
+  "LastLoginDate"
+from
+  "User"
+where
+  "IsActive" = 1;
+```
+
 ### List guest users
 Explore which users in your system are classified as 'Guests'. This is useful for identifying potential security risks or for auditing user access privileges.
 
-```sql
+```sql+postgres
+select
+  "Username",
+  "Alias",
+  "UserType",
+  "IsActive",
+  "LastLoginDate"
+from
+  "User"
+where
+  "UserType" = 'Guest';
+```
+
+```sql+sqlite
 select
   "Username",
   "Alias",
@@ -131,7 +217,7 @@ where
 ### List users who logged-in in last 30 days
 Discover the segments of users who have been active within the past month. This is useful for understanding user engagement and activity patterns over time.
 
-```sql
+```sql+postgres
 select
   "Username",
   "Alias",
@@ -142,4 +228,17 @@ from
   "User"
 where
   "LastLoginDate" <= now() - interval '30' day;
+```
+
+```sql+sqlite
+select
+  "Username",
+  "Alias",
+  "UserType",
+  "IsActive",
+  "LastLoginDate"
+from
+  "User"
+where
+  "LastLoginDate" <= datetime('now', '-30 day');
 ```

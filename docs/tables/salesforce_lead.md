@@ -19,7 +19,22 @@ The `salesforce_lead` table provides insights into Leads within Salesforce. As a
 ### Basic info
 Explore the various leads in your Salesforce system to understand their status and gain insights into their associated industries. This can assist in identifying potential conversion opportunities and assessing lead quality.
 
-```sql
+```sql+postgres
+select
+  id,
+  name,
+  company,
+  email,
+  industry,
+  is_converted,
+  rating,
+  status,
+  website
+from
+  salesforce_lead;
+```
+
+```sql+sqlite
 select
   id,
   name,
@@ -37,7 +52,17 @@ from
 ### List number of leads by industry type
 Analyze the distribution of leads across different industry sectors. This is beneficial for understanding which industries are more engaged with your business, aiding in strategic decision-making.
 
-```sql
+```sql+postgres
+select
+  count(*),
+  industry
+from
+  salesforce_lead
+group by
+  industry;
+```
+
+```sql+sqlite
 select
   count(*),
   industry
@@ -50,7 +75,17 @@ group by
 ### List number of leads by status
 Determine the distribution of leads based on their status. This can provide insights into your sales pipeline and help pinpoint areas for improvement.
 
-```sql
+```sql+postgres
+select
+  count(*),
+  status
+from
+  salesforce_lead
+group by
+  status;
+```
+
+```sql+sqlite
 select
   count(*),
   status
@@ -67,7 +102,20 @@ If the `naming_convention` config argument is set to `api_native`, the table and
 ### Basic info (with API Native naming convention)
 Discover the segments that are converted and their respective ratings in a particular industry. This can be used to pinpoint specific areas for potential business growth and improvement.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "Industry",
+  "IsConverted",
+  "Rating",
+  "Status",
+  "Website"
+from
+  "Lead";
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",
@@ -83,7 +131,17 @@ from
 ### List number of leads by industry type (with API Native naming convention)
 Determine the distribution of leads across various industry types. This can help in identifying which industries are more engaged with your services, enabling targeted marketing efforts.
 
-```sql
+```sql+postgres
+select
+  count(*),
+  "Industry"
+from
+  "Lead"
+group by
+  "Industry";
+```
+
+```sql+sqlite
 select
   count(*),
   "Industry"
@@ -96,7 +154,22 @@ group by
 ### List cold rated leads
 Discover the segments that are identified as 'cold' leads in your business. This is useful to target specific marketing strategies to improve conversion rates.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "Industry",
+  "IsConverted",
+  "Rating",
+  "Status",
+  "Website"
+from
+  "Lead"
+where
+  "Rating" = 'Cold';
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",
@@ -114,7 +187,22 @@ where
 ### List qualified leads
 Explore which leads are qualified, allowing you to focus your efforts on potential customers who have been pre-identified as likely to convert. This can help streamline your sales process and improve efficiency.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "Industry",
+  "IsConverted",
+  "Rating",
+  "Status",
+  "Website"
+from
+  "Lead"
+where
+  "Status" = 'Qualified';
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",

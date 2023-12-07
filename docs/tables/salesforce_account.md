@@ -19,7 +19,7 @@ The `salesforce_account` table provides insights into Salesforce Accounts. As a 
 ### Basic info
 Explore the general information about your Salesforce accounts, such as their names, descriptions, annual revenues, ownership types, industries, creation dates, ratings, and websites. This can help you gain insights into your accounts' performance, their industries, and how they have been rated over time.
 
-```sql
+```sql+postgres
 select
   id,
   name,
@@ -31,13 +31,38 @@ select
   rating,
   website
 from
-  salesforce_account
+  salesforce_account;
+```
+
+```sql+sqlite
+select
+  id,
+  name,
+  description,
+  annual_revenue,
+  ownership,
+  industry,
+  created_date,
+  rating,
+  website
+from
+  salesforce_account;
 ```
 
 ### List number of accounts by industry type
 Discover the segments that each industry occupies in your Salesforce accounts. This can help you understand the distribution of your accounts across different industries, providing valuable insights for business strategy planning and decision making.
 
-```sql
+```sql+postgres
+select
+  count(*),
+  industry
+from
+  salesforce_account
+group by
+  industry;
+```
+
+```sql+sqlite
 select
   count(*),
   industry
@@ -50,7 +75,17 @@ group by
 ### List number of accounts by ownership
 Explore the distribution of accounts based on ownership to better understand the structure of your Salesforce accounts. This can help in assessing the balance of account ownership and strategizing future sales and marketing efforts.
 
-```sql
+```sql+postgres
+select
+  count(*),
+  ownership
+from
+  salesforce_account
+group by
+  ownership;
+```
+
+```sql+sqlite
 select
   count(*),
   ownership
@@ -63,7 +98,24 @@ group by
 ### List accounts with hot rating
 This query can be used to identify high-priority accounts in your Salesforce database by finding those labeled with a 'Hot' rating. This can help sales teams focus their efforts on the most promising leads, improving efficiency and potentially increasing sales.
 
-```sql
+```sql+postgres
+select
+  id,
+  name,
+  description,
+  annual_revenue,
+  ownership,
+  industry,
+  created_date,
+  rating,
+  website
+from
+  salesforce_account
+where
+  rating = 'Hot'
+```
+
+```sql+sqlite
 select
   id,
   name,
@@ -87,7 +139,20 @@ If the `naming_convention` config argument is set to `api_native`, the table and
 ### Basic info (with API Native naming convention)
 Gain insights into various aspects of your business accounts such as revenue, ownership, industry type, and rating. This query is useful for a comprehensive overview, helping in strategic decision-making and performance evaluation.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "Description",
+  "AnnualRevenue",
+  "Ownership",
+  "Industry",
+  "Rating"
+from
+  "Account";
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",
@@ -103,7 +168,17 @@ from
 ### List number of accounts by industry type (with API Native naming convention)
 Determine the distribution of accounts across different industry types. This can be useful for understanding the diversity of your client base and tailoring your services accordingly.
 
-```sql
+```sql+postgres
+select
+  count(*),
+  "Industry"
+from
+  "Account"
+group by
+  "Industry";
+```
+
+```sql+sqlite
 select
   count(*),
   "Industry"
@@ -116,7 +191,22 @@ group by
 ### Show details about the turbot account
 Gain insights into the Turbot account's details such as annual revenue, ownership, industry, and rating to better understand its financial and industrial standing.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "Description",
+  "AnnualRevenue",
+  "Ownership",
+  "Industry",
+  "Rating"
+from
+  "Account"
+where
+  "Name" = 'turbot';
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",
@@ -134,7 +224,22 @@ where
 ### Show customer accounts
 Explore which customer accounts exist in your database to gain insights into their annual revenue, industry, and rating. This can help in understanding the financial health and industry distribution of your customer base.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "Description",
+  "AnnualRevenue",
+  "Ownership",
+  "Industry",
+  "Rating"
+from
+  "Account"
+where
+  "Type" = 'Customer';
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",

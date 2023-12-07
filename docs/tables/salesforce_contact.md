@@ -19,7 +19,20 @@ The `salesforce_contact` table provides insights into Contacts within Salesforce
 ### Basic info
 Explore the basic information of your Salesforce contacts to understand their source, department, and role within their organization. This can help in tailoring communication and marketing strategies to each contact.
 
-```sql
+```sql+postgres
+select
+  id,
+  name,
+  account_id,
+  email,
+  lead_source,
+  title,
+  department
+from
+  salesforce_contact;
+```
+
+```sql+sqlite
 select
   id,
   name,
@@ -39,7 +52,18 @@ If the `naming_convention` config argument is set to `api_native`, the table and
 ### Basic info (with API Native naming convention)
 Discover the segments that allow you to gain insights into your contact list, such as identifying the associated account and department for each contact, without delving into overly technical details.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "AccountID",
+  "Email",
+  "Department"
+from
+  "Contact";
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",
@@ -53,7 +77,20 @@ from
 ### List deleted contacts
 Uncover the details of contacts that have been deleted from your database. This can be useful for auditing purposes or for retrieving lost information.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "AccountID",
+  "Email",
+  "Department"
+from
+  "Contact"
+where
+  "IsDeleted";
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",
@@ -69,7 +106,7 @@ where
 ### Show contacts created in last 30 days
 Explore which contacts have been added within the past month. This can help you keep track of recent additions and ensure that no new contacts have been missed.
 
-```sql
+```sql+postgres
 select
   "ID",
   "Name",
@@ -80,4 +117,17 @@ from
   "Contact"
 where
   "CreatedDate" <= now() - interval '30' day;
+```
+
+```sql+sqlite
+select
+  "ID",
+  "Name",
+  "AccountID",
+  "Email",
+  "Department"
+from
+  "Contact"
+where
+  "CreatedDate" <= datetime('now', '-30 day');
 ```

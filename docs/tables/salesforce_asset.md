@@ -19,7 +19,20 @@ The `salesforce_asset` table enables users to gain insights into the assets asso
 ### Basic info
 This example helps you understand the basic details of your assets in Salesforce, such as their ID, name, price, status, and quantity. It's useful for getting a quick overview of your assets and their associated contacts, which can aid in tracking asset performance and managing resources.
 
-```sql
+```sql+postgres
+select
+  id,
+  name,
+  price,
+  status,
+  asset_level,
+  contact_id,
+  quantity
+from
+  salesforce_asset;
+```
+
+```sql+sqlite
 select
   id,
   name,
@@ -39,7 +52,18 @@ If the `naming_convention` config argument is set to `api_native`, the table and
 ### Basic info (with API Native naming convention)
 Determine the areas in which your assets are allocated by assessing their price, quantity, and status. This can help you manage your resources more effectively and identify areas for potential improvement.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "Price",
+  "Status",
+  "Quantity"
+from
+  "Asset";
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",
@@ -53,7 +77,20 @@ from
 ### List shipped assets
 Explore which assets have been shipped to manage inventory and ensure accurate tracking of asset movement. This is particularly useful for businesses to keep track of their resources and improve their asset management strategies.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "Price",
+  "Status",
+  "Quantity"
+from
+  "Asset"
+where
+  "Status" = 'Shipped';
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",
@@ -69,7 +106,20 @@ where
 ### List internal assets
 Analyze your company's internal assets to gain insights into their status, quantity, and value. This can help in better resource allocation and financial planning.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "Price",
+  "Status",
+  "Quantity"
+from
+  "Asset"
+where
+  "IsInternal";
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",

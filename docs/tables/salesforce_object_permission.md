@@ -19,7 +19,20 @@ The `salesforce_object_permission` table provides insights into the permissions 
 ### Basic info
 Explore which Salesforce object permissions allow for modification or viewing of all records. This is beneficial for assessing user access rights and ensuring appropriate security measures are in place.
 
-```sql
+```sql+postgres
+select
+  id,
+  parent_id,
+  sobject_type,
+  permissions_modify_all_records,
+  permissions_view_all_records
+from
+  salesforce_object_permission
+order by
+  sobject_type;
+```
+
+```sql+sqlite
 select
   id,
   parent_id,
@@ -35,7 +48,24 @@ order by
 ### List permission sets with "Transfer Leads" permission on "Lead" object
 Determine the areas in which specific permissions are granted for transferring leads. This query is useful for assessing user permissions and ensuring appropriate access control within your Salesforce environment.
 
-```sql
+```sql+postgres
+select
+  sop.id,
+  sop.parent_id,
+  sps.name,
+  sps.permissions_transfer_any_lead,
+  sop.sobject_type,
+  sop.permissions_read,
+  sop.permissions_create
+from
+  salesforce_object_permission sop,
+  salesforce_permission_set sps
+where
+  sobject_type = 'Lead' and
+  sps.id = sop.parent_id;
+```
+
+```sql+sqlite
 select
   sop.id,
   sop.parent_id,
@@ -59,7 +89,20 @@ If the `naming_convention` config argument is set to `api_native`, the table and
 ### Basic info (with API Native naming convention)
 Determine areas in which users have comprehensive permissions, such as the ability to view or modify all records, to understand potential security risks and compliance issues in your system.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "ParentID",
+  "SobjectType",
+  "PermissionsModifyAllRecords",
+  "PermissionsViewAllRecords"
+from
+  "ObjectPermission"
+order by
+  "SobjectType";
+```
+
+```sql+sqlite
 select
   "ID",
   "ParentID",
@@ -75,7 +118,20 @@ order by
 ### Show delete permissions
 Determine the areas in which users have delete permissions to understand potential security risks or areas for access management improvements. This query is useful for administrators looking to optimize user roles and permissions.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "ParentID",
+  "SobjectType",
+  "PermissionsModifyAllRecords",
+  "PermissionsViewAllRecords"
+from
+  "ObjectPermission"
+where
+  "PermissionsDelete";
+```
+
+```sql+sqlite
 select
   "ID",
   "ParentID",
@@ -91,7 +147,20 @@ where
 ### Show read permissions
 Explore which Salesforce objects a user has read permissions for, allowing you to understand and manage access rights effectively. This can be particularly useful for auditing user permissions or troubleshooting access issues.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "ParentID",
+  "SobjectType",
+  "PermissionsModifyAllRecords",
+  "PermissionsViewAllRecords"
+from
+  "ObjectPermission"
+where
+  "PermissionsRead";
+```
+
+```sql+sqlite
 select
   "ID",
   "ParentID",

@@ -20,7 +20,20 @@ The `salesforce_product` table provides insights into Products within Salesforce
 ### Basic info
 Explore which products in your Salesforce inventory are active and who created them. This information can be useful for auditing purposes and to understand the distribution of product responsibilities within your team.
 
-```sql
+```sql+postgres
+select
+  id,
+  name,
+  family,
+  is_active,
+  created_by_id,
+  quantity_unit_of_measure,
+  stock_keeping_unit
+from
+  salesforce_product;
+```
+
+```sql+sqlite
 select
   id,
   name,
@@ -36,7 +49,7 @@ from
 ### List inactive products
 Discover the segments that consist of inactive products in your Salesforce database. This can help you identify which products are not currently in use, allowing you to make informed decisions about inventory management and product offerings.
 
-```sql
+```sql+postgres
 select
   id,
   name,
@@ -51,6 +64,21 @@ where
   not is_active;
 ```
 
+```sql+sqlite
+select
+  id,
+  name,
+  family,
+  is_active,
+  created_by_id,
+  quantity_unit_of_measure,
+  stock_keeping_unit
+from
+  salesforce_product
+where
+  is_active = 0;
+```
+
 ## API Native Examples
 
 If the `naming_convention` config argument is set to `api_native`, the table and column names will match Salesforce naming conventions.
@@ -58,7 +86,18 @@ If the `naming_convention` config argument is set to `api_native`, the table and
 ### Basic info (with API Native naming convention)
 Explore which products are active and in stock by assessing key attributes such as product ID, name, and family. This can help in managing inventory and understanding product performance.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "Family",
+  "IsActive",
+  "StockKeepingUnit"
+from
+  "Product2";
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",
@@ -72,7 +111,7 @@ from
 ### List inactive products (with API Native naming convention)
 Discover the segments that contain inactive products in the inventory to better manage stock and potentially discontinue or replenish certain items.
 
-```sql
+```sql+postgres
 select
   "ID",
   "Name",
@@ -85,10 +124,36 @@ where
   not "IsActive";
 ```
 
+```sql+sqlite
+select
+  "ID",
+  "Name",
+  "Family",
+  "IsActive",
+  "StockKeepingUnit"
+from
+  "Product2"
+where
+  "IsActive" = 0;
+```
+
 ### Show archived products
 Explore which products have been archived in your inventory, allowing you to keep track of items no longer actively sold or in circulation.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "Family",
+  "IsActive",
+  "StockKeepingUnit"
+from
+  "Product2"
+where
+  "IsArchived";
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",
@@ -104,7 +169,20 @@ where
 ### Show deleted products
 Uncover the details of products that have been removed from your inventory. This is useful for tracking product lifecycle and managing stock levels effectively.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "Name",
+  "Family",
+  "IsActive",
+  "StockKeepingUnit"
+from
+  "Product2"
+where
+  "IsDeleted";
+```
+
+```sql+sqlite
 select
   "ID",
   "Name",

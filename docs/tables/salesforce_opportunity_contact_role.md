@@ -19,7 +19,19 @@ The `salesforce_opportunity_contact_role` table provides insights into the roles
 ### Basic info
 Explore which roles are associated with different opportunities in Salesforce to better understand the distribution of responsibilities within your organization. This can help to identify any gaps or overlaps in roles assigned to specific opportunities.
 
-```sql
+```sql+postgres
+select
+  id,
+  contact_id,
+  is_primary,
+  opportunity_id,
+  stage_name,
+  role
+from
+  salesforce_opportunity_contact_role;
+```
+
+```sql+sqlite
 select
   id,
   contact_id,
@@ -34,7 +46,19 @@ from
 ### List primary opportunity contact roles
 Determine the primary roles within your opportunities to better understand your salesforce interactions. This can help identify key contacts and their respective roles, helping to streamline communication and improve sales strategies.
 
-```sql
+```sql+postgres
+select
+  id,
+  opportunity_id,
+  contact_id,
+  is_primary
+from
+  salesforce_opportunity_contact_role
+where
+  is_primary;
+```
+
+```sql+sqlite
 select
   id,
   opportunity_id,
@@ -53,7 +77,18 @@ If the `naming_convention` config argument is set to `api_native`, the table and
 ### Basic info (with API Native naming convention)
 Explore the primary contacts associated with specific business opportunities. This can help you understand the key individuals involved in each opportunity and their respective roles.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "ContactID",
+  "IsPrimary",
+  "OpportunityID",
+  "StageName"
+from
+  "OpportunityContactRole";
+```
+
+```sql+sqlite
 select
   "ID",
   "ContactID",
@@ -67,7 +102,20 @@ from
 ### List primary opportunity contact roles (with API Native naming convention)
 Identify the primary roles within opportunities to understand their significance and influence within your organization's operations.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "ContactID",
+  "IsPrimary",
+  "OpportunityID",
+  "StageName"
+from
+  "OpportunityContactRole"
+where
+  "IsPrimary";
+```
+
+```sql+sqlite
 select
   "ID",
   "ContactID",
@@ -83,7 +131,7 @@ where
 ### Show opportunity contact roles created in last 30 days
 Discover the roles of contacts associated with opportunities that were created in the past month. This could be useful for assessing recent changes in contact roles and understanding their involvement in new opportunities.
 
-```sql
+```sql+postgres
 select
   "ID",
   "ContactID",
@@ -97,10 +145,38 @@ where
   "CreatedDate" <= now() - interval '30' day;
 ```
 
+```sql+sqlite
+select
+  "ID",
+  "ContactID",
+  "IsPrimary",
+  "OpportunityID",
+  "StageName",
+  "Role"
+from
+  "OpportunityContactRole"
+where
+  "CreatedDate" <= datetime('now', '-30 day');
+```
+
 ### Show decision maker opportunity contact roles
 Explore which roles in an opportunity are designated as 'Decision Makers'. This can be useful in identifying key individuals within a business opportunity.
 
-```sql
+```sql+postgres
+select
+  "ID",
+  "ContactID",
+  "IsPrimary",
+  "OpportunityID",
+  "StageName",
+  "Role"
+from
+  "OpportunityContactRole"
+where
+  "Role" = 'Decision Maker';
+```
+
+```sql+sqlite
 select
   "ID",
   "ContactID",
