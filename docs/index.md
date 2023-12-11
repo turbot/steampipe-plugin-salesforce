@@ -248,7 +248,4 @@ from
 +---------------------+----------+-----------------------+---------------+
 ```
 
-## Get involved
 
-- Open source: https://github.com/turbot/steampipe-plugin-salesforce
-- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
