@@ -8,6 +8,7 @@ short_name: "salesforce"
 description: "Steampipe plugin to query accounts, opportunities, users and more from your Salesforce instance."
 og_description: "Query Salesforce with SQL! Open source CLI. No DB required."
 og_image: "/images/plugins/turbot/salesforce-social-graphic.png"
+engines: ["steampipe", "sqlite", "postgres", "export"]
 ---
 
 # Salesforce + Steampipe
