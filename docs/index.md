@@ -15,7 +15,7 @@ engines: ["steampipe", "sqlite", "postgres", "export"]
 
 [Salesforce](https://www.salesforce.com/) is a customer relationship management (CRM) platform.
 
-[Steampipe](https://steampipe.io) is an open source CLI to instantly query cloud APIs using SQL.
+[Steampipe](https://steampipe.io) is an open-source zero-ETL engine to instantly query cloud APIs using SQL.
 
 List won opportunities:
 
