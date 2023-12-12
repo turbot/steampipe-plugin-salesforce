@@ -25,7 +25,6 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 		DefaultTransform: transform.From(getFieldFromSObjectMapByColumnName).NullIfZero(),
 		ConnectionConfigSchema: &plugin.ConnectionConfigSchema{
 			NewInstance: ConfigInstance,
-			Schema:      ConfigSchema,
 		},
 		SchemaMode:   plugin.SchemaModeDynamic,
 		TableMapFunc: pluginTableDefinitions,
