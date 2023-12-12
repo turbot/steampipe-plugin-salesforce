@@ -8,13 +8,14 @@ short_name: "salesforce"
 description: "Steampipe plugin to query accounts, opportunities, users and more from your Salesforce instance."
 og_description: "Query Salesforce with SQL! Open source CLI. No DB required."
 og_image: "/images/plugins/turbot/salesforce-social-graphic.png"
+engines: ["steampipe", "sqlite", "postgres", "export"]
 ---
 
 # Salesforce + Steampipe
 
 [Salesforce](https://www.salesforce.com/) is a customer relationship management (CRM) platform.
 
-[Steampipe](https://steampipe.io) is an open source CLI to instantly query cloud APIs using SQL.
+[Steampipe](https://steampipe.io) is an open-source zero-ETL engine to instantly query cloud APIs using SQL.
 
 List won opportunities:
 
@@ -247,7 +248,4 @@ from
 +---------------------+----------+-----------------------+---------------+
 ```
 
-## Get involved
 
-- Open source: https://github.com/turbot/steampipe-plugin-salesforce
-- Community: [Join #steampipe on Slack →](https://turbot.com/community/join)
