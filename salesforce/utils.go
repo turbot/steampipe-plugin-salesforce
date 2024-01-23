@@ -313,7 +313,7 @@ func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceT
 
 		// Set column type based on the `soapType` from salesforce schema
 		switch fieldType {
-		case "string", "ID":
+		case "string", "ID", "time":
 			column.Type = proto.ColumnType_STRING
 			keyColumns = append(keyColumns, &plugin.KeyColumn{Name: columnFieldName, Require: plugin.Optional, Operators: []string{"=", "<>"}})
 		case "date", "dateTime":
