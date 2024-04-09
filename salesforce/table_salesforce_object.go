@@ -23,7 +23,7 @@ func listSalesforceObjectsByTable(tableName string, salesforceCols map[string]st
 			return nil, fmt.Errorf("salesforce.listSalesforceObjectsByTable: client_not_found, unable to query table %s because of invalid steampipe salesforce configuration", d.Table.Name)
 		}
 
-		query := generateQuery(d.Table.Columns, tableName)
+		query := generateQuery(d.QueryContext.Columns, tableName)
 		condition := buildQueryFromQuals(d.Quals, d.Table.Columns, salesforceCols)
 		if condition != "" {
 			query = fmt.Sprintf("%s where %s", query, condition)
