@@ -23,6 +23,12 @@ func Plugin(ctx context.Context) *plugin.Plugin {
 	p := &plugin.Plugin{
 		Name:             pluginName,
 		DefaultTransform: transform.From(getFieldFromSObjectMapByColumnName).NullIfZero(),
+		ConnectionKeyColumns: []plugin.ConnectionKeyColumn{
+			{
+				Name:    "organization_id",
+				Hydrate: getOrganizationId,
+			},
+		},
 		ConnectionConfigSchema: &plugin.ConnectionConfigSchema{
 			NewInstance: ConfigInstance,
 		},
@@ -272,7 +278,9 @@ func generateDynamicTables(ctx context.Context, client *simpleforce.Client, conf
 			KeyColumns: plugin.SingleColumn(checkNameScheme(config, cols)),
 			Hydrate:    getSalesforceObjectbyID(salesforceTableName),
 		},
-		Columns: cols,
+		Columns: append([]*plugin.Column{
+			{Name: "organization_id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the organization in Salesforce.", Hydrate: getOrganizationId, Transform: transform.FromValue()},
+		}, cols...),
 	}
 	return &Table
 }

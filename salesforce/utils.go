@@ -10,6 +10,7 @@ import (
 	"github.com/simpleforce/simpleforce"
 	"github.com/turbot/steampipe-plugin-sdk/v5/connection"
 	"github.com/turbot/steampipe-plugin-sdk/v5/grpc/proto"
+	"github.com/turbot/steampipe-plugin-sdk/v5/memoize"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
@@ -89,7 +90,9 @@ func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.C
 func generateQuery(columns []*plugin.Column, tableName string) string {
 	var queryColumns []string
 	for _, column := range columns {
-		queryColumns = append(queryColumns, getSalesforceColumnName(column.Name))
+		if column.Name != "OrganizationId" && column.Name != "organization_id" {
+			queryColumns = append(queryColumns, getSalesforceColumnName(column.Name))
+		}
 	}
 
 	return fmt.Sprintf("SELECT %s FROM %s", strings.Join(queryColumns, ", "), tableName)
@@ -254,7 +257,9 @@ func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceT
 	}
 
 	// Top columns
-	cols := []*plugin.Column{}
+	cols := []*plugin.Column{
+		{Name: "organization_id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the organization in Salesforce.", Hydrate: getOrganizationId, Transform: transform.FromValue()},
+	}
 	salesforceCols := map[string]string{}
 	// Key columns
 	keyColumns := plugin.KeyColumnSlice{}
@@ -334,6 +339,58 @@ func dynamicColumns(ctx context.Context, client *simpleforce.Client, salesforceT
 		cols = append(cols, &column)
 	}
 	return cols, keyColumns, salesforceCols
+}
+
+var getOrganizationIdMemoize = plugin.HydrateFunc(getOrganizationIdUncached).Memoize(memoize.WithCacheKeyFunction(getOrganizationIdCacheKey))
+
+func getOrganizationIdCacheKey(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+	cacheKey := "getOrganizationId"
+	return cacheKey, nil
+}
+
+func getOrganizationId(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+
+	config, err := getOrganizationIdMemoize(ctx, d, h)
+	if err != nil {
+		return nil, err
+	}
+
+	c := config.(string)
+
+	return c, nil
+}
+
+func getOrganizationIdUncached(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
+	cacheKey := "getOrganizationId"
+
+	var orgId string
+
+	if cachedData, ok := d.ConnectionManager.Cache.Get(cacheKey); ok {
+		orgId = cachedData.(string)
+	} else {
+		client, err := connect(ctx, d)
+		if err != nil {
+			plugin.Logger(ctx).Error("salesforce.getOrganizationIdUncached", "connection error", err)
+			return nil, err
+		}
+
+		// SOQL Query to retrieve organization details
+		query := "SELECT Id, Name, InstanceName, IsSandbox FROM Organization"
+
+		result, err := client.Query(query)
+		if err != nil {
+			plugin.Logger(ctx).Error("salesforce.getOrganizationIdUncached", "api error", err)
+			return nil, err
+		}
+
+		if len(result.Records) > 0 {
+			orgId = result.Records[0].ID()
+		}
+
+		d.ConnectionManager.Cache.Set(cacheKey, orgId)
+	}
+
+	return orgId, nil
 }
 
 // isColumnAvailable:: Checks if the column is not present in the existing columns slice
