@@ -361,34 +361,28 @@ func getOrganizationId(ctx context.Context, d *plugin.QueryData, h *plugin.Hydra
 }
 
 func getOrganizationIdUncached(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {
-	cacheKey := "getOrganizationId"
 
 	var orgId string
 
-	if cachedData, ok := d.ConnectionManager.Cache.Get(cacheKey); ok {
-		orgId = cachedData.(string)
-	} else {
-		client, err := connect(ctx, d)
-		if err != nil {
-			plugin.Logger(ctx).Error("salesforce.getOrganizationIdUncached", "connection error", err)
-			return nil, err
-		}
-
-		// SOQL Query to retrieve organization details
-		query := "SELECT Id, Name, InstanceName, IsSandbox FROM Organization"
-
-		result, err := client.Query(query)
-		if err != nil {
-			plugin.Logger(ctx).Error("salesforce.getOrganizationIdUncached", "api error", err)
-			return nil, err
-		}
-
-		if len(result.Records) > 0 {
-			orgId = result.Records[0].ID()
-		}
-
-		d.ConnectionManager.Cache.Set(cacheKey, orgId)
+	client, err := connect(ctx, d)
+	if err != nil {
+		plugin.Logger(ctx).Error("salesforce.getOrganizationIdUncached", "connection error", err)
+		return nil, err
 	}
+
+	// SOQL Query to retrieve organization details
+	query := "SELECT Id, Name, InstanceName, IsSandbox FROM Organization"
+
+	result, err := client.Query(query)
+	if err != nil {
+		plugin.Logger(ctx).Error("salesforce.getOrganizationIdUncached", "api error", err)
+		return nil, err
+	}
+
+	if len(result.Records) > 0 {
+		orgId = result.Records[0].ID()
+	}
+
 
 	return orgId, nil
 }
