@@ -7,7 +7,7 @@ toolchain go1.24.1
 require (
 	github.com/iancoleman/strcase v0.3.0
 	github.com/simpleforce/simpleforce v0.0.0-20211207104336-af9d9a281fea
-	github.com/turbot/steampipe-plugin-sdk/v5 v5.13.1
+	github.com/turbot/steampipe-plugin-sdk/v5 v5.14.0
 )
 
 require (
