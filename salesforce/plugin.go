@@ -54,7 +54,7 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 		plugin.Logger(ctx).Warn("salesforce.pluginTableDefinitions", "connection_error: unable to generate dynamic tables because of invalid steampipe salesforce configuration", err)
 	}
 
-	staticTables := []string{"Account", "AccountContactRole", "Asset", "Contact", "Contract", "Lead", "Opportunity", "OpportunityContactRole", "Order", "Pricebook2", "Product2", "User", "PermissionSet", "PermissionSetAssignment", "ObjectPermissions"}
+	staticTables := []string{"Account", "AccountContactRole", "Asset", "Contact", "Contract", "Lead", "Opportunity", "OpportunityContactRole", "Order", "Pricebook2", "Product2", "User", "PermissionSet", "PermissionSetAssignment", "ObjectPermissions", "ExternalDataSource", "LoginHistory", "SetupAuditTrail", "Organization", "Profile", "PermissionSetGroup"}
 
 	dynamicColumnsMap := map[string]dynamicMap{}
 	var mapLock sync.Mutex
@@ -98,6 +98,16 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 			"Pricebook2":              SalesforcePricebook(ctx, dynamicColumnsMap["Pricebook2"], config),
 			"Product2":                SalesforceProduct(ctx, dynamicColumnsMap["Product2"], config),
 			"User":                    SalesforceUser(ctx, dynamicColumnsMap["User"], config),
+			"ExternalDataSource":      SalesforceExternalDataSource(ctx, dynamicColumnsMap["ExternalDataSource"], config),
+			"LoginHistory":            SalesforceLoginHistory(ctx, dynamicColumnsMap["LoginHistory"], config),
+			"SetupAuditTrail":         SalesforceSetupAuditTrail(ctx, dynamicColumnsMap["SetupAuditTrail"], config),
+			"Organization":            SalesforceOrganization(ctx, dynamicColumnsMap["Organization"], config),
+			"Profile":                 SalesforceProfile(ctx, dynamicColumnsMap["Profile"], config),
+			"PermissionSetGroup":      SalesforcePermissionSetGroup(ctx, dynamicColumnsMap["PermissionSetGroup"], config),
+			"NamedCredential":         SalesforceNamedCredential(ctx, config),
+			"RemoteProxy":             SalesforceRemoteSiteSetting(ctx, config),
+			"ConnectedApplication":    SalesforceConnectedApplication(ctx, config),
+			"SecurityHealthCheckRisks": SalesforceSecurityHealthCheckRisk(ctx, config),
 		}
 	} else {
 		tables = map[string]*plugin.Table{
@@ -116,6 +126,16 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 			"salesforce_pricebook":                 SalesforcePricebook(ctx, dynamicColumnsMap["Pricebook2"], config),
 			"salesforce_product":                   SalesforceProduct(ctx, dynamicColumnsMap["Product2"], config),
 			"salesforce_user":                      SalesforceUser(ctx, dynamicColumnsMap["User"], config),
+			"salesforce_external_data_source":      SalesforceExternalDataSource(ctx, dynamicColumnsMap["ExternalDataSource"], config),
+			"salesforce_login_history":             SalesforceLoginHistory(ctx, dynamicColumnsMap["LoginHistory"], config),
+			"salesforce_setup_audit_trail":         SalesforceSetupAuditTrail(ctx, dynamicColumnsMap["SetupAuditTrail"], config),
+			"salesforce_organization":              SalesforceOrganization(ctx, dynamicColumnsMap["Organization"], config),
+			"salesforce_profile":                   SalesforceProfile(ctx, dynamicColumnsMap["Profile"], config),
+			"salesforce_permission_set_group":      SalesforcePermissionSetGroup(ctx, dynamicColumnsMap["PermissionSetGroup"], config),
+			"salesforce_named_credential":          SalesforceNamedCredential(ctx, config),
+			"salesforce_remote_site_setting":       SalesforceRemoteSiteSetting(ctx, config),
+			"salesforce_connected_application":     SalesforceConnectedApplication(ctx, config),
+			"salesforce_security_health_check_risk": SalesforceSecurityHealthCheckRisk(ctx, config),
 		}
 	}
 
