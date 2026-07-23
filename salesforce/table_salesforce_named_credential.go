@@ -8,7 +8,8 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
-// NamedCredential is only queryable through the Tooling API.
+// NamedCredential is only queryable through the Tooling API. Columns are declared
+// in snake case; toolingColumns renames them to the API field names in api_native mode.
 func SalesforceNamedCredential(ctx context.Context, config salesforceConfig) *plugin.Table {
 	tableName := "NamedCredential"
 	return &plugin.Table{
@@ -17,7 +18,7 @@ func SalesforceNamedCredential(ctx context.Context, config salesforceConfig) *pl
 		List: &plugin.ListConfig{
 			Hydrate: listSalesforceToolingObjectsByTable(tableName),
 		},
-		Columns: []*plugin.Column{
+		Columns: toolingColumns(config, []*plugin.Column{
 			{Name: "organization_id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the organization in Salesforce.", Hydrate: getOrganizationId, Transform: transform.FromValue()},
 
 			// Top columns
@@ -34,6 +35,6 @@ func SalesforceNamedCredential(ctx context.Context, config salesforceConfig) *pl
 			{Name: "protocol", Type: proto.ColumnType_STRING, Description: "The authentication protocol used for the callout, for example, Password, Oauth, or NoAuthentication."},
 			{Name: "callout_status", Type: proto.ColumnType_STRING, Description: "The status of the named credential's callout configuration."},
 			{Name: "namespace_prefix", Type: proto.ColumnType_STRING, Description: "The namespace prefix if the named credential is part of a managed package."},
-		},
+		}),
 	}
 }

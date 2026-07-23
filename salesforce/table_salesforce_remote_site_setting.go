@@ -8,7 +8,8 @@ import (
 	"github.com/turbot/steampipe-plugin-sdk/v5/plugin/transform"
 )
 
-// RemoteProxy (Remote Site Settings) is only queryable through the Tooling API.
+// RemoteProxy (Remote Site Settings) is only queryable through the Tooling API. Columns
+// are declared in snake case; toolingColumns renames them to the API field names in api_native mode.
 func SalesforceRemoteSiteSetting(ctx context.Context, config salesforceConfig) *plugin.Table {
 	tableName := "RemoteProxy"
 	return &plugin.Table{
@@ -17,7 +18,7 @@ func SalesforceRemoteSiteSetting(ctx context.Context, config salesforceConfig) *
 		List: &plugin.ListConfig{
 			Hydrate: listSalesforceToolingObjectsByTable(tableName),
 		},
-		Columns: []*plugin.Column{
+		Columns: toolingColumns(config, []*plugin.Column{
 			{Name: "organization_id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the organization in Salesforce.", Hydrate: getOrganizationId, Transform: transform.FromValue()},
 
 			// Top columns
@@ -30,6 +31,6 @@ func SalesforceRemoteSiteSetting(ctx context.Context, config salesforceConfig) *
 			{Name: "description", Type: proto.ColumnType_STRING, Description: "The description of the remote site setting."},
 			{Name: "protocol_mismatch", Type: proto.ColumnType_BOOL, Description: "If true, Salesforce allows callouts to this site over an unsecured protocol (HTTP)."},
 			{Name: "namespace_prefix", Type: proto.ColumnType_STRING, Description: "The namespace prefix if the remote site setting is part of a managed package."},
-		},
+		}),
 	}
 }

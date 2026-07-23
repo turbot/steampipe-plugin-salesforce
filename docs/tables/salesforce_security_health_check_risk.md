@@ -14,7 +14,7 @@ The `salesforce_security_health_check_risk` table gives a security administrator
 **Important Notes**
 - This table is backed by the Salesforce Tooling API and requires a user with the "View Health Check" permission.
 - `risk_type` is one of `HIGH_RISK`, `MEDIUM_RISK`, or `MEETS_STANDARD`. `setting_risk_category` is one of `HIGH_RISK`, `MEDIUM_RISK`, `LOW_RISK`, or `INFORMATIONAL`.
-- This table does not support the `api_native` naming convention for columns. Because it cannot use the Describe-driven dynamic columns, its column names remain snake case even when `naming_convention` is set to `api_native`.
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
 
 ## Examples
 

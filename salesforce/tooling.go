@@ -77,6 +77,24 @@ func queryTooling(ctx context.Context, client *simpleforce.Client, apiVersion, q
 	return &result, nil
 }
 
+// toolingColumns applies the connection's naming convention to a Tooling table's
+// columns. Tooling tables can't use the Describe-driven dynamic columns that the
+// SOQL-backed tables rely on, so their columns are declared in snake case and,
+// when naming_convention is api_native, renamed to the original Salesforce API
+// field names (developer_name -> DeveloperName) so these tables behave like the
+// rest of the plugin in that mode. The injected organization_id key column is
+// left as-is, matching the SOQL tables.
+func toolingColumns(config salesforceConfig, cols []*plugin.Column) []*plugin.Column {
+	if config.NamingConvention != nil && *config.NamingConvention == "api_native" {
+		for _, c := range cols {
+			if c.Name != "organization_id" {
+				c.Name = getSalesforceColumnName(c.Name)
+			}
+		}
+	}
+	return cols
+}
+
 //// LIST HYDRATE FUNCTION (Tooling API)
 
 func listSalesforceToolingObjectsByTable(tableName string) func(ctx context.Context, d *plugin.QueryData, h *plugin.HydrateData) (interface{}, error) {

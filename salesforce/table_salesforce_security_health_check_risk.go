@@ -20,7 +20,7 @@ func SalesforceSecurityHealthCheckRisk(ctx context.Context, config salesforceCon
 		List: &plugin.ListConfig{
 			Hydrate: listSalesforceToolingObjectsByTable(tableName),
 		},
-		Columns: []*plugin.Column{
+		Columns: toolingColumns(config, []*plugin.Column{
 			{Name: "organization_id", Type: proto.ColumnType_STRING, Description: "Unique identifier of the organization in Salesforce.", Hydrate: getOrganizationId, Transform: transform.FromValue()},
 
 			{Name: "durable_id", Type: proto.ColumnType_STRING, Description: "Stable identifier of the health-check risk row."},
@@ -32,6 +32,6 @@ func SalesforceSecurityHealthCheckRisk(ctx context.Context, config salesforceCon
 			{Name: "setting_risk_category", Type: proto.ColumnType_STRING, Description: "Risk category of the setting: HIGH_RISK, MEDIUM_RISK, LOW_RISK, or INFORMATIONAL."},
 			{Name: "org_value_raw", Type: proto.ColumnType_STRING, Description: "The setting's current value in raw form."},
 			{Name: "standard_value_raw", Type: proto.ColumnType_STRING, Description: "The Salesforce baseline value in raw form."},
-		},
+		}),
 	}
 }
