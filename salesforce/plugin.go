@@ -106,7 +106,6 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 			"PermissionSetGroup":      SalesforcePermissionSetGroup(ctx, dynamicColumnsMap["PermissionSetGroup"], config),
 			"NamedCredential":         SalesforceNamedCredential(ctx, config),
 			"RemoteProxy":             SalesforceRemoteSiteSetting(ctx, config),
-			"ConnectedApplication":    SalesforceConnectedApplication(ctx, config),
 			"SecurityHealthCheckRisks": SalesforceSecurityHealthCheckRisk(ctx, config),
 		}
 	} else {
@@ -134,7 +133,6 @@ func pluginTableDefinitions(ctx context.Context, td *plugin.TableMapData) (map[s
 			"salesforce_permission_set_group":      SalesforcePermissionSetGroup(ctx, dynamicColumnsMap["PermissionSetGroup"], config),
 			"salesforce_named_credential":          SalesforceNamedCredential(ctx, config),
 			"salesforce_remote_site_setting":       SalesforceRemoteSiteSetting(ctx, config),
-			"salesforce_connected_application":     SalesforceConnectedApplication(ctx, config),
 			"salesforce_security_health_check_risk": SalesforceSecurityHealthCheckRisk(ctx, config),
 		}
 	}
