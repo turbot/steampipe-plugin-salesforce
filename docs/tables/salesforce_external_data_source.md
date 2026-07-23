@@ -11,6 +11,9 @@ A Salesforce External Data Source defines a connection to data stored outside th
 
 The `salesforce_external_data_source` table provides insights into the external systems your Salesforce organization integrates with. As an integration or platform administrator, use this table to review configured endpoints, authentication principal types, and whether each source is writable.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

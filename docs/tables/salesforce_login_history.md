@@ -11,6 +11,9 @@ Salesforce login history records successful and failed login attempts for an org
 
 The `salesforce_login_history` table provides insights into authentication activity in your Salesforce organization. As a security administrator, use this table to investigate suspicious logins, track integration logins by application, and identify failed login attempts by source IP.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

@@ -11,6 +11,9 @@ A Salesforce Permission Set Group bundles multiple permission sets so they can b
 
 The `salesforce_permission_set_group` table provides insights into the permission set groups configured in your Salesforce organization. As a security administrator, use this table to review group definitions, their calculation status, and creation metadata.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

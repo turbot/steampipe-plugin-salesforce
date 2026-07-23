@@ -13,6 +13,7 @@ The `salesforce_remote_site_setting` table provides insights into the outbound c
 
 **Important Notes**
 - This table is backed by the Salesforce Tooling API and requires a user with permission to view setup and configuration.
+- This table does not support the `api_native` naming convention for columns. Because it cannot use the Describe-driven dynamic columns, its column names remain snake case even when `naming_convention` is set to `api_native`.
 
 ## Examples
 

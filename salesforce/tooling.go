@@ -46,7 +46,7 @@ func queryTooling(ctx context.Context, client *simpleforce.Client, apiVersion, q
 		// q is a nextRecordsUrl returned by a previous page.
 		reqURL = loc + q
 	} else {
-		reqURL = fmt.Sprintf("%s/services/data/v%s/tooling/query?q=%s", loc, apiVersion, url.PathEscape(q))
+		reqURL = fmt.Sprintf("%s/services/data/v%s/tooling/query?q=%s", loc, apiVersion, url.QueryEscape(q))
 	}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, reqURL, nil)
@@ -102,6 +102,11 @@ func listSalesforceToolingObjectsByTable(tableName string) func(ctx context.Cont
 
 			for _, record := range result.Records {
 				d.StreamListItem(ctx, record)
+
+				// Context can be cancelled due to manual cancellation or if the limit has been hit
+				if d.RowsRemaining(ctx) == 0 {
+					return nil, nil
+				}
 			}
 
 			// Paging

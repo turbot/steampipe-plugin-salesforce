@@ -11,6 +11,9 @@ A Salesforce Profile defines a baseline set of permissions and access settings t
 
 The `salesforce_profile` table provides insights into the profiles configured in your Salesforce organization. As a security administrator, use this table to review profiles, their associated user licenses, and user types when auditing access.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

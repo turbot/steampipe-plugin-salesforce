@@ -14,6 +14,7 @@ The `salesforce_security_health_check_risk` table gives a security administrator
 **Important Notes**
 - This table is backed by the Salesforce Tooling API and requires a user with the "View Health Check" permission.
 - `risk_type` is one of `HIGH_RISK`, `MEDIUM_RISK`, or `MEETS_STANDARD`. `setting_risk_category` is one of `HIGH_RISK`, `MEDIUM_RISK`, `LOW_RISK`, or `INFORMATIONAL`.
+- This table does not support the `api_native` naming convention for columns. Because it cannot use the Describe-driven dynamic columns, its column names remain snake case even when `naming_convention` is set to `api_native`.
 
 ## Examples
 
@@ -42,7 +43,7 @@ from
   salesforce_security_health_check_risk;
 ```
 
-### High-risk settings that fall short of the baseline
+### List high-risk settings
 Identify the settings that most weaken the org's security posture.
 
 ```sql+postgres
@@ -69,7 +70,7 @@ where
   risk_type = 'HIGH_RISK';
 ```
 
-### Password and MFA posture
+### Review password and MFA settings
 Focus on the authentication-related settings.
 
 ```sql+postgres

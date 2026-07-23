@@ -11,6 +11,9 @@ The Salesforce setup audit trail records administrative and configuration change
 
 The `salesforce_setup_audit_trail` table provides insights into configuration changes in your Salesforce organization. As a security or compliance administrator, use this table to review recent Setup changes, attribute them to users, and detect unexpected modifications.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info

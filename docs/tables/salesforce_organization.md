@@ -11,6 +11,9 @@ The Salesforce Organization record holds key configuration information about the
 
 The `salesforce_organization` table provides insights into the top-level configuration of your Salesforce org. As an administrator, use this table to confirm the edition and instance, distinguish sandboxes from production, and review default locale and fiscal-year settings.
 
+**Important Notes**
+- If the `naming_convention` configuration argument is set to `api_native`, please see [API Native Examples](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_account#api_native_examples).
+
 ## Examples
 
 ### Basic info
