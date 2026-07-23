@@ -30,7 +30,11 @@ func SalesforceUser(ctx context.Context, dm dynamicMap, config salesforceConfig)
 			{Name: "is_active", Type: proto.ColumnType_BOOL, Description: "Indicates whether the user has access to log in (true) or not (false)."},
 
 			// Other columns
-			{Name: "account_id", Type: proto.ColumnType_STRING, Description: "ID of the Account associated with a Customer Portal user. This field is null for Salesforce users."},
+			// Note: AccountId is intentionally not declared as a static column.
+			// It is only present on the User sObject in orgs with Customer/Partner
+			// portals enabled; hardcoding it makes the generated SOQL fail with
+			// "No such column 'AccountId' on entity 'User'" on orgs without it.
+			// When the field does exist, the dynamic Describe path adds it back.
 			{Name: "created_by_id", Type: proto.ColumnType_STRING, Description: "Id of the user who created the user including creation date and time."},
 			{Name: "department", Type: proto.ColumnType_STRING, Description: "The company department associated with the user."},
 			{Name: "employee_number", Type: proto.ColumnType_STRING, Description: "The user's employee number."},
