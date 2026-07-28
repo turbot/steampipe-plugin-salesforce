@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/simpleforce/simpleforce"
-	"github.com/turbot/steampipe-plugin-sdk/v5/plugin"
+	"github.com/turbot/steampipe-plugin-sdk/v6/plugin"
 )
 
 // Some Salesforce configuration objects (for example, NamedCredential,
