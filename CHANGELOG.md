@@ -1,3 +1,27 @@
+## v1.3.0 [2026-07-28]
+
+_What's new?_
+
+- New tables added (Thanks [@vthiery](https://github.com/vthiery) for the contributions!)
+  - [salesforce_external_data_source](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_external_data_source) ([#99](https://github.com/turbot/steampipe-plugin-salesforce/pull/99))
+  - [salesforce_login_history](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_login_history) ([#99](https://github.com/turbot/steampipe-plugin-salesforce/pull/99))
+  - [salesforce_named_credential](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_named_credential) ([#99](https://github.com/turbot/steampipe-plugin-salesforce/pull/99))
+  - [salesforce_organization](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_organization) ([#99](https://github.com/turbot/steampipe-plugin-salesforce/pull/99))
+  - [salesforce_permission_set_group](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_permission_set_group) ([#99](https://github.com/turbot/steampipe-plugin-salesforce/pull/99))
+  - [salesforce_profile](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_profile) ([#99](https://github.com/turbot/steampipe-plugin-salesforce/pull/99))
+  - [salesforce_remote_site_setting](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_remote_site_setting) ([#99](https://github.com/turbot/steampipe-plugin-salesforce/pull/99))
+  - [salesforce_security_health_check_risk](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_security_health_check_risk) ([#99](https://github.com/turbot/steampipe-plugin-salesforce/pull/99))
+  - [salesforce_setup_audit_trail](https://hub.steampipe.io/plugins/turbot/salesforce/tables/salesforce_setup_audit_trail) ([#99](https://github.com/turbot/steampipe-plugin-salesforce/pull/99))
+
+_Bug fixes_
+
+- Removed the hardcoded `account_id` column from the `salesforce_user` table to prevent query errors in orgs without Customer or Partner portals enabled. The column is still added automatically in orgs where the `User.AccountId` field exists. ([#100](https://github.com/turbot/steampipe-plugin-salesforce/pull/100)) (Thanks [@vthiery](https://github.com/vthiery) for the contribution!)
+
+_Dependencies_
+
+- Recompiled plugin with steampipe-plugin-sdk v6.0.0 which fixes a data race on connection config access.
+- Recompiled plugin with Go version `1.26.0`. ([#91](https://github.com/turbot/steampipe-plugin-salesforce/pull/91))
+
 ## v1.2.0 [2025-10-13]
 
 _Dependencies_
