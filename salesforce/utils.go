@@ -63,7 +63,7 @@ func connectRaw(ctx context.Context, cc *connection.ConnectionCache, c *plugin.C
 	client := simpleforce.NewClient(*config.URL, clientID, apiVersion)
 	if client == nil {
 		plugin.Logger(ctx).Error("salesforce.connectRaw", "couldn't get salesforce client. Client setup error.")
-		return nil, fmt.Errorf("salesforce.connectRaw couldn't get salesforce client. Client setup error.")
+		return nil, fmt.Errorf("salesforce.connectRaw couldn't get salesforce client, client setup error")
 	}
 
 	// LoginPassword signs into salesforce using password. token is optional if trusted IP is configured.
@@ -382,7 +382,6 @@ func getOrganizationIdUncached(ctx context.Context, d *plugin.QueryData, h *plug
 	if len(result.Records) > 0 {
 		orgId = result.Records[0].ID()
 	}
-
 
 	return orgId, nil
 }
