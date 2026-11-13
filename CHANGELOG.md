@@ -1,3 +1,13 @@
+## v1.3.1 [2026-11-13]
+
+_Dependencies_
+
+- Recompiled plugin with [steampipe-plugin-sdk v6.2.1](https://github.com/turbot/steampipe-plugin-sdk/blob/develop/CHANGELOG.md#v621-2026-11-12), which lowers plugin memory use, with the query cache fixes for missing or duplicate rows from [v6.2.0](https://github.com/turbot/steampipe-plugin-sdk/blob/develop/CHANGELOG.md#v620-2026-11-11). ([#108](https://github.com/turbot/steampipe-plugin-salesforce/pull/108))
+- Bumped `google.golang.org/grpc` from `1.66.0` to `1.83.2`.
+- Bumped `golang.org/x/crypto` from `0.45.0` to `0.57.0`.
+- Bumped `golang.org/x/net` from `0.47.0` to `0.59.0`.
+- Bumped `github.com/hashicorp/go-getter` from `1.7.9` to `1.8.6`.
+
 ## v1.3.0 [2026-07-28]
 
 _What's new?_
